@@ -130,9 +130,26 @@ final class AniListService
         $data = self::query($q, $vars, 1800);
         $page = $data['Page'] ?? null;
         if (!$page) return null;
+        $items = array_map([MediaNormalizer::class, 'item'], (array)($page['media'] ?? []));
+        
+        // Filter out items that have no readable chapters available across providers
+        $readableItems = array_values(array_filter($items, function ($item) {
+            $queries = array_filter(array_unique([
+                $item['title'] ?? '',
+                $item['title_romaji'] ?? '',
+                $item['alt_title'] ?? '',
+            ]));
+            foreach ($queries as $q) {
+                if (MangaDexService::searchManga($q) !== null) return true;
+                if (MangaReaderApiService::searchKomikIndo($q) !== null) return true;
+                if (MangaReaderApiService::searchMangabat($q) !== null) return true;
+            }
+            return false;
+        }));
+
         return [
-            'items' => array_map([MediaNormalizer::class, 'item'], (array)($page['media'] ?? [])),
-            'total' => $page['pageInfo']['total'] ?? null,
+            'items' => $readableItems,
+            'total' => count($readableItems),
             'has_next' => (bool)($page['pageInfo']['hasNextPage'] ?? false),
             'page' => $vars['page'],
         ];
