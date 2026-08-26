@@ -11,7 +11,7 @@ $coverTag = $coverSrc
 $facts = [];
 if ($book['publication_year']) $facts['Published'] = (string)$book['publication_year'];
 if ($book['page_count']) $facts['Pages'] = number_format($book['page_count']);
-$langNames = ['en' => 'English', 'fr' => 'French', 'de' => 'German', 'es' => 'Spanish', 'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch', 'fi' => 'Finnish'];
+$langNames = ['en' => 'English', 'id' => 'Bahasa Indonesia', 'fr' => 'French', 'de' => 'German', 'es' => 'Spanish', 'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch', 'fi' => 'Finnish'];
 $facts['Language'] = $langNames[$book['language']] ?? strtoupper($book['language']);
 if ($book['isbn']) $facts['ISBN-13'] = $book['isbn'];
 $facts['Source'] = ($book['source'] ?? '') === 'voixlib' ? 'VoiXLib Original (SVG-illustrated)' : 'Project Gutenberg';

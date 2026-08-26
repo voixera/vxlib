@@ -29,6 +29,8 @@ final class BookRepository
         ['name' => 'Light Novel', 'slug' => 'light-novel'],
         ['name' => 'Webtoon', 'slug' => 'webtoon'],
         ['name' => 'Doujinshi', 'slug' => 'doujinshi'],
+        ['name' => 'Novel Indonesia', 'slug' => 'novel-indonesia'],
+        ['name' => 'Hentai', 'slug' => 'hentai'],
     ];
 
     public function __construct(?SupabaseClient $client = null)

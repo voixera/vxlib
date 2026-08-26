@@ -17,22 +17,19 @@ if (PHP_SAPI !== 'cli') { echo "CLI only\n"; exit(1); }
 if (!SupabaseClient::configured()) { echo "Set SUPABASE_URL and SUPABASE_ANON_KEY in .env first.\n"; exit(1); }
 if (!Config::get('SUPABASE_SERVICE_ROLE_KEY')) { echo "SUPABASE_SERVICE_ROLE_KEY is required for seeding.\n"; exit(1); }
 
-$seedFile = dirname(__DIR__) . '/storage/seed/books.json';
-if (!is_file($seedFile)) {
-    echo "Missing {$seedFile} — run php tools/build-seed.php first.\n";
-    exit(1);
+// ── VoiXLib-native catalog: comics (SVG pages) + Bahasa Indonesia novels ──
+$files = ['manga.json', 'novels-id.json'];
+$books = [];
+foreach ($files as $f) {
+    $path = dirname(__DIR__) . '/storage/seed/' . $f;
+    if (!is_file($path)) {
+        echo "Missing {$path}\n";
+        exit(1);
+    }
+    $payload = json_decode((string)file_get_contents($path), true);
+    $books = array_merge($books, $payload['books'] ?? []);
 }
-
-$payload = json_decode((string)file_get_contents($seedFile), true);
-$books = $payload['books'] ?? [];
-
-// VoiXLib-native manga / manhwa / anime titles (SVG-illustrated editions).
-$mangaFile = dirname(__DIR__) . '/storage/seed/manga.json';
-if (is_file($mangaFile)) {
-    $manga = json_decode((string)file_get_contents($mangaFile), true);
-    $books = array_merge($books, $manga['books'] ?? []);
-}
-if (!$books) { echo "Seed file contains no books.\n"; exit(1); }
+if (!$books) { echo "Seed files contain no books.\n"; exit(1); }
 
 $db = new SupabaseClient();
 echo 'Seeding ' . count($books) . " books...\n";

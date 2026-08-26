@@ -15,7 +15,7 @@ Discord sign-in. PHP backend + Supabase + vanilla JS/SVG. No frameworks.
 | Backend | PHP 8.2+ (no Composer), clean Controllers / Services / Repositories split |
 | Database | Supabase (PostgREST) — schema in `supabase/schema.sql`, RLS enabled |
 | Auth | Discord OAuth2 (server-side flow, state validation, secure sessions) |
-| Books | Project Gutenberg via Gutendex API; enrichment + covers via Open Library |
+| Books | VoiXLib-native catalog: manga/manhwa/anime (SVG pages) + Bahasa Indonesia novels |
 | Manga & manhwa | VoiXLib-native editions: original SVG-illustrated pages, flipbook reader |
 | Reader | Sanitized Gutenberg HTML, chapter splitting, comfort settings, progress sync |
 | Frontend | Hand-rolled CSS design system, inline SVG brand/scene/icons, vanilla ES5-safe JS |
@@ -44,21 +44,25 @@ Put your own Discord user ID into `ADMIN_DISCORD_IDS` to unlock `/admin.php`.
 Open the Supabase dashboard → SQL editor → paste **all** of `supabase/schema.sql`
 and run it. This creates the tables, indexes, RLS policies and seeds categories.
 
-### 4. Seed real books
+### 4. Seed the catalog
 
 ```bash
 php tools/seed.php
 ```
 
-This loads `storage/seed/books.json` — 200+ real Gutenberg titles with verified
-covers and Open Library enrichment — plus `storage/seed/manga.json`, four
-VoiXLib-native manga/manhwa/manhua/anime editions whose pages are generated as
-original vector art (`app/Services/MangaService.php`). Sanity-check that
-generator any time with `php tools/manga-check.php`. Refresh the catalog any time:
+This loads the VoiXLib-native catalog into your database:
+
+- `storage/seed/manga.json` — manga, manhwa, manhua and anime editions whose
+  pages are generated as original vector art (`app/Services/MangaService.php`)
+- `storage/seed/novels-id.json` — Bahasa Indonesia novels & story collections
+  with authored chapters (`storage/seed/novels-id.json` is also served by
+  `/api/content.php` at read time)
+
+Sanity-check the page generator any time with `php tools/manga-check.php`.
+To remove the legacy Project Gutenberg titles from an existing database:
 
 ```bash
-php tools/build-seed.php   # re-fetches popular books from Gutendex + Open Library
-php tools/seed.php
+php tools/purge-gutenberg.php   # deletes every book where source = gutenberg
 ```
 
 ### 5. Serve
@@ -145,15 +149,17 @@ php -S localhost:8000 api/index.php
 
 ## Data sources & attribution
 
-- Texts & metadata: [Project Gutenberg](https://www.gutenberg.org) (via [Gutendex](https://gutendex.com))
-- Enrichment & covers: [Open Library](https://openlibrary.org)
-- Covers missing from sources are generated as bespoke SVGs from each book's own metadata.
+- All titles are VoiXLib-native: covers, comic pages and prose are original
+  works created for this platform (vector art via `MangaService`).
+- Enrichment helpers for the retired Gutenberg pipeline remain in `/tools`
+  (`build-seed.php`, `enrich.php`) but are no longer part of setup.
 
 ## CLI cheat sheet
 
 ```bash
-php tools/build-seed.php     # refresh seed snapshot from live APIs
-php tools/seed.php           # push snapshot into Supabase
+php tools/seed.php             # push native catalog into Supabase
+php tools/purge-gutenberg.php  # remove legacy Gutenberg rows
+php tools/manga-check.php      # sanity-check SVG page generator
 ```
 
 ### Dev helpers

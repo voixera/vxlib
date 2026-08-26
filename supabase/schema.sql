@@ -79,7 +79,9 @@ insert into public.categories (name, slug) values
   ('Anime',               'anime'),
   ('Light Novel',         'light-novel'),
   ('Webtoon',             'webtoon'),
-  ('Doujinshi',           'doujinshi')
+  ('Doujinshi',           'doujinshi'),
+  ('Novel Indonesia',     'novel-indonesia'),
+  ('Hentai',              'hentai')
 on conflict (slug) do nothing;
 
 -- ── User library shelves ────────────────────────────────────

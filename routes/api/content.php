@@ -31,6 +31,28 @@ if (MangaService::isManga($book)) {
     ]);
 }
 
+// Other VoiXLib-native editions: authored text stored with the seed data.
+$native = Cache::remember(
+    'voixlib_text:' . $book['external_id'],
+    86400,
+    function () use ($book) {
+        $file = dirname(__DIR__, 2) . '/storage/seed/novels-id.json';
+        $data = is_file($file) ? json_decode((string)file_get_contents($file), true) : null;
+        return $data['content'][$book['external_id']]['chapters'] ?? [];
+    }
+);
+if ($native) {
+    json_response([
+        'format'   => 'text',
+        'title'    => $book['title'],
+        'chapters' => array_map(fn($c, $i) => [
+            'index' => $i,
+            'title' => (string)$c['title'],
+            'html'  => (string)$c['html'],
+        ], $native, array_keys($native)),
+    ]);
+}
+
 if ($book['gutenberg_id'] === null || $book['read_url'] === null || !str_contains((string)$book['read_url'], 'https://www.gutenberg.org/')) {
     json_response(['error' => 'not_readable', 'source_url' => $book['source_url']], 415);
 }
