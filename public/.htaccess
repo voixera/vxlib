@@ -1,0 +1,22 @@
+# VoiXLib public directory config (when served as document root).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+</IfModule>
+
+# Custom error pages
+ErrorDocument 404 /404.php
+
+# Never serve these even if copied here by mistake
+<FilesMatch "\.env$">
+  Require all denied
+</FilesMatch>
+
+Options -Indexes
+
+# Sensible caching for static assets
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+</IfModule>

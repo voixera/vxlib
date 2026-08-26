@@ -1,0 +1,8 @@
+/* VoiXLib favicon / small brand mark.
+   The X is two crossing bookmark ribbons — the brand's core glyph. */
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="5" fill="#F4F1EA"/>
+  <rect x="1.25" y="1.25" width="29.5" height="29.5" rx="3.75" fill="none" stroke="#171717" stroke-width="1.8"/>
+  <path d="M8 7.5 L15.2 16 L8 24.5 L11 24.5 L16.1 18.4 L21.2 24.5 L24.2 24.5 L17 16 L24.2 7.5 L21.2 7.5 L16.1 13.6 L11 7.5 Z" fill="#171717"/>
+  <path d="M11 7.5h-3L15.2 16l1.9-2.3z" fill="#B4531F"/>
+</svg>

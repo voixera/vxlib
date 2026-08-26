@@ -1,0 +1,21 @@
+# VoiXLib — Apache config.
+# Preferred: point DocumentRoot at public/. If the domain serves this repo root
+# instead, these rules route everything into public/ safely.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Allow existing real files/dirs at root level (none expected, but safe)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else goes through public/
+  RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
+
+# Block direct access to sensitive dirs regardless of docroot
+RedirectMatch 403 ^/?(/(app|config|storage|supabase|tools|resources)(/|$))
+RedirectMatch 403 ^/?.*\.env
+
+Options -Indexes

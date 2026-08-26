@@ -1,0 +1,6 @@
+.env
+storage/cache/*
+storage/ratelimit/*
+!storage/cache/.gitkeep
+!storage/ratelimit/.gitkeep
+*.log
