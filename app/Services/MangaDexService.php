@@ -19,13 +19,13 @@ final class MangaDexService
     }
 
     /** Get chapter list for a MangaDex manga ID */
-    public static function getChapters(string $mangaId, array $translatedLanguage = ['en', 'id'], int $limit = 100, int $offset = 0): ?array
+    public static function getChapters(string $mangaId, array $translatedLanguage = [], int $limit = 100, int $offset = 0): ?array
     {
         $mangaId = trim($mangaId);
         if ($mangaId === '') return null;
 
-        $langQuery = implode('&translatedLanguage[]=', array_map('urlencode', $translatedLanguage));
-        $url = self::baseUrl() . '/manga/' . $mangaId . '/feed?limit=' . $limit . '&offset=' . $offset . '&order[chapter]=asc&translatedLanguage[]=' . $langQuery;
+        $langQuery = !empty($translatedLanguage) ? implode('&translatedLanguage[]=', array_map('urlencode', $translatedLanguage)) : '';
+        $url = self::baseUrl() . '/manga/' . $mangaId . '/feed?limit=' . $limit . '&offset=' . $offset . '&order[chapter]=asc' . ($langQuery !== '' ? '&translatedLanguage[]=' . $langQuery : '');
 
         return Cache::remember('mangadex:feed:' . $mangaId . ':' . md5($langQuery) . ':' . $offset, 1800, fn() => Http::getJson($url));
     }
