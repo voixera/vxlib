@@ -63,13 +63,44 @@ Point your web server's document root at `public/` (Apache config included via
 `.htaccess`). For local dev:
 
 ```bash
-php -S localhost:8000 -t public
+php -S localhost:8000 -t public tools/router.php
 ```
 
 Visit `http://localhost:8000`.
 
 > The app degrades gracefully: without Supabase credentials pages render but show
 > "library isn't connected" states instead of fake data.
+
+### 6. Deploy to Vercel
+
+Vercel runs PHP through the community `vercel-php` runtime (serverless lambdas).
+Auth is stateless (HMAC-signed cookies), so it works there — the repo ships with a
+ready `vercel.json`.
+
+1. Push this repo to GitHub.
+2. In Vercel: **Add New → Project → Import** your repo. The runtime is picked up
+   from `vercel.json` automatically.
+3. Add these **Environment Variables** in the Vercel project settings:
+
+   | Key | Value |
+   |---|---|
+   | `APP_URL` | e.g. `https://vxlib.vercel.app` |
+   | `APP_ENV` | `production` |
+   | `DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` | same as local |
+   | `DISCORD_REDIRECT_URI` | `https://vxlib.vercel.app/auth/callback.php` |
+   | `SUPABASE_URL` / `SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | same as local |
+   | `ADMIN_DISCORD_IDS` | your Discord ID |
+   | `APP_SECRET` | long random string (`openssl rand -hex 32`) |
+
+4. In Discord's developer portal add the production redirect URI alongside the
+   local one.
+5. Deploy. Then run the schema + seed once against Supabase if you haven't:
+   SQL editor → `supabase/schema.sql`, then locally `php tools/seed.php`
+   (seeding talks straight to Supabase, not to Vercel).
+
+Serverless notes: file caches live under the system temp dir and are per-instance;
+external API responses are cached opportunistically. Nothing critical depends on
+the filesystem — auth, CSRF and OAuth state all use signed cookies.
 
 ## Architecture
 

@@ -28,11 +28,9 @@ $intended = $_GET['next'] ?? ($_SERVER['HTTP_REFERER'] ?? '/');
 if (!is_string($intended) || !str_starts_with($intended, '/') || str_starts_with($intended, '//')) {
     $intended = '/';
 }
-$_SESSION['oauth_intended'] = mb_substr($intended, 0, 200);
 
-$state = bin2hex(random_bytes(24));
-$_SESSION['oauth_state'] = $state;
-$_SESSION['oauth_started_at'] = time();
+// State lives in a short-lived signed cookie — survives serverless deployments.
+$state = Security::beginOAuth($intended);
 
 $params = http_build_query([
     'client_id'            => $clientId,

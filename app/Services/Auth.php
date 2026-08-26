@@ -10,14 +10,12 @@ final class Auth
 
     public static function check(): bool
     {
-        Security::bootSession();
-        return !empty($_SESSION['user_id']);
+        return self::id() !== null;
     }
 
     public static function id(): ?int
     {
-        Security::bootSession();
-        return isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+        return Security::readAuthCookie();
     }
 
     /** Full user row from Supabase (memoized per request). */
@@ -34,9 +32,10 @@ final class Auth
     public static function login(array $userRow): void
     {
         Security::bootSession();
-        session_regenerate_id(true);
-        $_SESSION['user_id'] = (int)$userRow['id'];
-        $_SESSION['_rotated'] = time();
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+        }
+        Security::issueAuthCookie((int)$userRow['id']);
         self::$cachedUser = $userRow;
     }
 
@@ -58,8 +57,8 @@ final class Auth
     {
         $u = self::user();
         if (!$u) {
-            $_SESSION['intended'] = $_SERVER['REQUEST_URI'] ?? '/';
-            redirect('/login.php?required=1');
+            $next = $_SERVER['REQUEST_URI'] ?? '/';
+            redirect('/login.php?required=1&next=' . rawurlencode(is_string($next) ? $next : '/'));
         }
         return $u;
     }

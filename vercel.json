@@ -1,0 +1,11 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "public/*.php": { "runtime": "vercel-php@0.7.x" },
+    "public/auth/*.php": { "runtime": "vercel-php@0.7.x" },
+    "public/api/*.php": { "runtime": "vercel-php@0.7.x" }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/public/$1" }
+  ]
+}

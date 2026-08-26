@@ -28,18 +28,14 @@ if (is_string($error) && $error !== '') {
         : 'Discord reported: ' . htmlspecialchars($error, ENT_QUOTES));
 }
 
+// ── State must match the signed cookie we issued (CSRF defense for the flow) ──
 $code = $_GET['code'] ?? '';
 $state = $_GET['state'] ?? '';
 if (!is_string($code) || strlen($code) < 8 || strlen($code) > 256) $fail('Discord did not return a valid authorization code.');
-if (!is_string($state) || strlen($state) < 16) $fail('The sign-in response was missing its state parameter.');
 
-// ── State must match what we issued (CSRF defense for the flow) ──────
-$sentState = $_SESSION['oauth_state'] ?? '';
-$startedAt = (int)($_SESSION['oauth_started_at'] ?? 0);
-unset($_SESSION['oauth_state'], $_SESSION['oauth_started_at']);
-
-if ($sentState === '' || !hash_equals($sentState, $state)) $fail('State mismatch — please start the sign-in again.');
-if ($startedAt === 0 || time() - $startedAt > 600) $fail('That sign-in attempt expired. Please try again.');
+$verified = Security::consumeOAuthState(is_string($state) ? $state : null);
+if ($verified === null) $fail('State mismatch — please start the sign-in again.');
+$intended = $verified['next'];
 
 // ── Exchange code for tokens ─────────────────────────────────────────
 $token = self_exchangeCode((string)$code);
@@ -65,8 +61,6 @@ if (!$userRow) $fail('Your Discord identity is valid, but the VoiXLib account se
 
 Auth::login($userRow);
 
-$intended = $_SESSION['oauth_intended'] ?? '/';
-unset($_SESSION['oauth_intended']);
 if (!is_string($intended) || !str_starts_with($intended, '/') || str_starts_with($intended, '//')) $intended = '/';
 
 redirect($intended);

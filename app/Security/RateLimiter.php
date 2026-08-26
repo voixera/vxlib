@@ -6,13 +6,25 @@ declare(strict_types=1);
 
 final class RateLimiter
 {
-    private static string $dir = __DIR__ . '/../../storage/ratelimit';
+    private static ?string $dir = null;
+
+    private static function dir(): string
+    {
+        if (self::$dir !== null) return self::$dir;
+        $preferred = dirname(__DIR__, 2) . '/storage/ratelimit';
+        if (is_dir($preferred) && is_writable($preferred)) {
+            return self::$dir = $preferred;
+        }
+        $tmp = sys_get_temp_dir() . '/voixlib-ratelimit';
+        if (!is_dir($tmp)) @mkdir($tmp, 0775, true);
+        return self::$dir = $tmp;
+    }
 
     public static function allow(string $action, int $limit, int $windowSeconds): bool
     {
-        if (!is_dir(self::$dir)) @mkdir(self::$dir, 0775, true);
+        $dir = self::dir();
         $key = md5($action . '|' . client_ip());
-        $file = self::$dir . '/' . $key . '.json';
+        $file = $dir . '/' . $key . '.json';
         $now = time();
 
         $state = ['count' => 0, 'reset' => $now + $windowSeconds];
