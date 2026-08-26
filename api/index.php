@@ -3,7 +3,7 @@
 /**
  * VoiXLib serverless front controller (Vercel).
  * Custom runtimes only build functions from /api, so this single lambda
- * fans requests out to the page controllers under public/.
+ * fans requests out to the page controllers under routes/.
  *
  * Also usable locally as a router:
  *   php -S localhost:8000 api/index.php
@@ -27,7 +27,7 @@ if (PHP_SAPI === 'cli-server') {
 if (preg_match('#\.(css|js|svg|png|jpg|jpeg|webp|ico|woff2?|map|txt)$#i', $path)
     || str_starts_with($path, '/assets/')) {
     // Local dev parity: Vercel rewrites serve these before PHP; the built-in
-    // server needs us to stream them from public/.
+    // server needs us to stream them from public/assets/.
     $asset = $root . '/public' . $path;
     if (PHP_SAPI === 'cli-server' && is_file($asset)) {
         $types = [
@@ -48,22 +48,22 @@ if (preg_match('#\.(css|js|svg|png|jpg|jpeg|webp|ico|woff2?|map|txt)$#i', $path)
     return true;
 }
 
-// ── Resolve the target page under public/ ────────────────────────────────
+// ── Resolve the target page under routes/ ────────────────────────────────
 $target = null;
 
 if ($path === '/' || $path === '/index.php') {
-    $target = 'public/index.php';
+    $target = 'routes/index.php';
 } else {
-    // /book.php        → public/book.php
-    // /api/books.php   → public/api/books.php
-    // /auth/callback.php → public/auth/callback.php
+    // /book.php        → routes/book.php
+    // /api/books.php   → routes/api/books.php
+    // /auth/callback.php → routes/auth/callback.php
     if (preg_match('#^/([a-z0-9_\-]+)\.php$#i', $path, $m)) {
-        $candidate = 'public/' . strtolower($m[1]) . '.php';
+        $candidate = 'routes/' . strtolower($m[1]) . '.php';
         if (is_file($root . '/' . $candidate)) {
             $target = $candidate;
         }
     } elseif (preg_match('#^/(api|auth)/([a-z0-9_\-]+)\.php$#i', $path, $m)) {
-        $candidate = 'public/' . strtolower($m[1]) . '/' . strtolower($m[2]) . '.php';
+        $candidate = 'routes/' . strtolower($m[1]) . '/' . strtolower($m[2]) . '.php';
         if (is_file($root . '/' . $candidate)) {
             $target = $candidate;
         }

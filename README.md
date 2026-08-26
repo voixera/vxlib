@@ -63,7 +63,7 @@ Point your web server's document root at `public/` (Apache config included via
 `.htaccess`). For local dev:
 
 ```bash
-php -S localhost:8000 -t public tools/router.php
+php -S localhost:8000 api/index.php
 ```
 
 Visit `http://localhost:8000`.
@@ -113,20 +113,20 @@ php -S localhost:8000 api/index.php
 ## Architecture
 
 ```
-/public          web root only — thin entry points
-  /auth          Discord OAuth redirect + callback
-  /api           JSON endpoints (catalog, library, bookmarks, progress, sync)
+/api             single serverless front controller (api/index.php)
+/routes          page entry points (index, book, reader, auth/, api/, …)
+/public/assets   static files only (css, js, favicon) — served directly
 /app             bootstrap, Config loader
   /Controllers   page + admin controllers
   /Services      SupabaseClient, Gutenberg/OpenLibrary services, cache, auth,
                  prefs, content sanitizer, HTTP helper
   /Repositories  BookRepository, UserRepository, LibraryRepository
-  /Security      session boot, CSRF, rate limiter
-/config          .env loader (file lives OUTSIDE public root)
+  /Security      signed-cookie auth/CSRF, rate limiter
+/config          .env loader (file lives OUTSIDE the web surface)
 /resources/views layout, page templates, components (brand SVGs, icons, cards…)
-/storage         cache, rate-limit files, seed snapshot (gitignored except seed)
+/storage         cache, rate-limit files, seed snapshot
 /supabase        schema.sql with RLS
-/tools           build-seed.php, seed.php (CLI)
+/tools           build-seed.php, seed.php, enrich.php (CLI)
 ```
 
 ## Security notes
@@ -155,7 +155,8 @@ php tools/seed.php           # push snapshot into Supabase
 ### Dev helpers
 
 ```bash
-php -S localhost:8000 -t public tools/router.php   # pretty 404s under the built-in server
+php -S localhost:8000 api/index.php   # pretty 404s under the built-in server
 php tools/enrich.php 60                            # backfill years/pages via Open Library
 php tools/check-db.php                             # verify schema is applied
 ```
+
