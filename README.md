@@ -1,172 +1,72 @@
 # VoiXLib
 
-**Your library, beyond the shelf.**
+**Perpustakaanmu, melampaui rak.**
 
-A production-ready digital reading platform: real public-domain books, an editorial
-interface, a distraction-free reader with persistent progress and bookmarks, and
-Discord sign-in. PHP backend + Supabase + vanilla JS/SVG. No frameworks.
+Platform discovery + perpustakaan pribadi untuk **Anime, Manga, Manhwa** — metadata nyata dari
+[AniList](https://anilist.co), UI Bahasa Indonesia, akun Discord, data pengguna di Supabase.
+Backend PHP 8.2 murni (tanpa Composer), frontend vanilla JS/SVG. Tanpa framework.
 
 ---
 
-## What's inside
+## Prinsip
 
-| Piece | Tech |
-|---|---|
-| Backend | PHP 8.2+ (no Composer), clean Controllers / Services / Repositories split |
-| Database | Supabase (PostgREST) — schema in `supabase/schema.sql`, RLS enabled |
-| Auth | Discord OAuth2 (server-side flow, state validation, secure sessions) |
-| Books | VoiXLib-native catalog: manga/manhwa/anime (SVG pages) + Bahasa Indonesia novels |
-| Manga & manhwa | VoiXLib-native editions: original SVG-illustrated pages, flipbook reader |
-| Reader | Sanitized Gutenberg HTML, chapter splitting, comfort settings, progress sync |
-| Frontend | Hand-rolled CSS design system, inline SVG brand/scene/icons, vanilla ES5-safe JS |
+- **No-dummy:** setiap judul/sinopsis/skor berasal dari AniList. Jika provider tidak menyediakan
+  sebuah field, VoiXLib menampilkan "Tidak tersedia" — tidak pernah mengarangnya.
+- **Discovery, bukan pembajakan:** VoiXLib tidak menghosting chapter. Halaman detail mengarahkan ke
+  sumber resmi ("Lihat Sumber").
+- **Service layer per provider:** `AnimeService` / `MangaService` / `ManhwaService` men-facade
+  `AniListService` — ganti provider dengan menyentuh satu class saja.
 
 ## Setup
 
-### 1. Requirements
+### 1. Kebutuhan
 
-- PHP 8.2+ with `curl`, `dom`, `mbstring`, `openssl` extensions
-- A Supabase project (free tier is fine)
-- A Discord application
+- PHP 8.2+ dengan ekstensi `curl`, `mbstring`, `openssl`
+- Proyek Supabase (free tier cukup) + aplikasi Discord
 
-### 2. Configure
-
-```bash
-cp .env.example .env
-# fill in every value — see the comments inside
-```
-
-Create the Discord app at <https://discord.com/developers/applications> → OAuth2 →
-add redirect `{APP_URL}/auth/callback.php`. Copy client id/secret into `.env`.
-Put your own Discord user ID into `ADMIN_DISCORD_IDS` to unlock `/admin.php`.
-
-### 3. Create the schema
-
-Open the Supabase dashboard → SQL editor → paste **all** of `supabase/schema.sql`
-and run it. This creates the tables, indexes, RLS policies and seeds categories.
-
-### 4. Seed the catalog
+### 2. Konfigurasi
 
 ```bash
-php tools/seed.php
+cp .env.example .env   # isi semua nilai, lihat komentar di dalamnya
 ```
 
-This loads the VoiXLib-native catalog into your database:
+### 3. Skema database
 
-- `storage/seed/manga.json` — manga, manhwa, manhua and anime editions whose
-  pages are generated as original vector art (`app/Services/MangaService.php`)
-- `storage/seed/novels-id.json` — Bahasa Indonesia novels & story collections
-  with authored chapters (`storage/seed/novels-id.json` is also served by
-  `/api/content.php` at read time)
+Jalankan di SQL editor Supabase:
 
-Sanity-check the page generator any time with `php tools/manga-check.php`.
-To remove the legacy Project Gutenberg titles from an existing database:
+1. `supabase/schema.sql` (sekali, untuk deployment baru)
+2. `supabase/migration-002-media.sql` (kolom katalog media: media_type, alt_title,
+   banner_url, artist, chapters, volumes, episodes, avg_score, status_label)
 
-```bash
-php tools/purge-gutenberg.php   # deletes every book where source = gutenberg
-```
+RLS aktif; tabel milik pengguna tanpa policy publik — akses hanya lewat service-role di backend.
 
-### 5. Serve
-
-Point your web server's document root at `public/` (Apache config included via
-`.htaccess`). For local dev:
+### 4. Jalankan
 
 ```bash
 php -S localhost:8000 api/index.php
 ```
 
-Visit `http://localhost:8000`.
+Katalog TIDAK di-seed: baris lokal dibuat otomatis (`CatalogRepository::ensureLocal`) saat judul
+pertama kali dibuka/disimpan, supaya perpustakaan & bookmark punya foreign key valid.
 
-> The app degrades gracefully: without Supabase credentials pages render but show
-> "library isn't connected" states instead of fake data.
-
-### 6. Deploy to Vercel
-
-Vercel runs PHP through the community `vercel-php` runtime. Custom runtimes only
-build functions from the **`api/`** directory, so `api/index.php` acts as a single
-front-controller lambda: it fans every request out to the page controllers under
-`public/` (URLs stay identical — `/book.php?id=…`, `/api/books.php`, …). Static
-assets under `/assets/*` are served directly via rewrites.
-
-1. Push this repo to GitHub.
-2. In Vercel: **Add New → Project → Import** your repo. The runtime is picked up
-   from `vercel.json` automatically.
-3. Add these **Environment Variables** in the Vercel project settings:
-
-   | Key | Value |
-   |---|---|
-   | `APP_URL` | e.g. `https://vxlib.vercel.app` |
-   | `APP_ENV` | `production` |
-   | `DISCORD_CLIENT_ID` / `DISCORD_CLIENT_SECRET` | same as local |
-   | `DISCORD_REDIRECT_URI` | `https://vxlib.vercel.app/auth/callback.php` |
-   | `SUPABASE_URL` / `SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY` | same as local |
-   | `ADMIN_DISCORD_IDS` | your Discord ID |
-   | `APP_SECRET` | long random string (`openssl rand -hex 32`) |
-
-4. In Discord's developer portal add the production redirect URI alongside the
-   local one.
-5. Deploy. Then run the schema + seed once against Supabase if you haven't:
-   SQL editor → `supabase/schema.sql`, then locally `php tools/seed.php`
-   (seeding talks straight to Supabase, not to Vercel).
-
-Serverless notes: file caches live under the system temp dir and are per-instance;
-external API responses are cached opportunistically. Nothing critical depends on
-the filesystem — auth, CSRF and OAuth state all use signed cookies.
-
-Local dev through the same front controller (mirrors production exactly):
-
-```bash
-php -S localhost:8000 api/index.php
-```
-
-## Architecture
+## Arsitektur
 
 ```
-/api             single serverless front controller (api/index.php)
-/routes          page entry points (index, book, reader, auth/, api/, …)
-/public/assets   static files only (css, js, favicon) — served directly
-/app             bootstrap, Config loader
-  /Controllers   page + admin controllers
-  /Services      SupabaseClient, Gutenberg/OpenLibrary services, cache, auth,
-                 prefs, content sanitizer, HTTP helper
-  /Repositories  BookRepository, UserRepository, LibraryRepository
-  /Security      signed-cookie auth/CSRF, rate limiter
-/config          .env loader (file lives OUTSIDE the web surface)
-/resources/views layout, page templates, components (brand SVGs, icons, cards…)
-/storage         cache, rate-limit files, seed snapshot
-/supabase        schema.sql with RLS
-/tools           build-seed.php, seed.php, enrich.php (CLI)
+/api             front controller serverless (api/index.php)
+/routes          entry point halaman (browse, detail, auth/, api/)
+/anime /manga /manhwa        rak tipe (rewrite → routes/browse.php)
+/detail/{t}/{id}             halaman detail media
+/app/Services     AniListService (GraphQL+cache), Anime/Manga/ManhwaService,
+                  MediaNormalizer, Auth, Prefs, Http, RateLimiter…
+/app/Repositories CatalogRepository (mirror lokal), Library/UserRepository
+/resources/views  layout, halaman, komponen (kartu, shelf, state, ikon SVG)
+/public/assets    css/js statis
+/supabase         schema.sql + migration-002-media.sql
 ```
 
-## Security notes
+## Catatan
 
-- Secrets live only in `.env`; `SUPABASE_SERVICE_ROLE_KEY` never leaves PHP.
-- All writes go through CSRF-checked endpoints; OAuth uses signed one-time state.
-- Sessions are HttpOnly/SameSite=Lax cookies with periodic ID rotation.
-- External HTML is sanitized against an allowlist before it reaches the reader.
-- Rate limiting on auth, API mutations and external fetches.
-- Public tables are readable via anon key; user-owned tables have **no** public
-  policies (RLS denies everything without the service role).
-
-## Data sources & attribution
-
-- All titles are VoiXLib-native: covers, comic pages and prose are original
-  works created for this platform (vector art via `MangaService`).
-- Enrichment helpers for the retired Gutenberg pipeline remain in `/tools`
-  (`build-seed.php`, `enrich.php`) but are no longer part of setup.
-
-## CLI cheat sheet
-
-```bash
-php tools/seed.php             # push native catalog into Supabase
-php tools/purge-gutenberg.php  # remove legacy Gutenberg rows
-php tools/manga-check.php      # sanity-check SVG page generator
-```
-
-### Dev helpers
-
-```bash
-php -S localhost:8000 api/index.php   # pretty 404s under the built-in server
-php tools/enrich.php 60                            # backfill years/pages via Open Library
-php tools/check-db.php                             # verify schema is applied
-```
-
+- Cache respons provider di storage sementara per-instance (serverless-safe).
+- Rate limit pada API publik dan permintaan mutasi.
+- `cover.php` menghasilkan sampul fallback SVG elegan (judul + tipe) bila cover kosong/gagal.
+- OAuth Discord server-side dengan state bertanda tangan; secret tidak pernah keluar dari `.env`.

@@ -8,18 +8,18 @@
         <path d="M11 7.5h-3L15.2 16l1.9-2.3z" fill="var(--accent)"/>
       </svg>
     </span>
-    <h1 class="auth-title">Open the library</h1>
+    <h1 class="auth-title">Buka perpustakaanmu</h1>
     <p class="auth-sub"><?= $required
-        ? 'That page is part of your personal library — sign in to continue.'
-        : 'Sign in to keep shelves, bookmarks and reading progress synced across devices.' ?></p>
+        ? 'Halaman itu bagian dari perpustakaan pribadimu — masuk untuk melanjutkan.'
+        : 'Masuk untuk menyimpan rak, bookmark, dan progres membaca di semua perangkat.' ?></p>
 
     <a class="btn btn-discord" href="/auth/discord.php<?= $next !== '/' ? '?next=' . e(rawurlencode($next)) : '' ?>"
        style="width:100%;justify-content:center;padding:14px;font-size:16px">
-      <?= icon('discord', 20) ?> Continue with Discord
+      <?= icon('discord', 20) ?> Masuk dengan Discord
     </a>
 
-    <p class="auth-note">We only read your Discord ID, name and avatar — never your password.
-      No account is created on Discord’s side.</p>
+    <p class="auth-note">Kami hanya membaca ID, nama, dan avatar Discord-mu — tidak pernah kata sandinya.
+      Tidak ada akun yang dibuat di sisi Discord.</p>
   </div>
 </div>
 

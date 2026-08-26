@@ -13,23 +13,23 @@ component('icons');
     <div>
       <h1 class="profile-name"><?= e($user['display_name'] ?: $user['username']) ?></h1>
       <p class="profile-handle">@<?= e($user['username']) ?> · via Discord</p>
-      <p class="profile-joined"><?= icon('clock', 15) ?> Reading here since
+      <p class="profile-joined"><?= icon('clock', 15) ?> Aktif membaca sejak
         <?= e(date('F Y', strtotime((string)$user['created_at']))) ?></p>
     </div>
   </div>
 
   <div class="stat-band reveal is-visible">
-    <div class="stat-cell"><b><?= number_format((int)$stats['saved']) ?></b><span style="color:var(--ink-2);font-size:13px">Books saved</span></div>
-    <div class="stat-cell"><b><?= number_format((int)$stats['reading']) ?></b><span style="color:var(--ink-2);font-size:13px">Currently reading</span></div>
-    <div class="stat-cell"><b><?= number_format((int)$stats['completed']) ?></b><span style="color:var(--ink-2);font-size:13px">Completed</span></div>
-    <div class="stat-cell"><b><?= number_format((int)$stats['bookmarks']) ?></b><span style="color:var(--ink-2);font-size:13px">Bookmarks</span></div>
+    <div class="stat-cell"><b><?= number_format((int)$stats['saved']) ?></b><span style="color:var(--ink-2);font-size:13px">judul disimpan</span></div>
+    <div class="stat-cell"><b><?= number_format((int)$stats['reading']) ?></b><span style="color:var(--ink-2);font-size:13px">sedang dibaca</span></div>
+    <div class="stat-cell"><b><?= number_format((int)$stats['completed']) ?></b><span style="color:var(--ink-2);font-size:13px">selesai</span></div>
+    <div class="stat-cell"><b><?= number_format((int)$stats['bookmarks']) ?></b><span style="color:var(--ink-2);font-size:13px">bookmark</span></div>
   </div>
 
   <section class="shelf-block">
-    <header class="shelf-head"><h2 class="shelf-title">Recently opened</h2></header>
+    <header class="shelf-head"><h2 class="shelf-title">Terakhir Dibuka</h2></header>
     <?php if (!$history): ?>
-      <?php render_state('empty', 'No reading history yet',
-          'Open any book in the reader and it will show up here.', '/explore.php', 'Find a book'); ?>
+      <?php render_state('empty', 'Belum ada riwayat',
+          'Buka judul apa pun dari katalog dan ia akan muncul di sini.', '/explore.php', 'Cari judul'); ?>
     <?php else: ?>
       <div class="catalog-grid">
         <?php foreach ($history as $h): view('components/book-card', ['book' => $h['book']]); endforeach; ?>
@@ -38,8 +38,8 @@ component('icons');
   </section>
 
   <div style="padding-bottom:70px;display:flex;gap:12px">
-    <a class="btn btn-ghost" href="/settings.php"><?= icon('settings', 16) ?> Settings</a>
-    <a class="btn btn-ghost" href="/logout.php">Sign out</a>
+    <a class="btn btn-ghost" href="/settings.php"><?= icon('settings', 16) ?> Pengaturan</a>
+    <a class="btn btn-ghost" href="/logout.php">Keluar</a>
   </div>
 </div>
 

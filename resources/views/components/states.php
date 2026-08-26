@@ -1,5 +1,4 @@
-<?php
-/** Shared state blocks: empty, error, offline — each with bespoke SVG line art. */
+/* State blok: kosong, error, offline — ilustrasi SVG khas VoiXLib. */
 
 function state_svg(string $kind): string
 {
@@ -41,7 +40,7 @@ function state_svg(string $kind): string
 }
 
 /**
- * Render a state block.
+ * Render satu state.
  * $kind: empty|error|offline|search
  */
 function render_state(string $kind, string $heading, string $body, ?string $ctaHref = null, string $ctaLabel = ''): void
@@ -51,7 +50,7 @@ function render_state(string $kind, string $heading, string $body, ?string $ctaH
     echo '<h3 class="state-heading">' . e($heading) . '</h3>';
     echo '<p class="state-body">' . e($body) . '</p>';
     if ($ctaHref !== null) {
-        echo '<a class="btn btn-ghost" href="' . e($ctaHref) . '">' . e($ctaLabel ?: 'Back to the library') . '</a>';
+        echo '<a class="btn btn-ghost" href="' . e($ctaHref) . '">' . e($ctaLabel ?: 'Kembali ke beranda') . '</a>';
     }
     echo '</div>';
 }

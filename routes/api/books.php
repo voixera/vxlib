@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 require_once dirname(__DIR__, 2) . '/app/bootstrap.php';
 
-/** GET /api/books.php — catalog query endpoint used by explore/search JS. */
+/** GET /api/books.php — hasil katalog AniList (dipakai JS jelajah/pencarian). */
 
 Security::bootSession();
 
@@ -13,17 +13,28 @@ if (!RateLimiter::allow('api_books', 120, 60)) {
 }
 
 $params = ExploreController::paramsFromRequest();
-$result = (new BookRepository())->search($params);
+$result = ExploreController::browse($params);
 
-if ($result['error'] === 'supabase_not_configured') {
-    json_response(['error' => 'not_configured', 'books' => []], 503);
-}
 if ($result['error']) {
-    json_response(['error' => 'catalog_unavailable', 'books' => [], 'detail' => $result['error']], 502);
+    json_response(['error' => 'provider_unavailable', 'books' => []], 502);
 }
 
 json_response([
-    'books' => array_map([BookRepository::class, 'hydratePublic'], $result['books']),
-    'total' => $result['total'],
-    'page'  => $params['page'],
+    'books'     => array_map(fn($b) => [
+        'external_id'  => $b['external_id'],
+        'url_detail'   => $b['url_detail'],
+        'media_type'   => $b['media_type'],
+        'type_label'   => $b['type_label'],
+        'title'        => $b['title'],
+        'author'       => $b['author'],
+        'cover_url'    => $b['cover_url'],
+        'year'         => $b['year'],
+        'score'        => $b['score'],
+        'status_label' => $b['status_label'],
+        'genres'       => array_map(fn($g) => ['name' => $g], array_slice($b['genres'], 0, 1)),
+        'excerpt'      => $b['description'],
+        'readable'     => false,
+    ], $result['items']),
+    'total'     => $result['total'],
+    'page'      => $result['page'],
 ]);

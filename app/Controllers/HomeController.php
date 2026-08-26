@@ -2,55 +2,46 @@
 
 declare(strict_types=1);
 
-/** Homepage assembly. All numbers come from live Supabase queries — nothing faked. */
+/** Beranda — shelf nyata dari AniList; section kosong tidak dirender. */
 
 final class HomeController
 {
     public static function index(): void
     {
-        $books   = new BookRepository();
         $library = new LibraryRepository();
 
-        $featured  = $books->search(['featured' => true, 'per_page' => 6]);
-        if (empty($featured['books'])) {
-            $featured = $books->search(['sort' => 'popular', 'per_page' => 6]);
-        }
-        $trending  = $books->search(['sort' => 'popular', 'per_page' => 12]);
-        $recent    = $books->search(['sort' => 'newest', 'per_page' => 12]);
+        $shelves = AniListService::shelves();
+        $recent  = AniListService::browse(['sort' => 'newest', 'per_page' => 12, 'page' => 1]);
+
+        $heroCovers = array_slice($shelves['trending']['items'] ?? [], 0, 6);
 
         $continueReading = Auth::check() ? $library->recentProgress(Auth::id(), 8) : [];
 
-        // Real counts; hidden entirely when Supabase is unreachable.
-        $stats = null;
+        // Statistik: hanya yang benar-benar bisa dihitung dari database sendiri.
+        $stats = [];
         if (SupabaseClient::configured()) {
             $db = new SupabaseClient();
-            $bookCount = $books->countAll();
-            $userCount = null;
-            $readCount = null;
-            if ($bookCount !== null) {
-                $u = $db->select('users', ['select' => 'id', 'limit' => '1'], withCount: true, privileged: true);
-                $r = $db->select('reading_history', ['select' => 'id', 'limit' => '1'], withCount: true, privileged: true);
-                $userCount = $u['total'];
-                $readCount = $r['total'];
-                $stats = [
-                    'books' => $bookCount,
-                    'readers' => $userCount,
-                    'opens' => $readCount,
-                ];
+            $r = $db->select('reading_history', ['select' => 'id', 'limit' => '1'], withCount: true, privileged: true);
+            if (($r['total'] ?? null) !== null) {
+                $stats[] = ['value' => (int)$r['total'], 'label' => 'sesi membaca'];
             }
+            $u = $db->select('users', ['select' => 'id', 'limit' => '1'], withCount: true, privileged: true);
+            if (($u['total'] ?? null) !== null) {
+                $stats[] = ['value' => (int)$u['total'], 'label' => 'pembaca'];
+            }
+            if ($stats === []) $stats = null;
         }
 
         page('pages/home', [
-            'title'       => 'VoiXLib — Read beyond the shelf',
-            'description' => 'A calm digital library of manga, manhwa, anime and novels in English and Bahasa Indonesia. Read in the browser, keep your place.',
+            'title'       => 'VoiXLib — Temukan cerita yang ingin kamu baca',
+            'description' => 'Platform discovery anime, manga, dan manhwa dengan metadata nyata dari AniList. Simpan ke perpustakaan, bookmark, dan lanjutkan kapan pun.',
             'activeNav'   => 'home',
         ], [
-            'featured'    => $featured,
-            'trending'    => $trending,
-            'recent'      => $recent,
+            'shelves'         => array_filter($shelves),
+            'recent'          => $recent,
+            'heroCovers'      => $heroCovers,
             'continueReading' => $continueReading,
-            'stats'       => $stats,
-            'categories'  => BookRepository::CATEGORIES,
+            'stats'           => $stats,
         ]);
     }
 }

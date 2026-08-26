@@ -1,17 +1,17 @@
 <div class="shell">
   <div class="page-head">
-    <span class="section-num">Privacy</span>
-    <h1>What we store</h1>
+    <span class="section-num">Privasi</span>
+    <h1>Apa yang kami simpan</h1>
   </div>
   <div class="reader-content" style="max-width:640px;padding-bottom:80px;font-size:17px;line-height:1.8">
-    <p><strong>Short version:</strong> almost nothing, and only what makes the library work.</p>
-    <p>If you browse anonymously: theme and reading preferences live in your browser’s local storage.
-      Reading progress is kept locally too. No account exists, so there is nothing to link it to.</p>
-    <p>If you sign in with Discord: we store your Discord user ID, username, display name, avatar URL
-      and (if you permit) verified email. We never see or store your Discord password — authentication
-      happens entirely on Discord’s site. Your shelves, bookmarks, progress and history are stored under
-      your user ID and protected by row-level security.</p>
-    <p>We run no advertising trackers and sell nothing. To delete your data, remove the book from your
-      shelf — or ask the operator of this deployment to drop your account row.</p>
+    <p><strong>Versi singkat:</strong> hampir tidak ada, dan hanya yang membuat perpustakaan ini bekerja.</p>
+    <p>Jika kamu menjelajah tanpa masuk: tema dan preferensi tersimpan di local storage browser-mu.
+      Tidak ada akun, jadi tidak ada data yang tertaut.</p>
+    <p>Jika kamu masuk dengan Discord: kami menyimpan ID pengguna Discord, username, nama tampilan,
+      URL avatar, dan (jika kamu izinkan) email terverifikasi. Kami tidak pernah melihat atau menyimpan
+      kata sandi Discord — autentikasi sepenuhnya terjadi di situs Discord. Rak, bookmark, progres,
+      dan riwayatmu tersimpan di bawah user ID-mu dan dilindungi row-level security.</p>
+    <p>Kami tidak memasang pelacak iklan dan tidak menjual apa pun. Untuk menghapus datamu,
+      hapus judul dari rak — atau minta operator deployment ini menghapus baris akunmu.</p>
   </div>
 </div>

@@ -32,33 +32,34 @@
   }
 
   function coverSrc(b) {
-    return b.cover_url || ('/cover.php?' + new URLSearchParams({ t: b.title, a: b.author }).toString());
+    return b.cover_url || ('/cover.php?' + new URLSearchParams({ t: b.title, a: b.author, g: b.type_label || '' }).toString());
   }
 
   function cardHTML(b) {
-    var cat = b.categories && b.categories[0] ? '<span>' + escapeHTML(b.categories[0].name) + '</span> ' : '';
+    var cat = b.type_label ? '<span>' + escapeHTML(b.type_label) + '</span> ' : '';
     var year = b.year ? '<span>' + b.year + '</span>' : '';
+    var score = b.score ? '<span class="pct">' + Math.round(b.score / 10) + '</span>' : '';
     return '' +
       '<article class="book-card">' +
-      ' <a class="book-card-link" href="/book.php?id=' + encodeURIComponent(b.external_id) + '">' +
+      ' <a class="book-card-link" href="' + escapeHTML(b.url_detail) + '">' +
       '  <div class="cover' + (b.cover_url ? '' : ' is-generated') + '">' +
       '   <img src="' + coverSrc(b) + '" alt="" loading="lazy" decoding="async" width="400" height="600">' +
       '   <span class="cover-spine"></span>' +
-      (b.readable ? '' : '<span class="cover-flag">Source only</span>') +
+      '<span class="cover-flag">' + escapeHTML(b.type_label || 'Media') + '</span>' +
       '  </div>' +
       '  <div class="book-meta"><h3 class="book-title">' + escapeHTML(b.title) + '</h3>' +
       '   <p class="book-author">' + escapeHTML(b.author) + '</p>' +
-      '   <p class="book-sub">' + cat + year + '</p></div>' +
+      '   <p class="book-sub">' + score + cat + year + '</p></div>' +
       ' </a></article>';
   }
 
   function rowHTML(b) {
     var excerpt = b.excerpt ? '<span class="row-excerpt">' + escapeHTML(b.excerpt) + '…</span>' : '';
-    return '<a class="book-row" href="/book.php?id=' + encodeURIComponent(b.external_id) + '">' +
+    return '<a class="book-row" href="' + escapeHTML(b.url_detail) + '">' +
       '<span class="cover"><img src="' + coverSrc(b) + '" alt="" loading="lazy"></span>' +
       '<span><span class="row-title">' + escapeHTML(b.title) + '</span>' +
       '<span class="row-author">' + escapeHTML(b.author) + (b.year ? ' · ' + b.year : '') + '</span>' + excerpt + '</span>' +
-      (b.readable ? '<span class="chip is-active">Read</span>' : '') +
+      '<span class="chip is-active">' + escapeHTML(b.type_label || 'Media') + '</span>' +
       '</a>';
   }
 
@@ -86,7 +87,7 @@
     if (busy) return;
     busy = true;
     if (!append) resultsEl.innerHTML = skeletonHTML();
-    if (loadMoreBtn) { loadMoreBtn.disabled = true; loadMoreBtn.textContent = 'Loading…'; }
+    if (loadMoreBtn) { loadMoreBtn.disabled = true; loadMoreBtn.textContent = 'Memuat…'; }
 
     var url = '/api/books.php' + qs(params({ page: page }));
     history.replaceState(null, '', location.pathname + qs(Object.assign(params({ page: page }), {})));
@@ -106,13 +107,13 @@
         } else {
           resultsEl.innerHTML = html;
           if (!books.length) {
-          var filtered = !!new FormData(toolbar).get('category') || !!new FormData(toolbar).get('language');
+          var filtered = !!new FormData(toolbar).get('type') || !!new FormData(toolbar).get('genre');
           setState(filtered ? 'search' : 'empty', filtered
-            ? { heading: 'Nothing on this shelf', body: 'No books match that combination of filters — loosen one and the shelf fills again.' }
-            : { heading: 'The shelves are bare', body: 'No books match right now.' });
+            ? { heading: 'Rak ini masih kosong', body: 'Tidak ada judul yang cocok dengan filter itu — longgarkan satu filter dan rak akan terisi lagi.' }
+            : { heading: 'Belum ada judul', body: 'Katalog belum menampilkan apa pun saat ini.' });
         }
         }
-        if (countEl) countEl.textContent = (data.total != null ? numberFormat(data.total) + (data.total === 1 ? ' book' : ' books') : '');
+        if (countEl) countEl.textContent = (data.total != null ? numberFormat(data.total) + (data.total === 1 ? ' judul' : ' judul') : '');
 
         // manage load-more button
         var shown = resultsEl.querySelectorAll('.book-card, .book-row').length;
@@ -121,9 +122,9 @@
           if (loadMoreBtn) {
             loadMoreBtn.dataset.nextPage = String((data.page || page) + 1);
             loadMoreBtn.disabled = false;
-            loadMoreBtn.textContent = 'Load more';
+            loadMoreBtn.textContent = 'Muat lebih banyak';
           } else if (wrap) {
-            wrap.innerHTML = '<button class="btn btn-ghost" id="load-more" data-next-page="' + ((data.page || page) + 1) + '">Load more</button>';
+            wrap.innerHTML = '<button class="btn btn-ghost" id="load-more" data-next-page="' + ((data.page || page) + 1) + '">Muat lebih banyak</button>';
             loadMoreBtn = document.getElementById('load-more');
             bindLoadMore();
           }
@@ -135,7 +136,7 @@
       })
       .catch(function () {
         busy = false;
-        setState('offline', { heading: 'We lost the thread', body: 'The catalog service didn’t answer in time. Nothing is broken on your side — try again.' });
+        setState('offline', { heading: 'Katalog tidak bisa dihubungi', body: 'Penyedia data tidak menjawab tepat waktu. Ini bukan kesalahan perangkatmu — coba lagi.' });
         if (loadMoreBtn) { loadMoreBtn.disabled = false; loadMoreBtn.textContent = 'Load more'; }
       });
   }

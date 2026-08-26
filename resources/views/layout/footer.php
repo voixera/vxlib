@@ -3,43 +3,43 @@
   <div class="shell footer-grid">
     <div class="footer-brand">
       <p class="footer-wordmark">Voi<b>X</b>Lib</p>
-      <p class="footer-tag">Your library, beyond the shelf.</p>
+      <p class="footer-tag">Perpustakaanmu, melampaui rak.</p>
     </div>
-    <nav class="footer-col" aria-label="Site">
-      <h3>Library</h3>
-      <a href="/explore.php">Explore</a>
-      <a href="/search.php">Search</a>
-      <a href="/library.php">My library</a>
-      <a href="/settings.php">Settings</a>
+    <nav class="footer-col" aria-label="Katalog">
+      <h3>Katalog</h3>
+      <a href="/anime">Anime</a>
+      <a href="/manga">Manga</a>
+      <a href="/manhwa">Manhwa</a>
+      <a href="/explore.php">Jelajahi</a>
     </nav>
-    <nav class="footer-col" aria-label="Project">
-      <h3>Project</h3>
-      <a href="/about.php">About</a>
-      <a href="/privacy.php">Privacy</a>
-      <a href="/terms.php">Terms</a>
+    <nav class="footer-col" aria-label="Akun">
+      <h3>Akun</h3>
+      <a href="/library.php">Perpustakaan Saya</a>
+      <a href="/bookmarks.php">Bookmark</a>
+      <a href="/history.php">Riwayat</a>
+      <a href="/settings.php">Pengaturan</a>
     </nav>
     <div class="footer-col footer-attrib">
-      <h3>Sources</h3>
-      <p>Book metadata and reading copies from
-        <a href="https://www.gutenberg.org" rel="noopener" target="_blank">Project Gutenberg</a> and
-        <a href="https://gutendex.com" rel="noopener" target="_blank">Gutendex</a>.
-        Enrichment and covers via <a href="https://openlibrary.org" rel="noopener" target="_blank">Open Library</a>.</p>
-      <p>Public-domain texts. Thanks to the volunteers who digitize them.</p>
+      <h3>Sumber Data</h3>
+      <p>Metadata anime, manga &amp; manhwa dari
+        <a href="https://anilist.co" rel="noopener" target="_blank">AniList</a>.
+        VoiXLib adalah platform discovery — bacaan diarahkan ke sumber resmi dan berlisensi.</p>
     </div>
   </div>
   <div class="shell footer-base">
     <span>© <?= date('Y') ?> VoiXLib</span>
-    <span class="footer-mark-line">Set in editorial serif · built with PHP &amp; SVG</span>
+    <span class="footer-mark-line">Diset dalam serif editorial · dibangun dengan PHP &amp; SVG</span>
   </div>
 </footer>
 
-<nav class="mobile-nav" aria-label="Mobile">
-  <?php $mnav = [
-      ['/', 'Home', 'home'],
-      ['/explore.php', 'Explore', 'compass'],
-      ['/library.php', 'Library', 'library'],
-      ['/profile.php', 'Profile', 'user'],
-      ['/settings.php', 'Settings', 'settings'],
+<nav class="mobile-nav" aria-label="Navigasi seluler">
+  <?php
+  $mnav = [
+      ['/', 'Beranda', 'home'],
+      ['/explore.php', 'Jelajahi', 'compass'],
+      ['/bookmarks.php', 'Bookmark', 'bookmark'],
+      ['/history.php', 'Riwayat', 'clock'],
+      ['/profile.php', 'Profil', 'user'],
   ];
   foreach ($mnav as [$href, $label, $icn]):
       $active = ($activeNav ?? '') !== '' && str_contains($href, ($activeNav === 'home' ? '/' : $activeNav)); ?>
@@ -48,4 +48,3 @@
     </a>
   <?php endforeach; ?>
 </nav>
-

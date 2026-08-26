@@ -662,6 +662,38 @@ input[type="range"] { accent-color: var(--accent); width: min(320px, 100%); }
 .settings-savebar { display: flex; gap: 14px; align-items: center; margin-top: 30px; }
 .save-flash { color: var(--ok); font-weight: 600; display: inline-flex; gap: 7px; align-items: center; animation: fadeUp .3s ease; }
 
+/* ── Detail media (anime/manga/manhwa) ──────────────────────── */
+.detail-banner {
+  height: clamp(140px, 24vw, 300px);
+  background: var(--paper-2);
+  border-bottom: 1.5px solid var(--line);
+}
+.detail-banner[style*="--banner"] { background-size: cover; background-position: center 22%; }
+@media (prefers-reduced-motion: no-preference) {
+  .detail-banner { animation: bannerIn .8s ease both; }
+  @keyframes bannerIn { from { opacity: 0; transform: scale(1.02); } }
+}
+.detail-media { position: relative; margin-top: -70px; }
+.detail-media .detail-cover-wrap img { border-radius: var(--radius); box-shadow: var(--shadow-md); }
+.cover-score {
+  position: absolute; top: 10px; right: 10px; z-index: 2;
+  font-family: var(--sans); font-weight: 750; font-size: 12.5px;
+  background: color-mix(in srgb, var(--ink-strong) 92%, transparent); color: var(--paper);
+  padding: 3px 7px; border-radius: 6px; letter-spacing: .02em;
+}
+.source-note-box {
+  display: flex; gap: 12px; align-items: flex-start;
+  margin-top: 26px; padding: 14px 16px;
+  border: 1.5px solid var(--line); border-left: 4px solid var(--accent);
+  border-radius: var(--radius); background: color-mix(in srgb, var(--accent) 6%, transparent);
+  font-size: 14px; line-height: 1.6;
+}
+.source-note-box svg { flex: none; margin-top: 2px; }
+.source-note-box p { margin: 0; color: var(--ink); }
+.detail-synopsis { margin-top: 34px; max-width: 66ch; }
+.detail-synopsis h2 { font-size: 20px; margin-bottom: 12px; }
+.synopsis-credit { margin-top: 10px; font-size: 12.5px; color: var(--ink-2); }
+
 /* ── Reader ─────────────────────────────────────────────────── */
 .reader-main { min-height: 100vh; display: flex; flex-direction: column; }
 .reader-shell { flex: 1; display: flex; flex-direction: column; }

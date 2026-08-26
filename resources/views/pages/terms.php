@@ -1,15 +1,15 @@
 <div class="shell">
   <div class="page-head">
-    <span class="section-num">Terms</span>
-    <h1>Fairly simple terms</h1>
+    <span class="section-num">Ketentuan</span>
+    <h1>Ketentuan yang sederhana</h1>
   </div>
   <div class="reader-content" style="max-width:640px;padding-bottom:80px;font-size:17px;line-height:1.8">
-    <p><strong>The books.</strong> All readable titles are public-domain works served from Project
-      Gutenberg’s digitized editions. Their availability depends on those sources staying up; when a copy
-      cannot be fetched, we say so and point you at the original instead of faking one.</p>
-    <p><strong>Your account.</strong> You’re responsible for your Discord account and what you do while
-      signed in. Don’t attempt to access other readers’ data — technically or otherwise.</p>
-    <p><strong>The service.</strong> VoiXLib is provided as-is, without warranty. The operators may change
-      or discontinue features; the underlying books are free regardless, at their sources.</p>
+    <p><strong>Data katalog.</strong> Metadata anime, manga, dan manhwa berasal dari AniList dan tetap
+      milik penyedianya. VoiXLib adalah platform discovery — membaca penuh dilakukan di platform resmi
+      yang berlisensi yang kami tautkan.</p>
+    <p><strong>Akunmu.</strong> Kamu bertanggung jawab atas akun Discord-mu dan aktivitas saat masuk.
+      Jangan mencoba mengakses data pengguna lain — secara teknis maupun cara lain.</p>
+    <p><strong>Layanan.</strong> VoiXLib disediakan apa adanya, tanpa jaminan. Operator dapat mengubah
+      atau menghentikan fitur; data katalog selalu gratis di sumbernya.</p>
   </div>
 </div>

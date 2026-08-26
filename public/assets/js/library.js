@@ -19,8 +19,8 @@
       VX.api('/api/library.php', {
         method: 'POST',
         body: { action: 'add', book_id: parseInt(bookId, 10), status: sel.value }
-      }).then(function () { VX.toast('Moved shelf.'); })
-        .catch(function () { VX.toast('Could not update — try again.', 'error'); });
+      }).then(function () { VX.toast('Rak diperbarui.'); })
+        .catch(function () { VX.toast('Gagal memperbarui — coba lagi.', 'error'); });
     });
   });
   document.querySelectorAll('.inline-status-form').forEach(function (f) {
@@ -40,9 +40,9 @@
             row.style.transform = 'translateY(6px)';
             setTimeout(function () { row.remove(); }, 240);
           }
-          VX.toast('Removed.');
+          VX.toast('Terhapus.');
         })
-        .catch(function () { VX.toast('Could not remove — try again.', 'error'); });
+        .catch(function () { VX.toast('Gagal menghapus — coba lagi.', 'error'); });
     });
   });
 
@@ -53,9 +53,9 @@
         .then(function () {
           var row = btn.closest('[data-bookmark-id]');
           if (row) row.remove();
-          VX.toast('Bookmark deleted.');
+          VX.toast('Bookmark dihapus.');
         })
-        .catch(function () { VX.toast('Could not delete.', 'error'); });
+        .catch(function () { VX.toast('Gagal menghapus.', 'error'); });
     });
   });
 })();

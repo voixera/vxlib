@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-/** MangaService — facade metadata manga Jepang (AniList, country JP). */
+/** ManhwaService — facade metadata manhwa Korea (AniList, MANGA + country KR). */
 
-final class MangaService
+final class ManhwaService
 {
     public static function browse(array $params): ?array
     {
-        return AniListService::browse(['type' => 'manga'] + $params);
+        return AniListService::browse(['type' => 'manhwa'] + $params);
     }
 
     public static function detail(int $id): ?array

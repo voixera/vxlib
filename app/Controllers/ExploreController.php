@@ -2,74 +2,73 @@
 
 declare(strict_types=1);
 
-/** Catalog browsing + search. Server-renders the first page; JS refines via /api/books.php. */
+/**
+ * ExploreController — jelajah & pencarian katalog AniList.
+ * Semua angka/judul berasal dari provider; tidak ada data karangan.
+ */
 
 final class ExploreController
 {
-    private BookRepository $books;
+    private const TYPES = ['anime', 'manga', 'manhwa'];
+    private const SORTS = ['popular', 'trending', 'newest', 'oldest', 'title_asc', 'title_desc', 'score'];
 
-    public function __construct(?BookRepository $books = null)
-    {
-        $this->books = $books ?? new BookRepository();
-    }
-
-    /** @return array{params:array,result:array} */
+    /** @return array{q:string,type:string,genre:string,status:string,sort:string,
+     *                year_from:?int,year_to:?int,page:int,view:string} */
     public static function paramsFromRequest(): array
     {
         $get = $_GET;
-        $yearFromRaw = isset($get['year_from']) ? filter_var($get['year_from'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => (int)date('Y')]]) : false;
-        $yearToRaw   = isset($get['year_to']) ? filter_var($get['year_to'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => (int)date('Y')]]) : false;
-
-        $allowedCats = array_column(BookRepository::CATEGORIES, 'slug');
-        $sorts = ['relevance', 'title_asc', 'title_desc', 'newest', 'oldest', 'popular'];
+        $yf = isset($get['year_from']) ? filter_var($get['year_from'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1910, 'max_range' => (int)date('Y')]]) : false;
+        $yt = isset($get['year_to']) ? filter_var($get['year_to'], FILTER_VALIDATE_INT, ['options' => ['min_range' => 1910, 'max_range' => (int)date('Y') + 1]]) : false;
 
         return [
-            'q'         => isset($get['q']) ? mb_substr(trim((string)$get['q']), 0, 120) : '',
-            'category'  => in_array($get['category'] ?? '', $allowedCats, true) ? $get['category'] : '',
-            'language'  => preg_match('/^[a-z]{2}$/', $get['language'] ?? '') ? $get['language'] : '',
-            'year_from' => $yearFromRaw === false ? null : $yearFromRaw,
-            'year_to'   => $yearToRaw === false ? null : $yearToRaw,
-            'sort'      => in_array($get['sort'] ?? '', $sorts, true) ? $get['sort'] : 'relevance',
-            'view'      => ($get['view'] ?? '') === 'list' ? 'list' : 'grid',
+            'q'         => isset($get['q']) ? mb_substr(trim((string)$get['q']), 0, 100) : '',
+            'type'      => in_array($get['type'] ?? '', self::TYPES, true) ? $get['type'] : '',
+            'genre'     => preg_match('/^[A-Za-z][A-Za-z \-]{1,20}$/', $get['genre'] ?? '') ? $get['genre'] : '',
+            'status'    => in_array($get['status'] ?? '', ['releasing', 'finished', 'upcoming', 'hiatus'], true) ? $get['status'] : '',
+            'sort'      => in_array($get['sort'] ?? '', self::SORTS, true) ? $get['sort'] : 'popular',
+            'year_from' => $yf === false ? null : $yf,
+            'year_to'   => $yt === false ? null : $yt,
             'page'      => max(1, (int)($get['page'] ?? 1)),
-            'per_page'  => 24,
+            'view'      => ($get['view'] ?? '') === 'list' ? 'list' : 'grid',
         ];
+    }
+
+    public static function browse(array $params): array
+    {
+        $res = AniListService::browse($params);
+        if ($res === null) return ['items' => [], 'total' => null, 'has_next' => false, 'error' => 'provider_unavailable', 'page' => $params['page']];
+        return $res + ['error' => null];
     }
 
     public static function explore(): void
     {
-        [$params] = [self::paramsFromRequest()];
-        $repo = new BookRepository();
-        $result = $repo->search($params);
-
+        $params = self::paramsFromRequest();
         page('pages/explore', [
-            'title'       => 'Explore the catalog — VoiXLib',
-            'description' => 'Browse the full VoiXLib catalog: search, filter by category, language and era, and find your next read.',
-            'activeNav'   => 'explore',
+            'title'       => 'Jelajahi Katalog — VoiXLib',
+            'description' => 'Temukan anime, manga, dan manhwa dari katalog nyata. Cari berdasarkan genre, status, tahun, dan popularitas.',
+            'activeNav'   => $params['type'] !== '' ? $params['type'] : 'explore',
             'scripts'     => ['catalog.js'],
         ], [
-            'params'      => $params,
-            'result'      => $result,
-            'categories'  => BookRepository::CATEGORIES,
+            'params'     => $params,
+            'result'     => self::browse($params),
+            'isSearch'   => false,
         ]);
     }
 
     public static function searchPage(): void
     {
-        // Search shares the catalog machinery but leads with the query box.
         $params = self::paramsFromRequest();
-        if ($params['sort'] === 'relevance') $params['sort'] = 'popular';
-        $result = (new BookRepository())->search($params);
-
-        page('pages/search', [
-            'title'       => ($params['q'] !== '' ? '“' . $params['q'] . '” — search' : 'Search') . ' — VoiXLib',
-            'description' => 'Search across titles, authors, subjects and descriptions in the VoiXLib library.',
+        if ($params['sort'] === 'score') $params['sort'] = 'popular';
+        if (empty($params['q'])) $params['sort'] = 'trending';
+        page('pages/explore', [
+            'title'       => ($params['q'] !== '' ? '“' . $params['q'] . '” — Pencarian' : 'Pencarian') . ' — VoiXLib',
+            'description' => 'Cari anime, manga, dan manhwa di seluruh katalog VoiXLib.',
             'activeNav'   => 'explore',
             'scripts'     => ['catalog.js'],
         ], [
-            'params'      => $params,
-            'result'      => $result,
-            'categories'  => BookRepository::CATEGORIES,
+            'params'     => $params,
+            'result'     => self::browse($params),
+            'isSearch'   => true,
         ]);
     }
 }

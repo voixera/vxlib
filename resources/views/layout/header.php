@@ -1,41 +1,43 @@
 <?php
-/** Top navigation. */
+/** Navigasi atas. */
 component('brand');
 component('icons');
 $nav = [
-    'home'    => ['/', 'Home', 'home'],
-    'explore' => ['/explore.php', 'Explore', 'compass'],
-    'library' => ['/library.php', 'Library', 'library'],
+    'home'    => ['/', 'Beranda', 'home'],
+    'anime'   => ['/anime', 'Anime', null],
+    'manga'   => ['/manga', 'Manga', null],
+    'manhwa'  => ['/manhwa', 'Manhwa', null],
+    'explore' => ['/explore.php', 'Jelajahi', 'compass'],
 ];
 ?>
 <header class="site-header" id="site-header">
   <div class="shell header-inner">
-    <a class="brand" href="/" aria-label="VoiXLib home">
+    <a class="brand" href="/" aria-label="VoiXLib beranda">
       <?= voixlib_mark(30) ?>
       <span class="brand-text">Voi<b>X</b>Lib</span>
     </a>
 
     <form class="header-search" action="/search.php" method="get" role="search">
-      <label class="visually-hidden" for="header-q">Search books</label>
+      <label class="visually-hidden" for="header-q">Cari judul</label>
       <?= icon('search', 18) ?>
-      <input id="header-q" type="search" name="q" placeholder="Search titles, authors, subjects…"
-             value="<?= e($_GET['q'] ?? '') ?>" autocomplete="off" maxlength="120">
+      <input id="header-q" type="search" name="q" placeholder="Cari anime, manga, manhwa…"
+             value="<?= e($_GET['q'] ?? '') ?>" autocomplete="off" maxlength="100">
       <kbd aria-hidden="true">/</kbd>
     </form>
 
-    <nav class="main-nav" aria-label="Primary">
-      <?php foreach ($nav as $key => [$href, $label, $icn]): if ($key === 'library' && !Auth::check()) continue; ?>
+    <nav class="main-nav" aria-label="Utama">
+      <?php foreach ($nav as $key => [$href, $label, $icn]): ?>
         <a class="nav-link<?= ($activeNav ?? '') === $key ? ' is-active' : '' ?>" href="<?= e($href) ?>">
-          <?= icon($icn, 17) ?><span><?= e($label) ?></span>
+          <?= $icn !== null ? icon($icn, 17) : '' ?><span><?= e($label) ?></span>
         </a>
       <?php endforeach; ?>
 
       <button class="icon-btn theme-toggle" type="button" data-theme-toggle
-              aria-label="Toggle color theme"><?= icon('moon', 18) ?></button>
+              aria-label="Ganti tema warna"><?= icon('moon', 18) ?></button>
 
       <?php $u = Auth::user(); ?>
       <?php if ($u): ?>
-        <a class="nav-avatar" href="/profile.php" aria-label="Your profile">
+        <a class="nav-avatar" href="/profile.php" aria-label="Profil kamu">
           <?php if (!empty($u['avatar_url'])): ?>
             <img src="<?= e($u['avatar_url']) ?>" alt="" width="32" height="32" referrerpolicy="no-referrer">
           <?php else: ?>
@@ -44,10 +46,9 @@ $nav = [
         </a>
       <?php else: ?>
         <a class="btn btn-discord nav-cta" href="/auth/discord.php?next=<?= e(rawurlencode($_SERVER['REQUEST_URI'] ?? '/')) ?>">
-          <?= icon('discord', 17) ?> Sign in
+          <?= icon('discord', 17) ?> Masuk
         </a>
       <?php endif; ?>
     </nav>
   </div>
 </header>
-
