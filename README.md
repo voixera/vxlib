@@ -73,9 +73,11 @@ Visit `http://localhost:8000`.
 
 ### 6. Deploy to Vercel
 
-Vercel runs PHP through the community `vercel-php` runtime (serverless lambdas).
-Auth is stateless (HMAC-signed cookies), so it works there — the repo ships with a
-ready `vercel.json`.
+Vercel runs PHP through the community `vercel-php` runtime. Custom runtimes only
+build functions from the **`api/`** directory, so `api/index.php` acts as a single
+front-controller lambda: it fans every request out to the page controllers under
+`public/` (URLs stay identical — `/book.php?id=…`, `/api/books.php`, …). Static
+assets under `/assets/*` are served directly via rewrites.
 
 1. Push this repo to GitHub.
 2. In Vercel: **Add New → Project → Import** your repo. The runtime is picked up
@@ -101,6 +103,12 @@ ready `vercel.json`.
 Serverless notes: file caches live under the system temp dir and are per-instance;
 external API responses are cached opportunistically. Nothing critical depends on
 the filesystem — auth, CSRF and OAuth state all use signed cookies.
+
+Local dev through the same front controller (mirrors production exactly):
+
+```bash
+php -S localhost:8000 api/index.php
+```
 
 ## Architecture
 
