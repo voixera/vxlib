@@ -28,6 +28,9 @@ final class Config
             'SUPABASE_ANON_KEY' => '',
             'SUPABASE_SERVICE_ROLE_KEY' => '',
             'ADMIN_DISCORD_IDS' => '',
+            'ANIPUB_API_URL'    => 'https://www.anipub.xyz',
+            'MANGA_READER_API_URL' => 'http://komikato.bugs.today',
+            'MANGADEX_API_URL'   => 'https://api.mangadex.org',
             'SESSION_NAME'     => 'voixlib_session',
         ];
 

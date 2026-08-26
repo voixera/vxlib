@@ -30,7 +30,7 @@ $u = Auth::user();
       <p class="detail-author">by <i><?= e($m['author']) ?></i><?php if (!empty($m['artist'])): ?>
         <span> · Art: <?= e($m['artist']) ?></span><?php endif; ?></p>
 
-      <?php if (!empty($progress) && $user): ?>
+      <?php if (!empty($progress) && $u): ?>
         <div class="resume-banner">
           <?= icon('clock', 18) ?>
           <span>Terakhir dibuka · progress <strong><?= (int)$progress['progress'] ?>%</strong></span>
