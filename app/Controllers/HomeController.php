@@ -17,6 +17,8 @@ final class HomeController
         }
         $trending  = $books->search(['sort' => 'popular', 'per_page' => 12]);
         $recent    = $books->search(['sort' => 'newest', 'per_page' => 12]);
+        $animeFeature = $books->search(['category' => 'anime', 'per_page' => 6]);
+        $mangaFeature = $books->search(['category' => 'manga', 'per_page' => 6]);
 
         $continueReading = Auth::check() ? $library->recentProgress(Auth::id(), 8) : [];
 
@@ -51,6 +53,8 @@ final class HomeController
             'continueReading' => $continueReading,
             'stats'       => $stats,
             'categories'  => BookRepository::CATEGORIES,
+            'animeFeature' => $animeFeature,
+            'mangaFeature' => $mangaFeature,
         ]);
     }
 }

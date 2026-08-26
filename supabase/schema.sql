@@ -72,7 +72,14 @@ insert into public.categories (name, slug) values
   ('History',             'history'),
   ('Short Stories',       'short-stories'),
   ('Poetry',              'poetry'),
-  ('Nature & Science',    'nature-science')
+  ('Nature & Science',    'nature-science'),
+  ('Manga',               'manga'),
+  ('Manhwa',              'manhwa'),
+  ('Manhua',              'manhua'),
+  ('Anime',               'anime'),
+  ('Light Novel',         'light-novel'),
+  ('Webtoon',             'webtoon'),
+  ('Doujinshi',           'doujinshi')
 on conflict (slug) do nothing;
 
 -- ── User library shelves ────────────────────────────────────
