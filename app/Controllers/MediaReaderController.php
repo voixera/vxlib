@@ -39,11 +39,15 @@ final class MediaReaderController
         $activeProvider = null;
 
         foreach ($providers as $providerClass) {
-            $ch = $providerClass::findChapters($queries);
-            if (!empty($ch)) {
-                $chapters = $ch;
-                $activeProvider = $providerClass;
-                break;
+            try {
+                $ch = $providerClass::findChapters($queries);
+                if (!empty($ch)) {
+                    $chapters = $ch;
+                    $activeProvider = $providerClass;
+                    break;
+                }
+            } catch (Throwable $e) {
+                // Ignore & try next provider
             }
         }
 
@@ -67,12 +71,16 @@ final class MediaReaderController
             $activeCh = $chapters[$activeChIndex];
 
             // Fetch actual pages from active provider
-            if (($activeCh['source'] ?? '') === 'mangadex') {
-                $selectedChapterPages = MangaDexService::getPages($selectedChapterId);
-            } elseif (($activeCh['source'] ?? '') === 'febry_manga') {
-                $selectedChapterPages = FebryMangaApiService::getPages($selectedChapterId);
-            } else {
-                $selectedChapterPages = MangaReaderApiService::getPages($selectedChapterId);
+            try {
+                if (($activeCh['source'] ?? '') === 'mangadex') {
+                    $selectedChapterPages = MangaDexService::getPages($selectedChapterId);
+                } elseif (($activeCh['source'] ?? '') === 'febry_manga') {
+                    $selectedChapterPages = FebryMangaApiService::getPages($selectedChapterId);
+                } else {
+                    $selectedChapterPages = MangaReaderApiService::getPages($selectedChapterId);
+                }
+            } catch (Throwable $e) {
+                $selectedChapterPages = [];
             }
         }
 

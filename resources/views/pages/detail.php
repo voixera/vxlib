@@ -57,9 +57,15 @@ $u = Auth::user();
       </dl>
 
       <div class="detail-actions">
-        <a class="btn btn-accent" href="/read/<?= e($m['media_type']) ?>/<?= (int)preg_replace('/^anilist:/', '', (string)$m['external_id']) ?>">
-          <?= icon('book-open', 18) ?> Baca di VoiXLib
-        </a>
+        <?php if (!empty($chapters)): ?>
+          <a class="btn btn-accent" href="/read/<?= e($m['media_type']) ?>/<?= (int)preg_replace('/^anilist:/', '', (string)$m['external_id']) ?>?ch=<?= e(urlencode($chapters[0]['id'])) ?>">
+            <?= icon('book-open', 18) ?> Baca di VoiXLib
+          </a>
+        <?php else: ?>
+          <a class="btn btn-accent" href="/read/<?= e($m['media_type']) ?>/<?= (int)preg_replace('/^anilist:/', '', (string)$m['external_id']) ?>">
+            <?= icon('book-open', 18) ?> Baca di VoiXLib
+          </a>
+        <?php endif; ?>
 
         <button type="button" class="btn btn-ghost action-library" data-book-id="<?= $bookId ?? '' ?>"
                 data-status="<?= e($shelfStatus ?? '') ?>" <?= ($u && $bookId) ? '' : 'data-needs-auth="1"' ?>>
@@ -75,7 +81,7 @@ $u = Auth::user();
 
         <button type="button" class="icon-btn action-share"
                 data-title="<?= e($m['title']) ?>" data-url="<?= e(url($m['url_detail'])) ?>"
-                aria-label="Bagikan judul ini">
+                aria-label="Bagikan judul me ini">
           <?= icon('share', 18) ?>
         </button>
       </div>
@@ -101,6 +107,43 @@ $u = Auth::user();
           <p class="detail-desc" style="font-style:italic;color:var(--ink-2)">Tidak tersedia.</p>
         </section>
       <?php endif; ?>
+
+      <!-- Daftar Chapter MangaDex -->
+      <section class="detail-chapters" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line, rgba(255,255,255,0.1));">
+        <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+          <span><?= icon('list', 20) ?> Daftar Chapter</span>
+          <?php if (!empty($chapters)): ?>
+            <span style="font-size: 0.85rem; font-weight: 400; color: var(--ink-2);"><?= count($chapters) ?> Chapter tersedia (MangaDex)</span>
+          <?php endif; ?>
+        </h2>
+
+        <?php if (!empty($chapters)): ?>
+          <div class="chapter-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px;">
+            <?php foreach ($chapters as $ch): ?>
+              <a href="/read/<?= e($m['media_type']) ?>/<?= (int)$m['id'] ?>?ch=<?= e(urlencode($ch['id'])) ?>"
+                 class="chapter-card"
+                 style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; background: var(--surface-2, rgba(255,255,255,0.03)); border: 1px solid var(--line, rgba(255,255,255,0.08)); border-radius: 8px; text-decoration: none; color: var(--ink-1, #e2e8f0); transition: background 0.2s, border-color 0.2s;">
+                <div style="font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  <?= e($ch['title']) ?>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--ink-2, #94a3b8);">
+                  <span><strong style="background: rgba(255,255,255,0.1); padding: 1px 5px; border-radius: 3px; font-weight: 600; font-size: 0.7rem; color: #fff;"><?= e($ch['language']) ?></strong></span>
+                  <?php if (!empty($ch['publish_date'])): ?>
+                    <span><?= e($ch['publish_date']) ?></span>
+                  <?php endif; ?>
+                </div>
+              </a>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <div style="padding: 24px; text-align: center; background: rgba(255,255,255,0.02); border-radius: 8px; color: var(--ink-2);">
+            <p style="margin-bottom: 8px;">Chapter belum tersedia di provider VoiXLib saat ini.</p>
+            <a class="btn btn-ghost btn-sm" href="<?= e($m['source_url'] ?? ('https://anilist.co/manga/' . (int)$m['id'])) ?>" target="_blank" rel="noopener">
+              <?= icon('share', 14) ?> Lihat sumber di AniList
+            </a>
+          </div>
+        <?php endif; ?>
+      </section>
     </div>
   </div>
 </div>

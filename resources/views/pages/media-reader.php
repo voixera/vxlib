@@ -60,6 +60,10 @@ $activeCh = $chapters[$activeChIndex] ?? null;
               <div class="reading-progress-bar" id="read-progress" style="width: 0%;"></div>
             </div>
 
+            <div class="reader-chapter-indicator" style="text-align:center; padding: 12px 0; font-size:0.9rem; color:#94a3b8;">
+              <span>Chapter <?= $activeChIndex + 1 ?> / <?= count($chapters) ?></span>
+            </div>
+
             <div class="reader-pages-list" id="pages-container">
               <?php foreach ($selectedChapterPages as $index => $pageUrl): ?>
                 <div class="page-wrapper skeleton-load" data-page-index="<?= $index + 1 ?>">
@@ -84,19 +88,23 @@ $activeCh = $chapters[$activeChIndex] ?? null;
                 <span class="btn btn-ghost disabled"><?= icon('arrow-left', 16) ?> Chapter Pertama</span>
               <?php endif; ?>
 
+              <a class="btn btn-ghost" href="<?= e($m['url_detail']) ?>">
+                Kembali ke Detail
+              </a>
+
               <?php if ($nextChapter): ?>
                 <a class="btn btn-solid" href="/read/<?= e($m['media_type']) ?>/<?= (int)$m['id'] ?>?ch=<?= e(urlencode($nextChapter['id'])) ?>">
                   Chapter Berikutnya <?= icon('arrow-right', 16) ?>
                 </a>
               <?php else: ?>
-                <span class="btn btn-ghost disabled">Chapter Terbaru</span>
+                <span class="btn btn-ghost disabled">Chapter Terakhir</span>
               <?php endif; ?>
             </nav>
           <?php else: ?>
             <div class="reader-empty-state">
               <?= icon('alert-circle', 48) ?>
-              <h2>Chapter tidak dapat dimuat</h2>
-              <p>Halaman untuk chapter ini gagal diisi oleh penyedia sumber.</p>
+              <h2>Chapter sedang tidak dapat dimuat</h2>
+              <p>Halaman untuk chapter ini gagal diisi oleh penyedia sumber. Coba beberapa saat lagi.</p>
               <a class="btn btn-ghost" href="<?= e($m['source_url'] ?? $m['url_detail']) ?>" target="_blank" rel="noopener">Lihat sumber resmi</a>
             </div>
           <?php endif; ?>
@@ -105,7 +113,7 @@ $activeCh = $chapters[$activeChIndex] ?? null;
     <?php else: ?>
       <div class="reader-empty-state">
         <?= icon('book-open', 64) ?>
-        <h2>Chapter tidak tersedia dari sumber ini.</h2>
+        <h2>Chapter belum tersedia di provider VoiXLib.</h2>
         <p>Konten bacaan belum tersedia di provider chapter saat ini.</p>
         <a class="btn btn-solid" href="<?= e($m['source_url'] ?? ('https://anilist.co/manga/' . (int)$m['id'])) ?>" target="_blank" rel="noopener">
           <?= icon('share', 16) ?> Lihat sumber

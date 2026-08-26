@@ -15,12 +15,12 @@ final class MangaDexService implements ChapterProvider
         return rtrim((string)Config::get('MANGADEX_API_URL', 'https://api.mangadex.org'), '/');
     }
 
-    /** Find MangaDex manga ID by title or search query */
-    public static function searchManga(string $title, int $limit = 5): ?array
+    /** Find MangaDex manga ID by title or search query with title matching score */
+    public static function searchManga(string $title, int $limit = 10): ?array
     {
         $q = urlencode(trim($title));
         if ($q === '') return null;
-        return Cache::remember('mangadex:search:' . md5($q), 3600, fn() => Http::getJson(self::baseUrl() . '/manga?title=' . $q . '&limit=' . $limit));
+        return Cache::remember('mangadex:search:' . md5($q), 3600, fn() => Http::getJson(self::baseUrl() . '/manga?title=' . $q . '&limit=' . $limit . '&includes[]=cover_art'));
     }
 
     /** Get chapter list for a MangaDex manga ID */
@@ -63,34 +63,80 @@ final class MangaDexService implements ChapterProvider
         ];
     }
 
+    public static function findMangaId(array $queries, ?int $year = null): ?string
+    {
+        $bestId = null;
+        $bestScore = -1;
+
+        foreach ($queries as $q) {
+            $search = self::searchManga($q);
+            if (empty($search['data'])) continue;
+
+            foreach ($search['data'] as $item) {
+                $attrs = $item['attributes'] ?? [];
+                $titles = [];
+                if (!empty($attrs['title'])) {
+                    foreach ($attrs['title'] as $t) $titles[] = (string)$t;
+                }
+                if (!empty($attrs['altTitles'])) {
+                    foreach ($attrs['altTitles'] as $alt) {
+                        foreach ($alt as $t) $titles[] = (string)$t;
+                    }
+                }
+
+                $score = 0;
+                $normQ = strtolower(preg_replace('/[^a-z0-9]/i', '', $q));
+                foreach ($titles as $t) {
+                    $normT = strtolower(preg_replace('/[^a-z0-9]/i', '', $t));
+                    if ($normQ === $normT) {
+                        $score += 100;
+                        break;
+                    }
+                    if (str_contains($normT, $normQ) || str_contains($normQ, $normT)) {
+                        $score += 50;
+                    }
+                }
+
+                if ($year !== null && isset($attrs['year']) && (int)$attrs['year'] === $year) {
+                    $score += 20;
+                }
+
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestId = $item['id'];
+                }
+            }
+
+            if ($bestScore >= 100) break;
+        }
+
+        return $bestId;
+    }
+
     public static function findChapters(array $queries): array
     {
         $chapters = [];
-        foreach ($queries as $q) {
-            $search = self::searchManga($q);
-            $mdId = $search['data'][0]['id'] ?? null;
+        $mdId = self::findMangaId($queries);
 
-            if ($mdId) {
-                $feed = self::getChapters($mdId);
-                if (!empty($feed['data'])) {
-                    foreach ($feed['data'] as $chItem) {
-                        $attrs = $chItem['attributes'] ?? [];
-                        $chNum = $attrs['chapter'] ?? '?';
-                        $chTitle = $attrs['title'] ?: "Chapter {$chNum}";
-                        $lang = strtoupper((string)($attrs['translatedLanguage'] ?? 'EN'));
-                        $pubDate = !empty($attrs['publishAt']) ? date('d M Y', strtotime((string)$attrs['publishAt'])) : null;
-                        
-                        $chapters[] = [
-                            'id'           => $chItem['id'],
-                            'number'       => (string)$chNum,
-                            'title'        => "[$lang] Ch. {$chNum} - " . $chTitle,
-                            'language'     => $lang,
-                            'publish_date' => $pubDate,
-                            'group'        => 'MangaDex Scanlation',
-                            'source'       => 'mangadex',
-                        ];
-                    }
-                    if (!empty($chapters)) break;
+        if ($mdId) {
+            $feed = self::getChapters($mdId);
+            if (!empty($feed['data'])) {
+                foreach ($feed['data'] as $chItem) {
+                    $attrs = $chItem['attributes'] ?? [];
+                    $chNum = $attrs['chapter'] ?? '?';
+                    $chTitle = $attrs['title'] ?: "Chapter {$chNum}";
+                    $lang = strtoupper((string)($attrs['translatedLanguage'] ?? 'EN'));
+                    $pubDate = !empty($attrs['publishAt']) ? date('d M Y', strtotime((string)$attrs['publishAt'])) : null;
+                    
+                    $chapters[] = [
+                        'id'           => $chItem['id'],
+                        'number'       => (string)$chNum,
+                        'title'        => "Ch. {$chNum}" . ($attrs['title'] ? " - {$attrs['title']}" : ''),
+                        'language'     => $lang,
+                        'publish_date' => $pubDate,
+                        'group'        => 'MangaDex',
+                        'source'       => 'mangadex',
+                    ];
                 }
             }
         }

@@ -42,6 +42,20 @@ final class MediaDetailController
             if (Auth::check()) $library->touchHistory((int)$user['id'], $bookId);
         }
 
+        // Search Query Candidates
+        $queries = array_filter(array_unique([
+            $media['title'] ?? '',
+            $media['title_romaji'] ?? '',
+            $media['alt_title'] ?? '',
+        ]));
+
+        $chapters = [];
+        try {
+            $chapters = MangaDexService::findChapters($queries);
+        } catch (Throwable $e) {
+            $chapters = [];
+        }
+
         page('pages/detail', [
             'title'       => $media['title'] . ' — VoiXLib',
             'description' => mb_substr((string)($media['description'] ?? ''), 0, 160) ?: ('Detail ' . $media['type_label'] . ' ' . $media['title'] . ' di VoiXLib.'),
@@ -56,6 +70,7 @@ final class MediaDetailController
             'hasBookmark' => $bookmarked,
             'progress'    => $progress,
             'migrationOk' => $bookId !== null,
+            'chapters'    => $chapters,
         ]);
     }
 
