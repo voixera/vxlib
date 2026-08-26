@@ -7,6 +7,13 @@ declare(strict_types=1);
 define('VOIXLIB_ROOT', dirname(__DIR__));
 
 spl_autoload_register(function (string $class): void {
+    if (in_array($class, ['AnimeMetadataProvider', 'MangaMetadataProvider', 'ChapterProvider'], true)) {
+        $file = VOIXLIB_ROOT . '/app/Services/ProviderContracts.php';
+        if (is_file($file)) {
+            require_once $file;
+            return;
+        }
+    }
     foreach (['Services', 'Repositories', 'Security', 'Helpers', 'Controllers', 'Middleware'] as $dir) {
         $file = VOIXLIB_ROOT . '/app/' . $dir . '/' . $class . '.php';
         if (is_file($file)) {
