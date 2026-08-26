@@ -61,6 +61,8 @@ final class SupabaseClient
             CURLOPT_TIMEOUT        => 15,
             CURLOPT_CONNECTTIMEOUT => 6,
             CURLOPT_HTTPHEADER     => $headerLines,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
             CURLOPT_HEADERFUNCTION => function ($ch, $line) use (&$respHeaders) {
                 $parts = explode(':', trim($line), 2);
                 if (count($parts) === 2) $respHeaders[strtolower(trim($parts[0]))] = trim($parts[1]);

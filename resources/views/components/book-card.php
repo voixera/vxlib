@@ -13,7 +13,7 @@ $cat = $book['categories'][0]['name'] ?? null;
 ?>
 <article class="book-card">
   <a class="book-card-link" href="/book.php?id=<?= e($book['external_id']) ?>" aria-label="<?= e($book['title']) ?> by <?= e($book['author']) ?>">
-    <div class="cover<?= empty($coverSrc) ? ' is-generated' : '' ?><?= empty($coverSrc) ? ' cover-fallback' : '' ?>">
+    <div class="cover<?= empty($coverSrc) ? ' is-generated' : '' ?>">
       <?= $coverImg ?>
       <span class="cover-spine" aria-hidden="true"></span>
       <?php if (!empty($progressPct)): ?>

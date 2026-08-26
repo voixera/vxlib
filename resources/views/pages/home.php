@@ -80,26 +80,44 @@ $heroCovers    = array_slice($trendingBooks ?: $recentBooks, 0, 3);
     </header>
 
     <?php if ($featuredBooks): ?>
-      <div class="cat-grid" style="grid-auto-rows:auto">
-        <?php foreach (array_slice($featuredBooks, 0, 3) as $i => $fb): ?>
-          <a class="feature-tile reveal" href="/book.php?id=<?= e($fb['external_id']) ?>"
-             style="grid-row: span <?= $i === 0 ? 3 : 3 ?>">
-            <img src="<?= e($fb['cover_url'] ?? ('/cover.php?' . http_build_query(['t' => $fb['title'], 'a' => $fb['author']]))) ?>"
-                 alt="" loading="lazy" decoding="async">
-            <span class="feature-caption">
-              <strong><?= e($fb['title']) ?></strong>
-              <em><?= e($fb['author']) ?></em>
-            </span>
+      <div class="editorial-grid reveal">
+        <?php $heroFb = $featuredBooks[0]; ?>
+        <article class="feature-oversized">
+          <a class="feature-oversized-link" href="/book.php?id=<?= e($heroFb['external_id']) ?>">
+            <div class="cover-stage">
+              <img src="<?= e($heroFb['cover_url'] ?? ('/cover.php?' . http_build_query(['t' => $heroFb['title'], 'a' => $heroFb['author']]))) ?>"
+                   alt="" loading="eager" decoding="async">
+              <span class="cover-spine" aria-hidden="true"></span>
+            </div>
+            <div class="feature-oversized-content">
+              <span class="editorial-badge">Featured selection</span>
+              <h3 class="feature-title"><?= e($heroFb['title']) ?></h3>
+              <p class="feature-author">By <?= e($heroFb['author']) ?></p>
+              <?php if (!empty($heroFb['description'])): ?>
+                <p class="feature-desc"><?= e(mb_substr($heroFb['description'], 0, 240)) ?>…</p>
+              <?php endif; ?>
+              <span class="feature-action">Read book <?= icon('arrow-right', 16) ?></span>
+            </div>
           </a>
-        <?php endforeach;
-        // fill remaining grid cells with smaller picks
-        foreach (array_slice($featuredBooks, 3, 6) as $k => $fb): ?>
-          <a class="feature-tile feature-small reveal" href="/book.php?id=<?= e($fb['external_id']) ?>">
-            <img src="<?= e($fb['cover_url'] ?? ('/cover.php?' . http_build_query(['t' => $fb['title'], 'a' => $fb['author']]))) ?>"
-                 alt="" loading="lazy" decoding="async">
-            <span class="feature-caption"><strong><?= e($fb['title']) ?></strong></span>
-          </a>
-        <?php endforeach; ?>
+        </article>
+
+        <div class="feature-asymmetric-list">
+          <?php foreach (array_slice($featuredBooks, 1, 4) as $fb): ?>
+            <article class="feature-horizontal-card">
+              <a href="/book.php?id=<?= e($fb['external_id']) ?>" class="feature-horizontal-link">
+                <img src="<?= e($fb['cover_url'] ?? ('/cover.php?' . http_build_query(['t' => $fb['title'], 'a' => $fb['author']]))) ?>"
+                     alt="" loading="lazy" decoding="async">
+                <div class="feature-horizontal-meta">
+                  <h4><?= e($fb['title']) ?></h4>
+                  <p><?= e($fb['author']) ?></p>
+                  <?php if (!empty($fb['categories'][0]['name'])): ?>
+                    <span class="tag"><?= e($fb['categories'][0]['name']) ?></span>
+                  <?php endif; ?>
+                </div>
+              </a>
+            </article>
+          <?php endforeach; ?>
+        </div>
       </div>
     <?php elseif (($featured['error'] ?? null) === 'supabase_not_configured'): ?>
       <?php render_state('offline', 'The stacks are still being wired up',

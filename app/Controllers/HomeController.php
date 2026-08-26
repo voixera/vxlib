@@ -12,6 +12,9 @@ final class HomeController
         $library = new LibraryRepository();
 
         $featured  = $books->search(['featured' => true, 'per_page' => 6]);
+        if (empty($featured['books'])) {
+            $featured = $books->search(['sort' => 'popular', 'per_page' => 6]);
+        }
         $trending  = $books->search(['sort' => 'popular', 'per_page' => 12]);
         $recent    = $books->search(['sort' => 'newest', 'per_page' => 12]);
 

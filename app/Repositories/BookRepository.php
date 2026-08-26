@@ -180,8 +180,8 @@ final class BookRepository
         return match ($sort) {
             'title_asc'  => 'title.asc',
             'title_desc' => 'title.desc',
-            'newest'     => 'publication_year.desc.nullslast,title.asc',
-            'oldest'     => 'publication_year.asc.nulllast,title.asc',
+            'newest'     => 'id.desc',
+            'oldest'     => 'publication_year.asc.nullslast,title.asc',
             'popular'    => 'downloads.desc,title.asc',
             default      => 'downloads.desc,title.asc', // relevance ≈ popularity until FTS exists
         };

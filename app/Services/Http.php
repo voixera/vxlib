@@ -29,6 +29,8 @@ final class Http
             CURLOPT_ENCODING       => '',
             CURLOPT_PROTOCOLS      => CURLPROTO_HTTPS | CURLPROTO_HTTP,
             CURLOPT_HTTPHEADER     => $headers,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => 0,
         ]);
         $body  = curl_exec($ch);
         $code  = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);

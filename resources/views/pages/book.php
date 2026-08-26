@@ -19,7 +19,7 @@ $facts['Source'] = 'Project Gutenberg';
 <div class="shell">
   <div class="book-layout">
     <aside class="detail-cover-wrap reveal is-visible">
-      <div class="detail-cover"><?= $coverTag ?></div>
+      <div class="detail-cover<?= empty($book['cover_url']) ? ' is-generated' : '' ?>"><?= $coverTag ?></div>
       <p class="detail-source-note">
         <?= icon('external', 14) ?>
         <?php if ($book['readable']): ?>Readable copy from Project Gutenberg<?php else: ?>Metadata via Open Library — reading hosted off-site<?php endif; ?>
