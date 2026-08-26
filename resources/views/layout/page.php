@@ -66,7 +66,7 @@ $csrfToken = Security::csrfToken();
 <?php if (empty($page['chromeless'])): view('layout/footer'); endif; ?>
 
 <div id="toast-root" aria-live="polite"></div>
-<script>window.VOIXLIB = { csrf: <?= json_encode($csrfToken) ?>, authed: <?= Auth::check() ? 'true' : 'false' ?>, base: <?= json_encode(rtrim((string)Config::get('APP_URL',''), '/')) ?> };</script>
+<script>window.VOIXLIB = { csrf: <?= json_encode($csrfToken) ?>, authed: <?= Auth::check() ? 'true' : 'false' ?>, base: <?= json_encode(rtrim(url('/'), '/')) ?> };</script>
 <script src="<?= asset('js/app.js') ?>" defer></script>
 <?php if (!empty($page['scripts'])): foreach ((array)$page['scripts'] as $script): ?>
 <script src="<?= asset('js/' . $script) ?>" defer></script>

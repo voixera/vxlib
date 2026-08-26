@@ -10,10 +10,31 @@ function e(?string $value): string
 }
 
 /** Build a URL relative to APP_URL. */
+/** Base URL derived from the incoming request (fallback when APP_URL is unset/misconfigured). */
+function request_base_url(): string
+{
+    static $derived = null;
+    if ($derived !== null) return $derived;
+
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    if ($host === '' || PHP_SAPI === 'cli' || !preg_match('/^[a-z0-9.\-]+(:\d+)?$/i', $host)) {
+        return $derived = '';
+    }
+    // Behind proxies (Vercel/Cloudflare) trust the forwarded protocol.
+    $proto = strtolower((string)($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+    if (!in_array($proto, ['https', 'http'], true)) {
+        $proto = ($_SERVER['HTTPS'] ?? '') !== '' ? 'https' : 'http';
+    }
+    return $derived = $proto . '://' . $host;
+}
+
 function url(string $path = '/'): string
 {
     $base = rtrim((string)Config::get('APP_URL', ''), '/');
-    if ($base === '') return $path;
+    // Self-heal: never emit absolute localhost URLs to real visitors.
+    if ($base === '' || str_contains($base, 'localhost') || str_contains($base, '127.0.0.1')) {
+        $base = request_base_url() ?: $base;
+    }
     return $base . ($path === '/' ? '/' : $path);
 }
 
