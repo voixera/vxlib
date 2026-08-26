@@ -16,6 +16,7 @@ Discord sign-in. PHP backend + Supabase + vanilla JS/SVG. No frameworks.
 | Database | Supabase (PostgREST) — schema in `supabase/schema.sql`, RLS enabled |
 | Auth | Discord OAuth2 (server-side flow, state validation, secure sessions) |
 | Books | Project Gutenberg via Gutendex API; enrichment + covers via Open Library |
+| Manga & manhwa | VoiXLib-native editions: original SVG-illustrated pages, flipbook reader |
 | Reader | Sanitized Gutenberg HTML, chapter splitting, comfort settings, progress sync |
 | Frontend | Hand-rolled CSS design system, inline SVG brand/scene/icons, vanilla ES5-safe JS |
 
@@ -50,7 +51,10 @@ php tools/seed.php
 ```
 
 This loads `storage/seed/books.json` — 200+ real Gutenberg titles with verified
-covers and Open Library enrichment — into your database. Refresh the catalog any time:
+covers and Open Library enrichment — plus `storage/seed/manga.json`, four
+VoiXLib-native manga/manhwa/manhua/anime editions whose pages are generated as
+original vector art (`app/Services/MangaService.php`). Sanity-check that
+generator any time with `php tools/manga-check.php`. Refresh the catalog any time:
 
 ```bash
 php tools/build-seed.php   # re-fetches popular books from Gutendex + Open Library

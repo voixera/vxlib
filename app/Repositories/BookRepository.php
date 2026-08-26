@@ -22,6 +22,13 @@ final class BookRepository
         ['name' => 'Short Stories', 'slug' => 'short-stories'],
         ['name' => 'Poetry', 'slug' => 'poetry'],
         ['name' => 'Nature & Science', 'slug' => 'nature-science'],
+        ['name' => 'Manga', 'slug' => 'manga'],
+        ['name' => 'Manhwa', 'slug' => 'manhwa'],
+        ['name' => 'Manhua', 'slug' => 'manhua'],
+        ['name' => 'Anime', 'slug' => 'anime'],
+        ['name' => 'Light Novel', 'slug' => 'light-novel'],
+        ['name' => 'Webtoon', 'slug' => 'webtoon'],
+        ['name' => 'Doujinshi', 'slug' => 'doujinshi'],
     ];
 
     public function __construct(?SupabaseClient $client = null)
@@ -49,7 +56,7 @@ final class BookRepository
         // PostgREST auto-detects the books<->categories m2m through book_categories.
         // !inner makes a category filter actually constrain rows.
         $catEmbed = empty($params['category']) ? 'categories(name,slug)' : 'categories!inner(name,slug)';
-        $select = 'id,external_id,gutenberg_id,title,author,author_life,description,cover_url,source_url,'
+        $select = 'id,source,external_id,gutenberg_id,title,author,author_life,description,cover_url,source_url,'
             . 'read_url,language,publication_year,page_count,isbn,downloads,featured,subjects,'
             . $catEmbed;
 
@@ -112,7 +119,7 @@ final class BookRepository
 
         $col = ctype_digit((string)$idOrExternal) ? 'id' : 'external_id';
         $row = $this->db->selectOne('books', [
-            'select' => 'id,external_id,gutenberg_id,title,author,author_life,description,cover_url,source_url,'
+            'select' => 'id,source,external_id,gutenberg_id,title,author,author_life,description,cover_url,source_url,'
                 . 'read_url,language,publication_year,page_count,isbn,downloads,featured,subjects,created_at,updated_at',
             $col => 'eq.' . $idOrExternal,
         ]);
@@ -138,6 +145,7 @@ final class BookRepository
         return [
             'id'               => (int)$row['id'],
             'external_id'      => (string)($row['external_id'] ?? ''),
+            'source'           => (string)($row['source'] ?? 'gutenberg'),
             'gutenberg_id'     => isset($row['gutenberg_id']) ? (int)$row['gutenberg_id'] : null,
             'title'            => (string)($row['title'] ?? ''),
             'author'           => (string)($row['author'] ?? 'Unknown'),
@@ -154,7 +162,7 @@ final class BookRepository
             'featured'         => (bool)($row['featured'] ?? false),
             'subjects'         => (string)($row['subjects'] ?? ''),
             'categories'       => $cats,
-            'readable'         => !empty($row['gutenberg_id']),
+            'readable'         => !empty($row['gutenberg_id']) || ($row['source'] ?? '') === 'voixlib',
         ];
     }
 

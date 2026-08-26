@@ -14,7 +14,7 @@ if ($book['page_count']) $facts['Pages'] = number_format($book['page_count']);
 $langNames = ['en' => 'English', 'fr' => 'French', 'de' => 'German', 'es' => 'Spanish', 'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch', 'fi' => 'Finnish'];
 $facts['Language'] = $langNames[$book['language']] ?? strtoupper($book['language']);
 if ($book['isbn']) $facts['ISBN-13'] = $book['isbn'];
-$facts['Source'] = 'Project Gutenberg';
+$facts['Source'] = ($book['source'] ?? '') === 'voixlib' ? 'VoiXLib Original (SVG-illustrated)' : 'Project Gutenberg';
 ?>
 <div class="shell">
   <div class="book-layout">
@@ -22,7 +22,8 @@ $facts['Source'] = 'Project Gutenberg';
       <div class="detail-cover<?= empty($book['cover_url']) ? ' is-generated' : '' ?>"><?= $coverTag ?></div>
       <p class="detail-source-note">
         <?= icon('external', 14) ?>
-        <?php if ($book['readable']): ?>Readable copy from Project Gutenberg<?php else: ?>Metadata via Open Library — reading hosted off-site<?php endif; ?>
+        <?php if (($book['source'] ?? '') === 'voixlib'): ?>Original VoiXLib edition — illustrated in vector art
+        <?php elseif ($book['readable']): ?>Readable copy from Project Gutenberg<?php else: ?>Metadata via Open Library — reading hosted off-site<?php endif; ?>
       </p>
     </aside>
 

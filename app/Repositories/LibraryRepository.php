@@ -18,7 +18,7 @@ final class LibraryRepository
     private function bookSelect(): string
     {
         return 'id,user_id,status,created_at,books('
-            . 'id,external_id,gutenberg_id,title,author,cover_url,language,publication_year,read_url,source_url)';
+            . 'id,source,external_id,gutenberg_id,title,author,cover_url,language,publication_year,read_url,source_url)';
     }
 
     /** @return array<int, array{status:string,book:array}> */
@@ -133,7 +133,7 @@ final class LibraryRepository
     {
         if (!SupabaseClient::configured()) return [];
         $res = $this->db->select('reading_progress', [
-            'select' => 'book_id,progress,chapter,updated_at,books(id,external_id,gutenberg_id,title,author,cover_url,read_url)',
+            'select' => 'book_id,progress,chapter,updated_at,books(id,source,external_id,gutenberg_id,title,author,cover_url,read_url)',
             'user_id' => 'eq.' . $userId,
             'order'  => 'updated_at.desc',
             'limit'  => (string)$limit,
@@ -163,7 +163,7 @@ final class LibraryRepository
     {
         if (!SupabaseClient::configured()) return [];
         $res = $this->db->select('reading_history', [
-            'select' => 'last_opened_at,books(id,external_id,gutenberg_id,title,author,cover_url,language,publication_year,read_url,source_url)',
+            'select' => 'last_opened_at,books(id,source,external_id,gutenberg_id,title,author,cover_url,language,publication_year,read_url,source_url)',
             'user_id' => 'eq.' . $userId,
             'order'  => 'last_opened_at.desc',
             'limit'  => (string)$limit,

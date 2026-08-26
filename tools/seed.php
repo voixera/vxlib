@@ -25,6 +25,13 @@ if (!is_file($seedFile)) {
 
 $payload = json_decode((string)file_get_contents($seedFile), true);
 $books = $payload['books'] ?? [];
+
+// VoiXLib-native manga / manhwa / anime titles (SVG-illustrated editions).
+$mangaFile = dirname(__DIR__) . '/storage/seed/manga.json';
+if (is_file($mangaFile)) {
+    $manga = json_decode((string)file_get_contents($mangaFile), true);
+    $books = array_merge($books, $manga['books'] ?? []);
+}
 if (!$books) { echo "Seed file contains no books.\n"; exit(1); }
 
 $db = new SupabaseClient();
@@ -46,7 +53,9 @@ foreach ($books as $i => $b) {
     $row = [
         'external_id'      => (string)$b['external_id'],
         'source'           => (string)($b['source'] ?? 'gutenberg'),
-        'gutenberg_id'     => ((string)$b['external_id'] === '' ? null : (int)substr((string)$b['external_id'], strpos((string)$b['external_id'], ':') + 1)),
+        'gutenberg_id'     => str_starts_with((string)$b['external_id'], 'gutenberg:')
+            ? (int)substr((string)$b['external_id'], strpos((string)$b['external_id'], ':') + 1)
+            : null,
         'title'            => mb_substr((string)$b['title'], 0, 300),
         'author'           => mb_substr((string)$b['author'], 0, 160),
         'author_life'      => $b['author_life'] ?? null,

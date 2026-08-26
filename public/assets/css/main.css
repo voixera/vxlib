@@ -732,6 +732,108 @@ input[type="range"] { accent-color: var(--accent); width: min(320px, 100%); }
 }
 [data-reader-theme="light"] { --reader-bg: var(--paper); --reader-ink: var(--ink); --reader-line: var(--line); }
 
+/* ── Flipbook (manga / manhwa reader) ───────────────────────── */
+.reader-shell[data-format="manga"] .reader-body { max-width: none; }
+#flipbook {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: clamp(12px, 3vh, 30px) 10px 110px;
+}
+.fb-stage {
+  position: relative; width: 100%;
+  display: flex; justify-content: center;
+  perspective: 2600px;
+  touch-action: pan-y;
+}
+.fb-book {
+  position: relative;
+  width: min(1060px, 96vw, calc((100vh - 240px) * 1.333));
+  aspect-ratio: 4 / 3;
+  transform-style: preserve-3d;
+}
+.fb-book::before, .fb-book::after {
+  content: ""; position: absolute; top: 1%; bottom: 1%; width: 48.5%;
+  background: linear-gradient(90deg, #E7E1D2, #F5F1E6 30%);
+  border-radius: 8px; box-shadow: var(--shadow-md);
+}
+.fb-book::before { left: .4%; }
+.fb-book::after { right: .4%; background: linear-gradient(270deg, #E7E1D2, #F5F1E6 30%); }
+.fb-sheet {
+  position: absolute; top: 0; bottom: 0; left: 50%; width: 50%;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform .85s cubic-bezier(.42,.05,.28,1);
+  will-change: transform;
+}
+.fb-sheet.is-flipped { transform: rotateY(-180deg); }
+.fb-book.no-anim .fb-sheet { transition: none; }
+.fb-face {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  background: #FBF8F1; overflow: hidden;
+  border-radius: 0 8px 8px 0;
+  box-shadow: inset 0 0 0 1px rgba(23,20,16,.07), 0 10px 24px rgba(23,20,16,.14);
+}
+.fb-face img { width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
+.fb-back { transform: rotateY(180deg); border-radius: 8px 0 0 8px; }
+.fb-face.fb-blank { display: grid; place-items: center; background: #F3EFE5; }
+.fb-face.fb-blank::after {
+  content: "VoiXLib"; font-family: var(--serif); font-style: italic;
+  font-size: clamp(18px, 2.4vw, 26px); color: rgba(23,20,16,.26);
+}
+.fb-gloss { position: absolute; inset: 0; pointer-events: none; }
+.fb-front .fb-gloss {
+  background:
+    linear-gradient(105deg, rgba(255,255,255,.18) 0%, transparent 20%),
+    linear-gradient(90deg, rgba(23,20,16,.22) 0%, rgba(23,20,16,.05) 4%, transparent 14%);
+}
+.fb-back .fb-gloss {
+  background:
+    linear-gradient(255deg, rgba(255,255,255,.16) 0%, transparent 20%),
+    linear-gradient(270deg, rgba(23,20,16,.22) 0%, rgba(23,20,16,.05) 4%, transparent 14%);
+}
+.fb-center {
+  position: absolute; top: 0; bottom: 0; left: 50%; width: 70px;
+  transform: translateX(-50%); pointer-events: none; z-index: 500;
+  background: linear-gradient(90deg, transparent, rgba(23,20,16,.15) 44% 56%, transparent);
+}
+.fb-corner {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 600;
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer;
+  border: 1.5px solid var(--line-strong);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  color: var(--ink); box-shadow: var(--shadow-sm);
+  transition: transform .15s ease, border-color .15s ease, opacity .15s ease;
+}
+.fb-corner:hover:not(:disabled) { transform: translateY(-50%) scale(1.08); border-color: var(--ink); }
+.fb-corner:disabled { opacity: .3; cursor: default; }
+.fb-prev { left: clamp(6px, 2vw, 24px); }
+.fb-next { right: clamp(6px, 2vw, 24px); }
+.fb-status {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 14px;
+  width: min(1060px, 96vw); margin-top: 16px;
+  font-size: 13.5px; color: var(--ink-2);
+}
+.fb-status #fb-chapter {
+  font-family: var(--serif); font-weight: 700; font-size: 15.5px; color: var(--ink-strong);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.fb-status #fb-page-no { font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 900px) {
+  .fb-stage { overflow: hidden; }
+  .fb-book { width: min(88vw, 54vh); aspect-ratio: 2 / 3; }
+  .fb-sheet { left: 0; width: 100%; }
+  .fb-center { display: none; }
+  .fb-face { border-radius: 8px; }
+  .fb-back { border-radius: 8px; }
+  .fb-corner { top: auto; bottom: 4px; transform: none; width: 46px; height: 46px; }
+  .fb-corner:hover:not(:disabled) { transform: none; }
+  .fb-prev { left: auto; right: 64px; }
+  .fb-next { right: 8px; }
+  .fb-status { width: min(88vw, 54vh); flex-wrap: wrap; }
+}
+
 /* ── Skeletons ──────────────────────────────────────────────── */
 .skeleton { position: relative; overflow: hidden; background: var(--paper-2); border-radius: 3px; }
 .skeleton::after {

@@ -7,7 +7,8 @@ $gid = $book['gutenberg_id'] !== null ? (int)$book['gutenberg_id'] : 0;
 <div class="reader-progress-rail" aria-hidden="true"><i id="rp-bar"></i></div>
 
 <div class="reader-shell" data-reader-root data-book-id="<?= $book['id'] ?>"
-     data-gutenberg-id="<?= $gid ?>" data-title="<?= e($book['title']) ?>">
+     data-gutenberg-id="<?= $gid ?>" data-title="<?= e($book['title']) ?>"
+     data-format="<?= e(MangaService::isManga($book) ? 'manga' : 'text') ?>">
   <div class="reader-topbar">
     <a class="icon-btn" href="/book.php?id=<?= e($book['external_id']) ?>" aria-label="Back to book details">
       <?= icon('arrow-left', 18) ?>
@@ -42,6 +43,20 @@ $gid = $book['gutenberg_id'] !== null ? (int)$book['gutenberg_id'] : 0;
         <button type="button" class="btn btn-solid" id="next-chapter">Next <?= icon('arrow-right', 16) ?></button>
       </nav>
     </div>
+
+    <!-- flipbook (manga / manhwa) -->
+    <div id="flipbook" hidden aria-label="Illustrated pages">
+      <div class="fb-stage" id="fb-stage">
+        <div class="fb-book" id="fb-book"></div>
+        <div class="fb-center" aria-hidden="true"></div>
+        <button type="button" class="fb-corner fb-prev" id="fb-prev" aria-label="Previous page"><?= icon('arrow-left', 20) ?></button>
+        <button type="button" class="fb-corner fb-next" id="fb-next" aria-label="Next page"><?= icon('arrow-right', 20) ?></button>
+      </div>
+      <div class="fb-status">
+        <span id="fb-chapter"></span>
+        <span id="fb-page-no"></span>
+      </div>
+    </div>
   </div>
 
   <!-- settings drawer -->
@@ -51,25 +66,27 @@ $gid = $book['gutenberg_id'] !== null ? (int)$book['gutenberg_id'] : 0;
     <h3 style="font-size:17px;margin-bottom:4px">Reading comfort</h3>
     <p class="setting-help">Changes apply instantly and are saved to this device<?php if (!empty($user)): ?> and your account<?php endif; ?>.</p>
 
-    <div class="setting-group" style="border:none;padding-top:8px">
-      <h2>Text size</h2>
-      <div class="range-row">
-        <input type="range" id="rf-font" min="14" max="24" step="1" value="18" aria-label="Font size in pixels">
-        <output id="rf-font-out">18px</output>
+    <div id="text-settings">
+      <div class="setting-group" style="border:none;padding-top:8px">
+        <h2>Text size</h2>
+        <div class="range-row">
+          <input type="range" id="rf-font" min="14" max="24" step="1" value="18" aria-label="Font size in pixels">
+          <output id="rf-font-out">18px</output>
+        </div>
       </div>
-    </div>
-    <div class="setting-group">
-      <h2>Line height</h2>
-      <div class="range-row">
-        <input type="range" id="rf-leading" min="1.4" max="2.2" step="0.1" value="1.7" aria-label="Line height">
-        <output id="rf-leading-out">1.7</output>
+      <div class="setting-group">
+        <h2>Line height</h2>
+        <div class="range-row">
+          <input type="range" id="rf-leading" min="1.4" max="2.2" step="0.1" value="1.7" aria-label="Line height">
+          <output id="rf-leading-out">1.7</output>
+        </div>
       </div>
-    </div>
-    <div class="setting-group">
-      <h2>Page width</h2>
-      <div class="range-row">
-        <input type="range" id="rf-width" min="34" max="60" step="1" value="42" aria-label="Page width in rem">
-        <output id="rf-width-out">42rem</output>
+      <div class="setting-group">
+        <h2>Page width</h2>
+        <div class="range-row">
+          <input type="range" id="rf-width" min="34" max="60" step="1" value="42" aria-label="Page width in rem">
+          <output id="rf-width-out">42rem</output>
+        </div>
       </div>
     </div>
     <div class="setting-group">

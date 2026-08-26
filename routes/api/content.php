@@ -22,6 +22,15 @@ if ($id === '' || !preg_match('/^[0-9A-Za-z:_\-]{1,64}$/', $id)) {
 $book = (new BookRepository())->find($id);
 if (!$book) json_response(['error' => 'not_found'], 404);
 
+// VoiXLib-native visual books (manga / manhwa): pages are generated SVG art.
+if (MangaService::isManga($book)) {
+    json_response([
+        'format'   => 'manga',
+        'title'    => $book['title'],
+        'chapters' => MangaService::chapters($book['external_id']),
+    ]);
+}
+
 if ($book['gutenberg_id'] === null || $book['read_url'] === null || !str_contains((string)$book['read_url'], 'https://www.gutenberg.org/')) {
     json_response(['error' => 'not_readable', 'source_url' => $book['source_url']], 415);
 }

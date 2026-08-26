@@ -102,6 +102,7 @@ final class BookController
     private static function lazyEnrich(array $book): array
     {
         if (!SupabaseClient::configured() || $book['source_url'] === '') return $book;
+        if (MangaService::isManga($book)) return $book; // native editions carry their own metadata
         $needs = !$book['publication_year'] || !$book['page_count'] || !$book['isbn'];
         if (!$needs) return $book;
 
