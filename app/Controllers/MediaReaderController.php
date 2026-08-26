@@ -38,9 +38,12 @@ final class MediaReaderController
         $chapters = [];
         $activeProvider = null;
 
+        $year = isset($media['year']) ? (int)$media['year'] : null;
+        $author = $media['author'] ?? null;
+
         foreach ($providers as $providerClass) {
             try {
-                $ch = $providerClass::findChapters($queries);
+                $ch = $providerClass::findChapters($queries, $year, $author);
                 if (!empty($ch)) {
                     $chapters = $ch;
                     $activeProvider = $providerClass;

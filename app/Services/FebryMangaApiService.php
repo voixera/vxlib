@@ -45,7 +45,7 @@ final class FebryMangaApiService implements ChapterProvider
         return Cache::remember('febry_manga:popular:' . $page, 3600, fn() => Http::getJson(self::baseUrl() . '/manga/popular/' . $page));
     }
 
-    public static function findChapters(array $queries): array
+    public static function findChapters(array $queries, ?int $year = null, ?string $author = null): array
     {
         $chapters = [];
         foreach ($queries as $q) {

@@ -103,7 +103,7 @@ final class MangaReaderApiService implements ChapterProvider
         return Cache::remember('mr_api:mangabat:chapter:' . $ep, 7200, fn() => Http::getJson(self::baseUrl() . '/mangabat/api/chapter/' . $ep));
     }
 
-    public static function findChapters(array $queries): array
+    public static function findChapters(array $queries, ?int $year = null, ?string $author = null): array
     {
         $chapters = [];
 

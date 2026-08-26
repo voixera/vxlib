@@ -21,7 +21,7 @@ interface ChapterProvider
      * @param array<string> $queries
      * @return array<int, array{id: string, number: string, title: string, language: ?string, publish_date: ?string, group: ?string, source: string}>
      */
-    public static function findChapters(array $queries): array;
+    public static function findChapters(array $queries, ?int $year = null, ?string $author = null): array;
 
     /**
      * Get chapter pages

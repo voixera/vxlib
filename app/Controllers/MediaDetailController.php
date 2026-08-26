@@ -51,7 +51,9 @@ final class MediaDetailController
 
         $chapters = [];
         try {
-            $chapters = MangaDexService::findChapters($queries);
+            $year = isset($media['year']) ? (int)$media['year'] : null;
+            $author = $media['author'] ?? null;
+            $chapters = MangaDexService::findChapters($queries, $year, $author);
         } catch (Throwable $e) {
             $chapters = [];
         }

@@ -63,10 +63,11 @@ final class MangaDexService implements ChapterProvider
         ];
     }
 
-    public static function findMangaId(array $queries, ?int $year = null): ?string
+    public static function findMangaId(array $queries, ?int $year = null, ?string $author = null): ?string
     {
         $bestId = null;
-        $bestScore = -1;
+        $bestScore = 0;
+        $minThreshold = 40;
 
         foreach ($queries as $q) {
             $search = self::searchManga($q);
@@ -85,15 +86,19 @@ final class MangaDexService implements ChapterProvider
                 }
 
                 $score = 0;
-                $normQ = strtolower(preg_replace('/[^a-z0-9]/i', '', $q));
+                $normQ = strtolower(trim(preg_replace('/[^a-z0-9]/i', '', $q)));
+                if ($normQ === '') continue;
+
                 foreach ($titles as $t) {
-                    $normT = strtolower(preg_replace('/[^a-z0-9]/i', '', $t));
+                    $normT = strtolower(trim(preg_replace('/[^a-z0-9]/i', '', $t)));
+                    if ($normT === '') continue;
+
                     if ($normQ === $normT) {
                         $score += 100;
                         break;
                     }
                     if (str_contains($normT, $normQ) || str_contains($normQ, $normT)) {
-                        $score += 50;
+                        $score += 60;
                     }
                 }
 
@@ -110,13 +115,13 @@ final class MangaDexService implements ChapterProvider
             if ($bestScore >= 100) break;
         }
 
-        return $bestId;
+        return $bestScore >= $minThreshold ? $bestId : null;
     }
 
-    public static function findChapters(array $queries): array
+    public static function findChapters(array $queries, ?int $year = null, ?string $author = null): array
     {
         $chapters = [];
-        $mdId = self::findMangaId($queries);
+        $mdId = self::findMangaId($queries, $year, $author);
 
         if ($mdId) {
             $feed = self::getChapters($mdId);
