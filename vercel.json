@@ -6,7 +6,7 @@
   "rewrites": [
     { "source": "/assets/(.*)", "destination": "/public/assets/$1" },
     { "source": "/detail/:type/:id", "destination": "/api/index.php" },
-    { "source": "/anime", "destination": "/api/index.php" },
+    { "source": "/read/:type/:id", "destination": "/api/index.php" },
     { "source": "/manga", "destination": "/api/index.php" },
     { "source": "/manhwa", "destination": "/api/index.php" },
     { "source": "/baca/:id", "destination": "/api/index.php" },

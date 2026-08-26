@@ -1,6 +1,5 @@
 <?php
 component('icons');
-$isAnime = $m['media_type'] === 'anime';
 ?>
 <div class="shell">
   <header style="margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
@@ -20,7 +19,7 @@ $isAnime = $m['media_type'] === 'anime';
         </h3>
         <div style="display: flex; flex-direction: column; gap: 4px;">
           <?php foreach ($chapters as $ch): ?>
-            <a href="?type=<?= e($m['media_type']) ?>&id=<?= (int)$m['id'] ?>&ch=<?= e(urlencode($ch['id'])) ?>"
+            <a href="/read/<?= e($m['media_type']) ?>/<?= (int)$m['id'] ?>?ch=<?= e(urlencode($ch['id'])) ?>"
                class="btn btn-ghost"
                style="text-align: left; justify-content: flex-start; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-size: 0.88rem; <?= $ch['id'] === $selectedChapterId ? 'background: var(--accent-subtle, rgba(99,102,241,0.2)); color: var(--accent, #6366f1); font-weight: 600;' : '' ?>">
               <?= e($ch['title']) ?>
@@ -45,23 +44,18 @@ $isAnime = $m['media_type'] === 'anime';
         <?php endif; ?>
       </main>
     </div>
-  <?php elseif ($isAnime && !empty($animeInfo)): ?>
-    <main style="background: var(--surface-1, #0d0e12); border: 1px solid var(--line, rgba(255,255,255,0.1)); border-radius: 12px; padding: 24px; text-align: center;">
-      <h2 style="font-size: 1.2rem; margin-bottom: 16px;">Streaming Pemutar Video</h2>
-      <p style="color: var(--ink-2); font-size: 0.9rem;">Informasi AniPub tersedia untuk anime ini.</p>
-    </main>
   <?php else: ?>
     <section class="state-block">
-      <div class="state-art" aria-hidden="true"><?= icon($isAnime ? 'play' : 'book-open', 72) ?></div>
-      <p class="eyebrow"><?= $isAnime ? 'Ruang tonton' : 'Ruang baca' ?></p>
-      <h1 class="state-heading"><?= $isAnime ? 'Menonton ' : 'Membaca ' ?><?= e($m['title']) ?></h1>
-      <?php if ($art): ?>
+      <div class="state-art" aria-hidden="true"><?= icon('book-open', 72) ?></div>
+      <p class="eyebrow">Ruang baca</p>
+      <h1 class="state-heading">Membaca <?= e($m['title']) ?></h1>
+      <?php if (!empty($art)): ?>
         <figure style="margin:20px auto;max-width:280px">
-          <img src="<?= e($art['url']) ?>" alt="Ilustrasi dekoratif anime" width="280" height="280" loading="lazy" style="width:100%;height:auto;border-radius:12px">
+          <img src="<?= e($art['url']) ?>" alt="Ilustrasi dekoratif" width="280" height="280" loading="lazy" style="width:100%;height:auto;border-radius:12px">
           <figcaption style="margin-top:8px;font-size:12px;color:var(--ink-2)">Ilustrasi SFW dari <a href="https://nekosapi.com" rel="noopener">Nekos API</a><?= !empty($art['artist']) ? ' · ' . e($art['artist']) : '' ?></figcaption>
         </figure>
       <?php endif; ?>
-      <p class="state-body">Konten belum tersedia secara langsung untuk episode/chapter ini. Sumber eksternal sedang diproses.</p>
+      <p class="state-body">Chapter sedang disiapkan oleh penyedia sumber. Silakan periksa kembali beberapa saat lagi.</p>
       <a class="btn btn-ghost" href="<?= e($m['url_detail']) ?>"><?= icon('arrow-left', 16) ?> Kembali ke detail</a>
     </section>
   <?php endif; ?>
