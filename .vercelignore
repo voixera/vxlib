@@ -1,0 +1,5 @@
+.env
+.git
+storage/cache
+storage/ratelimit
+storage/*.log

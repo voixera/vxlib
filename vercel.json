@@ -1,11 +1,12 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "functions": {
-    "public/*.php": { "runtime": "vercel-php@0.7.x" },
-    "public/auth/*.php": { "runtime": "vercel-php@0.7.x" },
-    "public/api/*.php": { "runtime": "vercel-php@0.7.x" }
+    "public/*.php": { "runtime": "vercel-php@0.7.3" },
+    "public/auth/*.php": { "runtime": "vercel-php@0.7.3" },
+    "public/api/*.php": { "runtime": "vercel-php@0.7.3" }
   },
-  "routes": [
-    { "src": "/(.*)", "dest": "/public/$1" }
+  "rewrites": [
+    { "source": "/", "destination": "/public/index.php" },
+    { "source": "/(.*)", "destination": "/public/$1" }
   ]
 }
