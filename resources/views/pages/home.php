@@ -8,7 +8,7 @@ $progressMap = [];
 if (!empty($continueReading)) {
     foreach ($continueReading as $b) {
         $b['url_detail'] = '/detail/' . ($b['media_type'] ?: 'manga') . '/' . preg_replace('/^anilist:/', '', (string)$b['external_id']);
-        $b['type_label'] = ['anime' => 'Anime', 'manhwa' => 'Manhwa'][$b['media_type'] ?? ''] ?? 'Manga';
+        $b['type_label'] = ($b['media_type'] ?? '') === 'manhwa' ? 'Manhwa' : 'Manga';
         $continue[] = $b;
         $progressMap[$b['id']] = (int)($b['progress_pct'] ?? 0);
     }
@@ -20,7 +20,7 @@ if (!empty($continueReading)) {
       <div>
         <p class="hero-kicker">Perpustakaan digital untuk penikmat cerita</p>
         <h1 class="hero-title">Temukan cerita<br>yang ingin kamu baca<em>.</em></h1>
-        <p class="hero-lede">VoiXLib membantumu menemukan anime, manga, dan manhwa dari katalog
+        <p class="hero-lede">VoiXLib membantumu menemukan manga dan manhwa dari katalog
           dunia nyata — lengkap dengan genre, status, dan skor dari penyedia data. Simpan ke perpustakaan,
           tandai favoritmu, lanjutkan kapan pun.</p>
 
@@ -79,8 +79,8 @@ if (!empty($continueReading)) {
 
 <?php
 $sections = [
+    'latest'   => ['Rilis Komik Terbaru (Non-Lisensi / Scans)', '/explore.php?sort=newest'],
     'trending' => ['Sedang Trending', '/explore.php?sort=trending'],
-    'anime'    => ['Anime Populer', '/anime'],
     'manga'    => ['Manga Populer', '/manga'],
     'manhwa'   => ['Manhwa Populer', '/manhwa'],
     'picks'    => ['Pilihan Minggu Ini', '/explore.php?sort=score'],

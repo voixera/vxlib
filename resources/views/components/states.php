@@ -1,3 +1,4 @@
+<?php
 /* State blok: kosong, error, offline — ilustrasi SVG khas VoiXLib. */
 
 function state_svg(string $kind): string

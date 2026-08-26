@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 final class MediaDetailController
 {
-    private const TYPES = ['anime', 'manga', 'manhwa'];
+    private const TYPES = ['manga', 'manhwa'];
 
     public static function show(): void
     {

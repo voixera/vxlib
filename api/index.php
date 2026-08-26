@@ -64,6 +64,11 @@ if ($path === '/' || $path === '/index.php') {
     $_GET['type'] = strtolower($m[1]);
     $_GET['id'] = $m[2];
     $target = 'routes/media-reader.php';
+} elseif (preg_match('#^/baca/gutenberg:(\d{1,5})$#i', $path, $m)) {
+    $_GET['id'] = $m[1];
+    $target = 'routes/reader.php';
+} elseif (preg_match('#^/klasik/?$#i', $path)) {
+    $target = 'routes/klasik.php';
 } else {
     // /book.php        → routes/book.php
     // /api/books.php   → routes/api/books.php

@@ -764,8 +764,13 @@ input[type="range"] { accent-color: var(--accent); width: min(320px, 100%); }
 }
 [data-reader-theme="light"] { --reader-bg: var(--paper); --reader-ink: var(--ink); --reader-line: var(--line); }
 
-/* ── Flipbook (manga / manhwa reader) ───────────────────────── */
-.reader-shell[data-format="manga"] .reader-body { max-width: none; }
+/* ── Flipbook reader (buku domain publik) ───────────────────── */
+.reader-flip-body {
+  max-width: none !important;
+  display: flex; flex-direction: column; align-items: center;
+  padding-bottom: 90px;
+}
+.fb-skeleton { width: min(680px, 88vw); padding-top: 30px; }
 #flipbook {
   flex: 1; display: flex; flex-direction: column; align-items: center;
   padding: clamp(12px, 3vh, 30px) 10px 110px;
@@ -801,17 +806,49 @@ input[type="range"] { accent-color: var(--accent); width: min(320px, 100%); }
 .fb-face {
   position: absolute; inset: 0;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
-  background: #FBF8F1; overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(255,255,255,.55), transparent 55%),
+    #FBF8F1;
+  overflow: hidden;
   border-radius: 0 8px 8px 0;
   box-shadow: inset 0 0 0 1px rgba(23,20,16,.07), 0 10px 24px rgba(23,20,16,.14);
 }
-.fb-face img { width: 100%; height: 100%; display: block; user-select: none; -webkit-user-drag: none; }
 .fb-back { transform: rotateY(180deg); border-radius: 8px 0 0 8px; }
 .fb-face.fb-blank { display: grid; place-items: center; background: #F3EFE5; }
 .fb-face.fb-blank::after {
   content: "VoiXLib"; font-family: var(--serif); font-style: italic;
   font-size: clamp(18px, 2.4vw, 26px); color: rgba(23,20,16,.26);
 }
+
+/* isi halaman teks */
+.fb-page-wrap { position: absolute; inset: var(--pg-inset, 34px 30px); }
+.fb-page-wrap .pg-flow {
+  height: 100%; overflow: hidden;
+  font-family: var(--serif);
+  font-size: calc(15.5px * var(--rd-scale, 1));
+  line-height: 1.72;
+  color: var(--reader-ink, var(--ink));
+  text-align: justify;
+  hyphens: auto;
+}
+.fb-page-wrap .pg-flow p { margin: 0 0 .8em; text-indent: 1.35em; }
+.fb-page-wrap .pg-flow > p:first-child,
+.fb-page-wrap .pg-flow > *:first-child > p:first-child { text-indent: 0; }
+.fb-page-wrap .pg-flow h2, .fb-page-wrap .pg-flow h3 {
+  font-size: calc(19px * var(--rd-scale, 1)); margin: 0 0 .9em; text-align: center; text-indent: 0;
+}
+.fb-ornament {
+  position: absolute; right: 16px; bottom: 10px; width: 62px;
+  color: var(--accent); pointer-events: none;
+}
+.fb-measure {
+  position: absolute; left: -9999px; top: 0;
+  visibility: hidden; pointer-events: none; z-index: -1;
+}
+
+.rd-fontsize { display: inline-flex; gap: 4px; }
+.rd-fs { font-family: var(--sans); font-weight: 700; font-size: 12.5px; letter-spacing: -.02em; padding: 0 9px; }
+
 .fb-gloss { position: absolute; inset: 0; pointer-events: none; }
 .fb-front .fb-gloss {
   background:
@@ -826,7 +863,9 @@ input[type="range"] { accent-color: var(--accent); width: min(320px, 100%); }
 .fb-center {
   position: absolute; top: 0; bottom: 0; left: 50%; width: 70px;
   transform: translateX(-50%); pointer-events: none; z-index: 500;
+  color: var(--ink);
   background: linear-gradient(90deg, transparent, rgba(23,20,16,.15) 44% 56%, transparent);
+  display: grid; place-items: center;
 }
 .fb-corner {
   position: absolute; top: 50%; transform: translateY(-50%); z-index: 600;

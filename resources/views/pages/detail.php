@@ -3,7 +3,7 @@
 component('icons');
 component('states');
 
-$typeLabels = ['anime' => 'Anime', 'manga' => 'Manga', 'manhwa' => 'Manhwa'];
+$typeLabels = ['manga' => 'Manga', 'manhwa' => 'Manhwa'];
 $u = Auth::user();
 ?>
 <div class="detail-banner" style="<?= !empty($m['banner_url']) ? '--banner:url(' . e($m['banner_url']) . ')' : '' ?>" aria-hidden="true"></div>
@@ -58,7 +58,7 @@ $u = Auth::user();
 
       <div class="detail-actions">
         <a class="btn btn-accent" href="/read/<?= e($m['media_type']) ?>/<?= (int)preg_replace('/^anilist:/', '', (string)$m['external_id']) ?>">
-          <?= icon($m['media_type'] === 'anime' ? 'play' : 'book-open', 18) ?> <?= $m['media_type'] === 'anime' ? 'Tonton di VoiXLib' : 'Baca di VoiXLib' ?>
+          <?= icon('book-open', 18) ?> Baca di VoiXLib
         </a>
 
         <button type="button" class="btn btn-ghost action-library" data-book-id="<?= $bookId ?? '' ?>"

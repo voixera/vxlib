@@ -16,6 +16,8 @@ Backend PHP 8.2 murni (tanpa Composer), frontend vanilla JS/SVG. Tanpa framework
   saat VoiXLib memiliki sumber berlisensi atau file distribusi sendiri.
 - **Service layer per provider:** `AnimeService` / `MangaService` / `ManhwaService` men-facade
   `AniListService` — ganti provider dengan menyentuh satu class saja.
+- **AniPub metadata opsional:** `AniPubService::info($id)` memakai ID katalog AniPub sendiri; ID ini
+  tidak sama dengan AniList atau MAL. Endpoint video AniPub tidak digunakan.
 
 ## Setup
 

@@ -27,6 +27,35 @@ final class GutenbergService
         });
     }
 
+    /** Popular public-domain books (real Gutendex data), paginated. */
+    public static function popular(int $page = 1): ?array
+    {
+        $page = max(1, min(50, $page));
+        return Cache::remember('guten:popular:' . $page, self::META_TTL, function () use ($page) {
+            $res = Http::getJson(self::API . '?sort=popular&page=' . $page);
+            if (!$res || !isset($res['results'])) return null;
+            $books = [];
+            foreach ($res['results'] as $row) {
+                $authors = (array)($row['authors'] ?? []);
+                $firstAuthor = $authors[0] ?? null;
+                $books[] = [
+                    'id'         => (int)$row['id'],
+                    'title'      => (string)($row['title'] ?? 'Tanpa judul'),
+                    'author'     => $firstAuthor ? (string)($firstAuthor['name'] ?? '') : 'Anonim',
+                    'year'       => $firstAuthor ? ($firstAuthor['birth_year'] ?? null) : null,
+                    'cover_url'  => $row['formats']['image/jpeg'] ?? null,
+                    'languages'  => implode(', ', (array)($row['languages'] ?? [])),
+                    'downloads'  => (int)($row['download_count'] ?? 0),
+                    'url_detail' => '/baca/gutenberg:' . (int)$row['id'],
+                    'media_type' => 'text',
+                    'type_label' => 'Klasik',
+                    'readable'   => true,
+                ];
+            }
+            return ['books' => $books, 'next_page' => $res['next'] !== null ? $page + 1 : null];
+        });
+    }
+
     /**
      * Fetch a Gutenberg reading copy, sanitize it and split into chapters.
      * Returns ['title' => string, 'chapters' => [['title' => ?string, 'html' => string], …]]

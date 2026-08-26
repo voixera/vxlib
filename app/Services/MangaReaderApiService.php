@@ -28,6 +28,27 @@ final class MangaReaderApiService
         return Cache::remember('mr_api:komikindo:terbaru:' . $page, 1800, fn() => Http::getJson(self::baseUrl() . '/komikindo/api/komik-terbaru/page/' . $page . '/'));
     }
 
+    /** Helper: Ambil Rilis Komik Terbaru KomikIndo & Mangabat */
+    public static function getLatestReleases(int $page = 1): array
+    {
+        $res = self::getKomikIndoTerbaru($page);
+        if (empty($res['data'])) return [];
+
+        $items = [];
+        foreach ($res['data'] as $item) {
+            $items[] = [
+                'id'          => $item['endpoint'] ?? '',
+                'title'       => $item['title'] ?? 'Komik Terbaru',
+                'cover_url'   => $item['image'] ?? null,
+                'chapter'     => $item['chapter'] ?? null,
+                'media_type'  => str_contains(strtolower($item['title'] ?? ''), 'manhwa') ? 'manhwa' : 'manga',
+                'type_label'  => str_contains(strtolower($item['title'] ?? ''), 'manhwa') ? 'Manhwa' : 'Manga',
+                'url_detail'  => '/read/manga/1?ch=' . urlencode($item['endpoint'] ?? ''),
+            ];
+        }
+        return $items;
+    }
+
     /** KomikIndo: Komik Filter (manga/manhua/manhwa) */
     public static function getKomikIndoFilter(string $type, int $page = 1): ?array
     {

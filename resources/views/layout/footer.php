@@ -7,7 +7,6 @@
     </div>
     <nav class="footer-col" aria-label="Katalog">
       <h3>Katalog</h3>
-      <a href="/anime">Anime</a>
       <a href="/manga">Manga</a>
       <a href="/manhwa">Manhwa</a>
       <a href="/explore.php">Jelajahi</a>
@@ -21,9 +20,8 @@
     </nav>
     <div class="footer-col footer-attrib">
       <h3>Sumber Data</h3>
-      <p>Metadata anime, manga &amp; manhwa dari
-        <a href="https://anilist.co" rel="noopener" target="_blank">AniList</a>.
-        VoiXLib adalah platform discovery — bacaan diarahkan ke sumber resmi dan berlisensi.</p>
+      <p>Metadata manga &amp; manhwa dari
+        <a href="https://anilist.co" rel="noopener" target="_blank">AniList</a> &amp; MangaDex.</p>
     </div>
   </div>
   <div class="shell footer-base">

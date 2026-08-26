@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 final class MediaReaderController
 {
-    private const TYPES = ['anime', 'manga', 'manhwa'];
+    private const TYPES = ['manga', 'manhwa'];
 
     public static function show(): void
     {

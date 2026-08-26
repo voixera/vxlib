@@ -40,7 +40,7 @@ final class MediaNormalizer
             'id'            => (int)$m['id'],
             'external_id'   => 'anilist:' . (int)$m['id'],
             'media_type'    => $type,
-            'type_label'    => ['anime' => 'Anime', 'manga' => 'Manga', 'manhwa' => 'Manhwa'][$type],
+            'type_label'    => $type === 'manhwa' ? 'Manhwa' : 'Manga',
             'title'         => $title,
             'title_romaji'  => $m['title']['romaji'] ?? null,
             'alt_title'     => $alt,
@@ -59,7 +59,7 @@ final class MediaNormalizer
             'popularity'    => $m['popularity'] ?? null,
             'favourites'    => $m['favourites'] ?? null,
             'mal_id'        => $m['idMal'] ?? null,
-            'source_url'    => $m['siteUrl'] ?? ('https://anilist.co/' . strtolower($type === 'anime' ? 'anime' : 'manga') . '/' . (int)$m['id']),
+            'source_url'    => $m['siteUrl'] ?? ('https://anilist.co/manga/' . (int)$m['id']),
             'description'   => $desc !== '' ? $desc : null,
             'readable'      => false, // katalog = discovery; baca lewat sumber resmi
             'url_detail'    => '/detail/' . $type . '/' . (int)$m['id'],

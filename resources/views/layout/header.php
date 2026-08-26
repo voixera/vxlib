@@ -4,7 +4,6 @@ component('brand');
 component('icons');
 $nav = [
     'home'    => ['/', 'Beranda', 'home'],
-    'anime'   => ['/anime', 'Anime', null],
     'manga'   => ['/manga', 'Manga', null],
     'manhwa'  => ['/manhwa', 'Manhwa', null],
     'explore' => ['/explore.php', 'Jelajahi', 'compass'],
@@ -20,7 +19,7 @@ $nav = [
     <form class="header-search" action="/search.php" method="get" role="search">
       <label class="visually-hidden" for="header-q">Cari judul</label>
       <?= icon('search', 18) ?>
-      <input id="header-q" type="search" name="q" placeholder="Cari anime, manga, manhwa…"
+      <input id="header-q" type="search" name="q" placeholder="Cari manga, manhwa…"
              value="<?= e($_GET['q'] ?? '') ?>" autocomplete="off" maxlength="100">
       <kbd aria-hidden="true">/</kbd>
     </form>

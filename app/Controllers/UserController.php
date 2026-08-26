@@ -32,6 +32,21 @@ final class UserController
         ]);
     }
 
+    public static function history(): void
+    {
+        $user = Auth::requireUser();
+        $history = (new LibraryRepository())->history((int)$user['id'], 24);
+
+        page('pages/history', [
+            'title'       => 'Riwayat Baca — VoiXLib',
+            'description' => 'Judul yang terakhir kamu buka di VoiXLib.',
+            'activeNav'   => 'history',
+        ], [
+            'user'        => $user,
+            'history'     => $history,
+        ]);
+    }
+
     public static function profile(): void
     {
         $user = Auth::requireUser();

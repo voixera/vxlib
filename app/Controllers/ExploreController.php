@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 final class ExploreController
 {
-    private const TYPES = ['anime', 'manga', 'manhwa'];
+    private const TYPES = ['manga', 'manhwa'];
     private const SORTS = ['popular', 'trending', 'newest', 'oldest', 'title_asc', 'title_desc', 'score'];
 
     /** @return array{q:string,type:string,genre:string,status:string,sort:string,
@@ -38,6 +38,23 @@ final class ExploreController
         $res = AniListService::browse($params);
         if ($res === null) return ['items' => [], 'total' => null, 'has_next' => false, 'error' => 'provider_unavailable', 'page' => $params['page']];
         return $res + ['error' => null];
+    }
+
+    /** Rak buku domain publik — teks nyata dari Project Gutenberg, legal dibaca penuh. */
+    public static function klasik(): void
+    {
+        $page = max(1, min(50, (int)($_GET['page'] ?? 1)));
+        $result = GutenbergService::popular($page);
+
+        page('pages/klasik', [
+            'title'       => 'Klasik Domain Publik — VoiXLib',
+            'description' => 'Karya klasik domain publik yang bisa dibaca langsung di VoiXLib dengan pengalaman membalik halaman.',
+            'activeNav'   => 'klasik',
+        ], [
+            'books'     => $result['books'] ?? [],
+            'nextPage'  => $result['next_page'] ?? null,
+            'page'      => $page,
+        ]);
     }
 
     public static function explore(): void

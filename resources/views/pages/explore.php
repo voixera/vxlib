@@ -6,7 +6,7 @@ component('icons');
 $items = $result['items'] ?? [];
 $total = $result['total'] ?? null;
 $error = $result['error'] ?? null;
-$typeLabels = ['anime' => 'Anime', 'manga' => 'Manga', 'manhwa' => 'Manhwa'];
+$typeLabels = ['manga' => 'Manga', 'manhwa' => 'Manhwa'];
 $hasFilters = ($params['q'] ?? '') !== '' || $params['type'] !== '' || $params['genre'] !== ''
     || $params['status'] !== '' || $params['year_from'] || $params['year_to'];
 ?>

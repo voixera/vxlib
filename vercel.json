@@ -5,15 +5,13 @@
   },
   "rewrites": [
     { "source": "/assets/(.*)", "destination": "/public/assets/$1" },
+    { "source": "/detail/:type/:id", "destination": "/api/index.php" },
+    { "source": "/anime", "destination": "/api/index.php" },
+    { "source": "/manga", "destination": "/api/index.php" },
+    { "source": "/manhwa", "destination": "/api/index.php" },
+    { "source": "/baca/:id", "destination": "/api/index.php" },
+    { "source": "/klasik", "destination": "/api/index.php" },
+    { "source": "/(routes|app|config|resources|storage|tools|supabase)/(.*)", "destination": "/api/index.php" },
     { "source": "/(.*)", "destination": "/api/index.php" }
-  ],
-  "headers": [
-    {
-      "source": "/((?:routes|app|config|resources|tools|supabase|storage)/.*)",
-      "headers": [
-        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
-        { "key": "X-Robots-Tag", "value": "noindex" }
-      ]
-    }
   ]
 }

@@ -152,9 +152,9 @@ final class AniListService
     {
         return [
             'trending' => self::browse(['sort' => 'trending', 'per_page' => 12, 'page' => 1]),
-            'anime'    => self::browse(['sort' => 'popular', 'type' => 'anime', 'per_page' => 12, 'page' => 1]),
             'manga'    => self::browse(['sort' => 'popular', 'type' => 'manga', 'per_page' => 12, 'page' => 1]),
             'manhwa'   => self::browse(['sort' => 'popular', 'type' => 'manhwa', 'per_page' => 12, 'page' => 1]),
+            'latest'   => ['items' => MangaReaderApiService::getLatestReleases(1)],
             'picks'    => self::browse(['sort' => 'score', 'per_page' => 10, 'page' => 1]),
         ];
     }
@@ -176,10 +176,9 @@ final class AniListService
     private static function typeFilter(string $slug): array
     {
         return match ($slug) {
-            'anime'  => ['ANIME', null],
             'manga'  => ['MANGA', 'JP'],
             'manhwa' => ['MANGA', 'KR'],
-            default  => [null, null],
+            default  => ['MANGA', null],
         };
     }
 }
