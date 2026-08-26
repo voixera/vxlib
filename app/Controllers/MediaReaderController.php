@@ -30,32 +30,59 @@ final class MediaReaderController
             $media['alt_title'] ?? '',
         ]));
 
-        // 1. Try MangaDex with all query candidates
+        // 1. Try Febry Manga API (MangaMint ID)
         foreach ($queries as $q) {
-            $search = MangaDexService::searchManga($q);
-            $mdId = $search['data'][0]['id'] ?? null;
-
-            if ($mdId) {
-                $feed = MangaDexService::getChapters($mdId);
-                if (!empty($feed['data'])) {
-                    foreach ($feed['data'] as $chItem) {
-                        $attrs = $chItem['attributes'] ?? [];
-                        $chNum = $attrs['chapter'] ?? '?';
-                        $chTitle = $attrs['title'] ?: "Chapter {$chNum}";
-                        $lang = strtoupper((string)($attrs['translatedLanguage'] ?? 'EN'));
-                        $chapters[] = [
-                            'id' => $chItem['id'],
-                            'number' => $chNum,
-                            'title' => "[$lang] Ch. {$chNum} - " . $chTitle,
-                            'source' => 'mangadex',
-                        ];
+            $fSearch = FebryMangaApiService::search($q);
+            $mangaList = $fSearch['manga_list'] ?? ($fSearch['data'] ?? []);
+            if (!empty($mangaList)) {
+                $first = $mangaList[0] ?? null;
+                $ep = $first['endpoint'] ?? null;
+                if ($ep) {
+                    $fDetail = FebryMangaApiService::getDetail($ep);
+                    $chList = $fDetail['chapter'] ?? ($fDetail['chapter_list'] ?? []);
+                    if (!empty($chList)) {
+                        foreach ($chList as $chItem) {
+                            $chapters[] = [
+                                'id' => $chItem['chapter_endpoint'] ?? ($chItem['endpoint'] ?? ''),
+                                'number' => $chItem['chapter_title'] ?? ($chItem['name'] ?? 'Chapter'),
+                                'title' => $chItem['chapter_title'] ?? ($chItem['name'] ?? 'Chapter'),
+                                'source' => 'febry_manga',
+                            ];
+                        }
+                        if (!empty($chapters)) break;
                     }
-                    if (!empty($chapters)) break;
                 }
             }
         }
 
-        // 2. Fallback to KomikIndo
+        // 2. Try MangaDex with all query candidates
+        if (empty($chapters)) {
+            foreach ($queries as $q) {
+                $search = MangaDexService::searchManga($q);
+                $mdId = $search['data'][0]['id'] ?? null;
+
+                if ($mdId) {
+                    $feed = MangaDexService::getChapters($mdId);
+                    if (!empty($feed['data'])) {
+                        foreach ($feed['data'] as $chItem) {
+                            $attrs = $chItem['attributes'] ?? [];
+                            $chNum = $attrs['chapter'] ?? '?';
+                            $chTitle = $attrs['title'] ?: "Chapter {$chNum}";
+                            $lang = strtoupper((string)($attrs['translatedLanguage'] ?? 'EN'));
+                            $chapters[] = [
+                                'id' => $chItem['id'],
+                                'number' => $chNum,
+                                'title' => "[$lang] Ch. {$chNum} - " . $chTitle,
+                                'source' => 'mangadex',
+                            ];
+                        }
+                        if (!empty($chapters)) break;
+                    }
+                }
+            }
+        }
+
+        // 3. Fallback to KomikIndo
         if (empty($chapters)) {
             foreach ($queries as $q) {
                 $kiSearch = MangaReaderApiService::searchKomikIndo($q);
@@ -79,7 +106,7 @@ final class MediaReaderController
             }
         }
 
-        // 3. Fallback to Mangabat
+        // 4. Fallback to Mangabat
         if (empty($chapters)) {
             foreach ($queries as $q) {
                 $mbSearch = MangaReaderApiService::searchMangabat($q);
@@ -111,7 +138,14 @@ final class MediaReaderController
 
             $activeCh = array_values(array_filter($chapters, fn($c) => $c['id'] === $selectedChapterId))[0] ?? $chapters[0];
 
-            if (($activeCh['source'] ?? '') === 'mangadex') {
+            if (($activeCh['source'] ?? '') === 'febry_manga') {
+                $fChDetail = FebryMangaApiService::getChapter($activeCh['id']);
+                $selectedChapterPages = $fChDetail['chapter_image'] ?? ($fChDetail['image_list'] ?? []);
+                // If nested object format (array of objects with image_url)
+                if (!empty($selectedChapterPages) && is_array($selectedChapterPages[0] ?? null)) {
+                    $selectedChapterPages = array_map(fn($img) => $img['chapter_image_link'] ?? ($img['image_url'] ?? ''), $selectedChapterPages);
+                }
+            } elseif (($activeCh['source'] ?? '') === 'mangadex') {
                 $pagesRes = MangaDexService::getChapterPages($activeCh['id']);
                 $selectedChapterPages = $pagesRes['pages'] ?? [];
             } elseif (($activeCh['source'] ?? '') === 'komikindo') {

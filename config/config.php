@@ -31,6 +31,7 @@ final class Config
             'ANIPUB_API_URL'    => 'https://www.anipub.xyz',
             'MANGA_READER_API_URL' => 'http://komikato.bugs.today',
             'MANGADEX_API_URL'   => 'https://api.mangadex.org',
+            'FEBRY_MANGA_API_URL' => 'https://mangamint.kaedenoki.net/api',
             'SESSION_NAME'     => 'voixlib_session',
         ];
 
