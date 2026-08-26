@@ -1,5 +1,5 @@
 <?php
-/** Detail judul: metadata nyata dari AniList. Bacaan diarahkan ke sumber resmi. */
+/** Detail judul: metadata nyata dari AniList. */
 component('icons');
 component('states');
 
@@ -56,22 +56,10 @@ $u = Auth::user();
         <div class="fact"><dt>Tahun</dt><dd><?= $m['year'] ? (int)$m['year'] : 'Tidak tersedia' ?></dd></div>
       </dl>
 
-      <div class="source-note-box">
-        <?= icon('external', 16) ?>
-        <p><strong>Konten bacaan tersedia melalui sumber eksternal.</strong>
-          VoiXLib adalah platform discovery — kami menampilkan metadata resmi dan mengarahkanmu
-          ke platform pembaca yang berlisensi.</p>
-      </div>
-
       <div class="detail-actions">
-        <a class="btn btn-accent" href="<?= e($m['source_url']) ?>" target="_blank" rel="noopener">
-          <?= icon('book-open', 18) ?> Lihat Sumber
+        <a class="btn btn-accent" href="/read/<?= e($m['media_type']) ?>/<?= (int)preg_replace('/^anilist:/', '', (string)$m['external_id']) ?>">
+          <?= icon($m['media_type'] === 'anime' ? 'play' : 'book-open', 18) ?> <?= $m['media_type'] === 'anime' ? 'Tonton di VoiXLib' : 'Baca di VoiXLib' ?>
         </a>
-        <?php if (!empty($m['mal_id'])): ?>
-          <a class="btn btn-ghost" href="https://myanimelist.net/<?= $m['media_type'] === 'anime' ? 'anime' : 'manga' ?>/<?= (int)$m['mal_id'] ?>" target="_blank" rel="noopener">
-            MyAnimeList
-          </a>
-        <?php endif; ?>
 
         <button type="button" class="btn btn-ghost action-library" data-book-id="<?= $bookId ?? '' ?>"
                 data-status="<?= e($shelfStatus ?? '') ?>" <?= ($u && $bookId) ? '' : 'data-needs-auth="1"' ?>>

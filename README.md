@@ -12,8 +12,8 @@ Backend PHP 8.2 murni (tanpa Composer), frontend vanilla JS/SVG. Tanpa framework
 
 - **No-dummy:** setiap judul/sinopsis/skor berasal dari AniList. Jika provider tidak menyediakan
   sebuah field, VoiXLib menampilkan "Tidak tersedia" — tidak pernah mengarangnya.
-- **Discovery, bukan pembajakan:** VoiXLib tidak menghosting chapter. Halaman detail mengarahkan ke
-  sumber resmi ("Lihat Sumber").
+- **Konten berlisensi:** AniList hanya menyediakan metadata. Ruang baca/tonton internal siap dipasang
+  saat VoiXLib memiliki sumber berlisensi atau file distribusi sendiri.
 - **Service layer per provider:** `AnimeService` / `MangaService` / `ManhwaService` men-facade
   `AniListService` — ganti provider dengan menyentuh satu class saja.
 
@@ -56,6 +56,7 @@ pertama kali dibuka/disimpan, supaya perpustakaan & bookmark punya foreign key v
 /routes          entry point halaman (browse, detail, auth/, api/)
 /anime /manga /manhwa        rak tipe (rewrite → routes/browse.php)
 /detail/{t}/{id}             halaman detail media
+/read/{t}/{id}               ruang baca/tonton internal media
 /app/Services     AniListService (GraphQL+cache), Anime/Manga/ManhwaService,
                   MediaNormalizer, Auth, Prefs, Http, RateLimiter…
 /app/Repositories CatalogRepository (mirror lokal), Library/UserRepository

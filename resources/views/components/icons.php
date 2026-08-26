@@ -23,6 +23,7 @@ function icon(string $name, int $size = 20): string
         'sun'      => '<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
         'moon'     => '<path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
         'book-open'=> '<path d="M12 6.5C10 4.8 7 4.3 4 4.5V19c3-.2 6 .3 8 2 2-1.7 5-2.2 8-2V4.5c-3-.2-6 .3-8 2zM12 6.5V21" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
+        'play'     => '<path d="m9 7 8 5-8 5z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
         'toc'      => '<path d="M5 6h14M5 10.5h9M5 15h14M5 19.5h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
         'type'     => '<path d="M5 7V5h14v2M12 5v14M9.5 19h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
         'trash'    => '<path d="M5 7h14M10 4.5h4M9.5 7l.6 12h3.8l.6-12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>',

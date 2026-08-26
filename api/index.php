@@ -60,6 +60,10 @@ if ($path === '/' || $path === '/index.php') {
     $_GET['type'] = strtolower($m[1]);
     $_GET['id'] = $m[2];
     $target = 'routes/detail.php';
+} elseif (preg_match('#^/read/(anime|manga|manhwa)/(\d{1,8})$#i', $path, $m)) {
+    $_GET['type'] = strtolower($m[1]);
+    $_GET['id'] = $m[2];
+    $target = 'routes/media-reader.php';
 } else {
     // /book.php        → routes/book.php
     // /api/books.php   → routes/api/books.php
