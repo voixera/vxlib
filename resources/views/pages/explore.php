@@ -15,7 +15,7 @@ $hasFilters = ($params['q'] ?? '') !== '' || ($params['category'] ?? '') !== '' 
     <h1><?= isset($isSearch) && $isSearch
         ? ($params['q'] !== '' ? 'Results for “<em>' . e($params['q']) . '</em>”' : 'Search the library')
         : 'Explore the catalog' ?></h1>
-    <p class="lede">Real, public-domain editions. Filter by mood, language or era — then read right here in the browser.</p>
+    <p class="lede">VoiXLib-native editions: manga, manhwa and anime with illustrated pages, plus novels in Bahasa Indonesia and English. Filter, then read right here.</p>
   </header>
 
   <form class="toolbar" id="catalog-toolbar" method="get" action="<?= e($_SERVER['PHP_SELF']) ?>">
@@ -30,7 +30,7 @@ $hasFilters = ($params['q'] ?? '') !== '' || ($params['category'] ?? '') !== '' 
     </label>
     <select name="language" data-autosubmit aria-label="Language">
       <option value="">Any language</option>
-      <?php foreach (['en' => 'English', 'fr' => 'French', 'de' => 'German', 'es' => 'Spanish', 'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch', 'fi' => 'Finnish'] as $code => $label): ?>
+      <?php foreach (['en' => 'English', 'id' => 'Bahasa Indonesia', 'fr' => 'French', 'de' => 'German', 'es' => 'Spanish', 'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch', 'fi' => 'Finnish'] as $code => $label): ?>
         <option value="<?= $code ?>" <?= ($params['language'] ?? '') === $code ? 'selected' : '' ?>><?= $label ?></option>
       <?php endforeach; ?>
     </select>

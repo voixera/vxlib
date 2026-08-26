@@ -42,7 +42,7 @@ final class HomeController
 
         page('pages/home', [
             'title'       => 'VoiXLib — Read beyond the shelf',
-            'description' => 'A calm digital library of real, free books. Discover classics, read them in the browser, keep your place.',
+            'description' => 'A calm digital library of manga, manhwa, anime and novels in English and Bahasa Indonesia. Read in the browser, keep your place.',
             'activeNav'   => 'home',
         ], [
             'featured'    => $featured,

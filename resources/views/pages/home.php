@@ -17,14 +17,13 @@ $heroCovers    = array_slice($trendingBooks ?: $recentBooks, 0, 3);
       <div>
         <p class="hero-kicker">A digital library for slow readers</p>
         <h1 class="hero-title">Read beyond<br>the shelf<em>.</em></h1>
-        <p class="hero-lede">VoiXLib gathers real public-domain books — classics, mysteries, philosophy,
-          adventures — and gives them a calm place to be read. No feeds, no noise.
-          Just you, the text, and your place in it.</p>
+        <p class="hero-lede">Manga and manhwa with real page-turns, anime tie-ins, and novels in Bahasa
+          Indonesia — all in one calm library. No feeds, no noise. Just you, the page, and your place in it.</p>
 
         <form class="hero-search" action="/search.php" method="get" role="search">
           <?= icon('search', 19) ?>
           <label class="visually-hidden" for="hero-q">Search the catalog</label>
-          <input id="hero-q" type="search" name="q" placeholder="Try “Dracula”, “Jane Austen”, “philosophy”…" maxlength="120">
+          <input id="hero-q" type="search" name="q" placeholder="Try “manga”, “Sakura Circuit”, “novel indonesia”…" maxlength="120">
           <button class="btn btn-accent" type="submit">Search</button>
         </form>
 
@@ -203,15 +202,15 @@ $heroCovers    = array_slice($trendingBooks ?: $recentBooks, 0, 3);
         <span class="section-num">03 · The idea</span>
         <h2>A quiet room<br>for loud ideas</h2>
         <p style="margin-top:16px;color:var(--ink-2);max-width:38ch;line-height:1.7">
-          VoiXLib exists because great books shouldn’t hide behind cluttered scans and pop-ups.
-          We re-set each public-domain work into a reader built for long, comfortable sessions.</p>
+          VoiXLib exists because great stories shouldn’t hide behind cluttered scans and pop-ups.
+          We set every title into a reader built for long, comfortable sessions — flipbook for comics, typeset pages for prose.</p>
       </div>
       <div class="why-points reveal">
         <div class="why-point">
           <span class="why-glyph"><?= icon('book-open', 26) ?></span>
           <div>
-            <h3>Real texts, properly typeset</h3>
-            <p>Every readable title is pulled from Project Gutenberg, cleaned of boilerplate, and split into chapters you can actually navigate.</p>
+            <h3>Original illustrated editions</h3>
+            <p>Comic pages are drawn as crisp vector art that stays sharp on any screen; novels arrive properly typeset and split into chapters you can actually navigate.</p>
           </div>
         </div>
         <div class="why-point">
@@ -225,7 +224,7 @@ $heroCovers    = array_slice($trendingBooks ?: $recentBooks, 0, 3);
           <span class="why-glyph"><?= icon('globe', 26) ?></span>
           <div>
             <h3>Honest provenance</h3>
-            <p>Covers come from the digitized editions where they exist; otherwise we design one from the book’s own metadata. Every page links back to its source.</p>
+            <p>Every edition is VoiXLib’s own: covers designed from each book’s metadata, comic pages drawn in vector art, prose written and typeset in-house.</p>
           </div>
         </div>
       </div>
