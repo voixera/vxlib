@@ -3,8 +3,13 @@
 declare(strict_types=1);
 
 /** MangaReaderApiService — Service integrasi REST API KatowProject manga-reader (KomikIndo & Mangabat). */
-final class MangaReaderApiService
+final class MangaReaderApiService implements ChapterProvider
 {
+    public static function getProviderName(): string
+    {
+        return 'KomikIndo / Mangabat';
+    }
+
     private static function baseUrl(): string
     {
         return rtrim((string)Config::get('MANGA_READER_API_URL', 'http://komikato.bugs.today'), '/');
@@ -96,5 +101,75 @@ final class MangaReaderApiService
     {
         $ep = trim($endpoint, '/');
         return Cache::remember('mr_api:mangabat:chapter:' . $ep, 7200, fn() => Http::getJson(self::baseUrl() . '/mangabat/api/chapter/' . $ep));
+    }
+
+    public static function findChapters(array $queries): array
+    {
+        $chapters = [];
+
+        // 1. Try KomikIndo
+        foreach ($queries as $q) {
+            $kiSearch = self::searchKomikIndo($q);
+            if (!empty($kiSearch['data'])) {
+                $first = $kiSearch['data'][0] ?? null;
+                if (!empty($first['endpoint'])) {
+                    $kiDetail = self::getKomikIndoDetail($first['endpoint']);
+                    if (!empty($kiDetail['chapter_list'])) {
+                        foreach ($kiDetail['chapter_list'] as $chItem) {
+                            $name = $chItem['name'] ?? 'Chapter';
+                            $chapters[] = [
+                                'id'           => $chItem['endpoint'],
+                                'number'       => (string)$name,
+                                'title'        => "[ID] " . $name,
+                                'language'     => 'ID',
+                                'publish_date' => null,
+                                'group'        => 'KomikIndo',
+                                'source'       => 'komikindo',
+                            ];
+                        }
+                        if (!empty($chapters)) return $chapters;
+                    }
+                }
+            }
+        }
+
+        // 2. Try Mangabat
+        foreach ($queries as $q) {
+            $mbSearch = self::searchMangabat($q);
+            if (!empty($mbSearch['data'])) {
+                $first = $mbSearch['data'][0] ?? null;
+                if (!empty($first['endpoint'])) {
+                    $mbDetail = self::getMangabatDetail($first['endpoint']);
+                    if (!empty($mbDetail['chapter_list'])) {
+                        foreach ($mbDetail['chapter_list'] as $chItem) {
+                            $name = $chItem['name'] ?? 'Chapter';
+                            $chapters[] = [
+                                'id'           => $chItem['endpoint'],
+                                'number'       => (string)$name,
+                                'title'        => "[EN] " . $name,
+                                'language'     => 'EN',
+                                'publish_date' => null,
+                                'group'        => 'Mangabat',
+                                'source'       => 'mangabat',
+                            ];
+                        }
+                        if (!empty($chapters)) return $chapters;
+                    }
+                }
+            }
+        }
+
+        return $chapters;
+    }
+
+    public static function getPages(string $chapterId): array
+    {
+        if (str_starts_with($chapterId, 'read-')) {
+            $chDetail = self::getMangabatChapter($chapterId);
+            return $chDetail['image_list'] ?? [];
+        }
+
+        $chDetail = self::getKomikIndoChapter($chapterId);
+        return $chDetail['image_list'] ?? [];
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-/** Safe decorative anime art. Never used as media content. */
+/** Safe decorative anime art for non-reading components. Never used for manga reader content. */
 final class NekosService
 {
     private const ENDPOINT = 'https://api.nekosapi.com/v4/images/random?rating=safe&without_tags=exposed_girl_breasts,breasts,nude,nsfw&limit=1';

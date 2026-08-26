@@ -3,8 +3,13 @@
 declare(strict_types=1);
 
 /** MangaDexService — Service integrasi MangaDex API v5 untuk Manga/Manhwa Chapters. */
-final class MangaDexService
+final class MangaDexService implements ChapterProvider
 {
+    public static function getProviderName(): string
+    {
+        return 'MangaDex';
+    }
+
     private static function baseUrl(): string
     {
         return rtrim((string)Config::get('MANGADEX_API_URL', 'https://api.mangadex.org'), '/');
@@ -56,5 +61,45 @@ final class MangaDexService
             'hash'    => $hash,
             'pages'   => $pages,
         ];
+    }
+
+    public static function findChapters(array $queries): array
+    {
+        $chapters = [];
+        foreach ($queries as $q) {
+            $search = self::searchManga($q);
+            $mdId = $search['data'][0]['id'] ?? null;
+
+            if ($mdId) {
+                $feed = self::getChapters($mdId);
+                if (!empty($feed['data'])) {
+                    foreach ($feed['data'] as $chItem) {
+                        $attrs = $chItem['attributes'] ?? [];
+                        $chNum = $attrs['chapter'] ?? '?';
+                        $chTitle = $attrs['title'] ?: "Chapter {$chNum}";
+                        $lang = strtoupper((string)($attrs['translatedLanguage'] ?? 'EN'));
+                        $pubDate = !empty($attrs['publishAt']) ? date('d M Y', strtotime((string)$attrs['publishAt'])) : null;
+                        
+                        $chapters[] = [
+                            'id'           => $chItem['id'],
+                            'number'       => (string)$chNum,
+                            'title'        => "[$lang] Ch. {$chNum} - " . $chTitle,
+                            'language'     => $lang,
+                            'publish_date' => $pubDate,
+                            'group'        => 'MangaDex Scanlation',
+                            'source'       => 'mangadex',
+                        ];
+                    }
+                    if (!empty($chapters)) break;
+                }
+            }
+        }
+        return $chapters;
+    }
+
+    public static function getPages(string $chapterId): array
+    {
+        $res = self::getChapterPages($chapterId);
+        return $res['pages'] ?? [];
     }
 }

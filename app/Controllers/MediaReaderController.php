@@ -14,150 +14,84 @@ final class MediaReaderController
             self::notFound();
         }
 
+        // 1. Fetch metadata from AniList (Metadata Only)
         $media = AniListService::detail($id);
         if (!$media || $media['media_type'] !== $type) {
             self::notFound();
         }
 
-        $chapters = [];
-        $selectedChapterPages = [];
-        $selectedChapterId = $_GET['ch'] ?? null;
-
-        // Collect search query candidates
+        // Search Query Candidates
         $queries = array_filter(array_unique([
             $media['title'] ?? '',
             $media['title_romaji'] ?? '',
             $media['alt_title'] ?? '',
         ]));
 
-        // 1. Try Febry Manga API (MangaMint ID)
-        foreach ($queries as $q) {
-            $fSearch = FebryMangaApiService::search($q);
-            $mangaList = $fSearch['manga_list'] ?? ($fSearch['data'] ?? []);
-            if (!empty($mangaList)) {
-                $first = $mangaList[0] ?? null;
-                $ep = $first['endpoint'] ?? null;
-                if ($ep) {
-                    $fDetail = FebryMangaApiService::getDetail($ep);
-                    $chList = $fDetail['chapter'] ?? ($fDetail['chapter_list'] ?? []);
-                    if (!empty($chList)) {
-                        foreach ($chList as $chItem) {
-                            $chapters[] = [
-                                'id' => $chItem['chapter_endpoint'] ?? ($chItem['endpoint'] ?? ''),
-                                'number' => $chItem['chapter_title'] ?? ($chItem['name'] ?? 'Chapter'),
-                                'title' => $chItem['chapter_title'] ?? ($chItem['name'] ?? 'Chapter'),
-                                'source' => 'febry_manga',
-                            ];
-                        }
-                        if (!empty($chapters)) break;
-                    }
-                }
+        // 2. Fetch Chapters using Providers (Prioritizing MangaDex)
+        /** @var array<int, class-string<ChapterProvider>> $providers */
+        $providers = [
+            MangaDexService::class,
+            FebryMangaApiService::class,
+            MangaReaderApiService::class,
+        ];
+
+        $chapters = [];
+        $activeProvider = null;
+
+        foreach ($providers as $providerClass) {
+            $ch = $providerClass::findChapters($queries);
+            if (!empty($ch)) {
+                $chapters = $ch;
+                $activeProvider = $providerClass;
+                break;
             }
         }
 
-        // 2. Try MangaDex with all query candidates
-        if (empty($chapters)) {
-            foreach ($queries as $q) {
-                $search = MangaDexService::searchManga($q);
-                $mdId = $search['data'][0]['id'] ?? null;
+        $selectedChapterId = $_GET['ch'] ?? null;
+        $selectedChapterPages = [];
+        $activeChIndex = -1;
 
-                if ($mdId) {
-                    $feed = MangaDexService::getChapters($mdId);
-                    if (!empty($feed['data'])) {
-                        foreach ($feed['data'] as $chItem) {
-                            $attrs = $chItem['attributes'] ?? [];
-                            $chNum = $attrs['chapter'] ?? '?';
-                            $chTitle = $attrs['title'] ?: "Chapter {$chNum}";
-                            $lang = strtoupper((string)($attrs['translatedLanguage'] ?? 'EN'));
-                            $chapters[] = [
-                                'id' => $chItem['id'],
-                                'number' => $chNum,
-                                'title' => "[$lang] Ch. {$chNum} - " . $chTitle,
-                                'source' => 'mangadex',
-                            ];
-                        }
-                        if (!empty($chapters)) break;
-                    }
-                }
-            }
-        }
-
-        // 3. Fallback to KomikIndo
-        if (empty($chapters)) {
-            foreach ($queries as $q) {
-                $kiSearch = MangaReaderApiService::searchKomikIndo($q);
-                if (!empty($kiSearch['data'])) {
-                    $first = $kiSearch['data'][0] ?? null;
-                    if (!empty($first['endpoint'])) {
-                        $kiDetail = MangaReaderApiService::getKomikIndoDetail($first['endpoint']);
-                        if (!empty($kiDetail['chapter_list'])) {
-                            foreach ($kiDetail['chapter_list'] as $chItem) {
-                                $chapters[] = [
-                                    'id' => $chItem['endpoint'],
-                                    'number' => $chItem['name'] ?? 'Chapter',
-                                    'title' => $chItem['name'] ?? 'Chapter',
-                                    'source' => 'komikindo',
-                                ];
-                            }
-                            if (!empty($chapters)) break;
-                        }
-                    }
-                }
-            }
-        }
-
-        // 4. Fallback to Mangabat
-        if (empty($chapters)) {
-            foreach ($queries as $q) {
-                $mbSearch = MangaReaderApiService::searchMangabat($q);
-                if (!empty($mbSearch['data'])) {
-                    $first = $mbSearch['data'][0] ?? null;
-                    if (!empty($first['endpoint'])) {
-                        $mbDetail = MangaReaderApiService::getMangabatDetail($first['endpoint']);
-                        if (!empty($mbDetail['chapter_list'])) {
-                            foreach ($mbDetail['chapter_list'] as $chItem) {
-                                $chapters[] = [
-                                    'id' => $chItem['endpoint'],
-                                    'number' => $chItem['name'] ?? 'Chapter',
-                                    'title' => $chItem['name'] ?? 'Chapter',
-                                    'source' => 'mangabat',
-                                ];
-                            }
-                            if (!empty($chapters)) break;
-                        }
-                    }
-                }
-            }
-        }
-
-        // Select active chapter & fetch pages
         if (!empty($chapters)) {
-            if (!$selectedChapterId || !array_filter($chapters, fn($c) => $c['id'] === $selectedChapterId)) {
-                $selectedChapterId = $chapters[0]['id'];
+            // Find or default to first chapter
+            $activeChIndex = 0;
+            if ($selectedChapterId !== null) {
+                foreach ($chapters as $index => $c) {
+                    if ($c['id'] === $selectedChapterId) {
+                        $activeChIndex = $index;
+                        break;
+                    }
+                }
             }
 
-            $activeCh = array_values(array_filter($chapters, fn($c) => $c['id'] === $selectedChapterId))[0] ?? $chapters[0];
+            $selectedChapterId = $chapters[$activeChIndex]['id'];
+            $activeCh = $chapters[$activeChIndex];
 
-            if (($activeCh['source'] ?? '') === 'febry_manga') {
-                $fChDetail = FebryMangaApiService::getChapter($activeCh['id']);
-                $selectedChapterPages = $fChDetail['chapter_image'] ?? ($fChDetail['image_list'] ?? []);
-                // If nested object format (array of objects with image_url)
-                if (!empty($selectedChapterPages) && is_array($selectedChapterPages[0] ?? null)) {
-                    $selectedChapterPages = array_map(fn($img) => $img['chapter_image_link'] ?? ($img['image_url'] ?? ''), $selectedChapterPages);
-                }
-            } elseif (($activeCh['source'] ?? '') === 'mangadex') {
-                $pagesRes = MangaDexService::getChapterPages($activeCh['id']);
-                $selectedChapterPages = $pagesRes['pages'] ?? [];
-            } elseif (($activeCh['source'] ?? '') === 'komikindo') {
-                $chDetail = MangaReaderApiService::getKomikIndoChapter($activeCh['id']);
-                $selectedChapterPages = $chDetail['image_list'] ?? [];
-            } elseif (($activeCh['source'] ?? '') === 'mangabat') {
-                $chDetail = MangaReaderApiService::getMangabatChapter($activeCh['id']);
-                $selectedChapterPages = $chDetail['image_list'] ?? [];
+            // Fetch actual pages from active provider
+            if (($activeCh['source'] ?? '') === 'mangadex') {
+                $selectedChapterPages = MangaDexService::getPages($selectedChapterId);
+            } elseif (($activeCh['source'] ?? '') === 'febry_manga') {
+                $selectedChapterPages = FebryMangaApiService::getPages($selectedChapterId);
+            } else {
+                $selectedChapterPages = MangaReaderApiService::getPages($selectedChapterId);
             }
         }
 
-        $art = empty($chapters) ? NekosService::safeImage() : null;
+        // 3. Get User Reading Progress if logged in
+        $user = Auth::user();
+        $savedProgress = null;
+        if ($user && SupabaseClient::configured()) {
+            $catalogRepo = new CatalogRepository();
+            $bookId = $catalogRepo->ensureLocal($media);
+            if ($bookId !== null) {
+                $libraryRepo = new LibraryRepository();
+                $savedProgress = $libraryRepo->progress((int)$user['id'], $bookId);
+                // Touch reading history
+                $libraryRepo->touchHistory((int)$user['id'], $bookId);
+            }
+        }
+
+        $prevChapter = $chapters[$activeChIndex - 1] ?? null;
+        $nextChapter = $chapters[$activeChIndex + 1] ?? null;
 
         page('pages/media-reader', [
             'title' => 'Membaca ' . $media['title'] . ' — VoiXLib',
@@ -165,10 +99,15 @@ final class MediaReaderController
             'ogImage' => $media['cover_url'],
         ], [
             'm' => $media,
-            'art' => $art,
+            'bookId' => $media['external_id'],
             'chapters' => $chapters,
             'selectedChapterId' => $selectedChapterId,
             'selectedChapterPages' => $selectedChapterPages,
+            'activeChIndex' => $activeChIndex,
+            'prevChapter' => $prevChapter,
+            'nextChapter' => $nextChapter,
+            'savedProgress' => $savedProgress,
+            'providerName' => $activeProvider ? $activeProvider::getProviderName() : null,
         ]);
     }
 
