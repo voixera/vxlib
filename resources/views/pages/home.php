@@ -1,7 +1,8 @@
 <?php
-/** Beranda — semua section dari data nyata AniList; section kosong tidak dirender. */
+/** Beranda — arsip manga + manhwa dari data nyata AniList. Section kosong tidak dirender. */
 component('states');
 component('icons');
+component('motifs');
 $heroCovers = $heroCovers ?? [];
 $continue = [];
 $progressMap = [];
@@ -15,33 +16,37 @@ if (!empty($continueReading)) {
 }
 ?>
 <section class="hero">
-  <div class="shell">
-    <div class="hero-grid">
-      <div>
-        <p class="hero-kicker">Perpustakaan digital untuk penikmat cerita</p>
-        <h1 class="hero-title">Temukan cerita<br>yang ingin kamu baca<em>.</em></h1>
-        <p class="hero-lede">VoiXLib membantumu menemukan manga dan manhwa dari katalog
-          dunia nyata — lengkap dengan genre, status, dan skor dari penyedia data. Simpan ke perpustakaan,
-          tandai favoritmu, lanjutkan kapan pun.</p>
+  <div class="shell hero-grid">
+    <div class="hero-copy">
+      <p class="kicker">Perpustakaan manga &amp; manhwa</p>
+      <h1 class="hero-title">Baca<br>Melampaui<br><em>Rak.</em></h1>
+      <p class="hero-lede">VoiXLib adalah arsip dan pembaca manga + manhwa. Jelajahi katalog dunia nyata,
+        simpan ke rak, tandai favoritmu, dan lanjutkan membaca kapan pun.</p>
 
-        <?php if (!empty($stats)): ?>
-          <div class="hero-stats" aria-label="Statistik">
-            <?php foreach ($stats as $stat): ?>
-              <div class="stat"><b><?= number_format((int)$stat['value']) ?></b><span><?= e($stat['label']) ?></span></div>
-            <?php endforeach; ?>
-          </div>
-        <?php endif; ?>
+      <div class="hero-actions">
+        <form class="hero-search" action="/search.php" method="get" role="search">
+          <span class="hs-ic" aria-hidden="true"><?= icon('search', 18) ?></span>
+          <input type="search" name="q" placeholder="CARI MANGA / MANHWA" aria-label="Cari" autocomplete="off">
+          <button class="btn btn-accent" type="submit">Cari</button>
+        </form>
+        <a class="btn btn-ghost" href="/explore.php">Jelajahi katalog</a>
       </div>
 
-      <div class="hero-stage">
-        <div class="hero-covers" data-parallax-covers>
-          <?php foreach ($heroCovers as $i => $hb): ?>
-            <a class="hero-cover" href="<?= e($hb['url_detail']) ?>" style="animation-delay:-<?= $i * 2 ?>s" tabindex="-1" aria-hidden="true">
-              <img src="<?= e($hb['cover_url']) ?>" alt="" loading="<?= $i ? 'lazy' : 'eager' ?>" decoding="async">
-            </a>
+      <?php if (!empty($stats)): ?>
+        <div class="hero-stats" aria-label="Statistik">
+          <?php foreach ($stats as $stat): ?>
+            <div class="stat"><b><?= number_format((int)$stat['value']) ?></b><span><?= e($stat['label']) ?></span></div>
           <?php endforeach; ?>
         </div>
-      </div>
+      <?php endif; ?>
+    </div>
+
+    <div class="hero-stage" data-parallax-covers>
+      <?php foreach ($heroCovers as $i => $hb): ?>
+        <a class="hero-cover" href="<?= e($hb['url_detail']) ?>" tabindex="-1" aria-hidden="true">
+          <img src="<?= e($hb['cover_url']) ?>" alt="" loading="<?= $i ? 'lazy' : 'eager' ?>" decoding="async">
+        </a>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -52,16 +57,14 @@ if (!empty($continueReading)) {
     <span class="section-num">Genre</span>
     <div class="genre-grid">
       <?php foreach (MediaNormalizer::genres() as $g): ?>
-        <a class="cat-tile reveal is-visible" href="/explore.php?genre=<?= e(rawurlencode($g)) ?>">
-          <span class="cat-name"><?= e($g) ?></span>
-        </a>
+        <a class="cat-tile" href="/explore.php?genre=<?= e(rawurlencode($g)) ?>"><?= e($g) ?></a>
       <?php endforeach; ?>
     </div>
   </div>
 </section>
 
 <?php if ($continue !== []): ?>
-<section class="section">
+<section class="section" style="padding-top:0">
   <div class="shell">
     <?php view('components/shelf', ['heading' => 'Lanjutkan Membaca', 'books' => $continue, 'progress' => $progressMap]); ?>
   </div>
@@ -71,16 +74,16 @@ if (!empty($continueReading)) {
 
 <?php
 $sections = [
-    'latest'   => ['Rilis Komik Terbaru (Non-Lisensi / Scans)', '/explore.php?sort=newest'],
     'trending' => ['Sedang Trending', '/explore.php?sort=trending'],
     'manga'    => ['Manga Populer', '/manga'],
     'manhwa'   => ['Manhwa Populer', '/manhwa'],
+    'latest'   => ['Rilis Terbaru', '/explore.php?sort=newest'],
     'picks'    => ['Pilihan Minggu Ini', '/explore.php?sort=score'],
 ];
 foreach ($sections as $key => [$heading, $href]):
     $shelf = $shelves[$key] ?? null;
     if (empty($shelf['items'])) continue; ?>
-<section class="section">
+<section class="section" style="padding-top:0">
   <div class="shell">
     <?php view('components/shelf', ['heading' => $heading, 'books' => $shelf['items'], 'href' => $href]); ?>
   </div>
@@ -88,27 +91,28 @@ foreach ($sections as $key => [$heading, $href]):
 <?php endforeach; ?>
 
 <?php if (!empty($recent['items'])): ?>
-<section class="section">
+<section class="section" style="padding-top:0">
   <div class="shell">
-    <?php view('components/shelf', ['heading' => 'Baru Ditambahkan Musim Ini', 'books' => $recent['items'], 'href' => '/explore.php?sort=newest']); ?>
+    <?php view('components/shelf', ['heading' => 'Baru Ditambahkan', 'books' => $recent['items'], 'href' => '/explore.php?sort=newest']); ?>
   </div>
 </section>
 <?php endif; ?>
 
-<section class="section cta-band">
+<section class="cta-band">
   <div class="shell cta-inner">
     <div>
       <span class="section-num">Mulai</span>
-      <h2>Bangun rakitimu sendiri</h2>
+      <?= motif_speedlines(160, 28) ?>
+      <h2>Bangun rak kamu</h2>
       <p>Masuk dengan Discord untuk menyimpan judul ke Perpustakaan — Ingin Dibaca, Sedang Dibaca,
         Selesai — dan datanya tersinkron di semua perangkat.</p>
     </div>
     <div class="cta-actions">
       <?php if (Auth::check()): ?>
-        <a class="btn btn-solid" href="/library.php">Buka Perpustakaan Saya</a>
+        <a class="btn btn-solid" href="/library.php">Buka Perpustakaan</a>
       <?php else: ?>
-        <a class="btn btn-discord" href="/auth/discord.php?next=%2Flibrary.php"><?= icon('discord', 18) ?> Masuk dengan Discord</a>
-        <a class="btn btn-ghost" href="/explore.php">Jelajahi dulu saja</a>
+        <a class="btn btn-discord" href="/auth/discord.php?next=%2Flibrary.php"><?= icon('discord', 18) ?> Masuk Discord</a>
+        <a class="btn btn-ghost" href="/explore.php">Jelajahi dulu</a>
       <?php endif; ?>
     </div>
   </div>

@@ -173,4 +173,18 @@
   VX.serverPrefs = serverPrefs;
 
   applyTheme();
+
+  // ── Remove boot overlay once the page is interactive ──────────
+  var boot = document.getElementById('boot');
+  function killBoot() {
+    if (!boot) return;
+    boot.style.display = 'none';
+    boot.remove();
+    boot = null;
+  }
+  if (boot) {
+    if (document.readyState === 'complete') setTimeout(killBoot, 220);
+    else window.addEventListener('load', function () { setTimeout(killBoot, 220); });
+    setTimeout(killBoot, 2600); // hard cap
+  }
 })();

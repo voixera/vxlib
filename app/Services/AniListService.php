@@ -61,7 +61,7 @@ final class AniListService
       genres
       status format countryOfOrigin
       seasonYear startDate { year }
-      chapters volumes episodes
+      chapters volumes
       averageScore meanScore popularity favourites
       siteUrl
       staff(perPage: 6) { edges { role node { name { full } } } }

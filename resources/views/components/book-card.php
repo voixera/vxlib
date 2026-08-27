@@ -1,6 +1,8 @@
 <?php
-/** Kartu media — dipakai shelf dan grid. $book dari MediaNormalizer atau baris lokal. */
+/** Kartu media — dipakai shelf dan grid. $book dari MediaNormalizer atau baris lokal.
+ *  $variant: '' | 'featured' | 'compact' */
 component('icons');
+$variant = $variant ?? '';
 $coverSrc = $book['cover_url'] ?? null;
 $fallbackQuery = http_build_query([
     't' => $book['title'],
@@ -15,7 +17,7 @@ $href = $book['url_detail'] ?? ('/detail/' . e($book['media_type'] ?? 'manga') .
 $year = $book['publication_year'] ?? ($book['year'] ?? null);
 $typeLabel = $book['type_label'] ?? (($book['categories'][0]['name'] ?? false) ?: null);
 ?>
-<article class="book-card">
+<article class="book-card<?= $variant ? ' ' . e($variant) : '' ?>">
   <a class="book-card-link" href="<?= e($href) ?>" aria-label="<?= e($book['title']) ?>">
     <div class="cover<?= empty($coverSrc) ? ' is-generated' : '' ?>">
       <?= $coverImg ?>

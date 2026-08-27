@@ -6,7 +6,7 @@ $progressMap = $progress ?? [];
   <header class="shelf-head">
     <h2 class="shelf-title"><?= e($heading) ?></h2>
     <?php if (!empty($href)): ?>
-      <a class="shelf-more" href="<?= e($href) ?>">View all <?= icon('arrow-right', 16) ?></a>
+      <a class="shelf-more" href="<?= e($href) ?>">Lihat semua <?= icon('arrow-right', 16) ?></a>
     <?php endif; ?>
   </header>
   <div class="shelf" role="list" tabindex="-1">

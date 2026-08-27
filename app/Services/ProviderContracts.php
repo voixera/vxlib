@@ -2,11 +2,6 @@
 
 declare(strict_types=1);
 
-interface AnimeMetadataProvider
-{
-    public static function getAnimeDetail(int $id): ?array;
-}
-
 interface MangaMetadataProvider
 {
     public static function getMangaDetail(int $id): ?array;

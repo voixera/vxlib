@@ -124,59 +124,60 @@ $activeCh = $chapters[$activeChIndex] ?? null;
 </div>
 
 <style>
-.reader-view-container { background: #08090c; color: #e2e8f0; min-height: 100vh; padding: 20px 0 60px; }
-.reader-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-wrap: wrap; }
-.reader-header-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.reader-view-container { background: #000; color: #fff; min-height: 100vh; padding: 0 0 60px; }
+.reader-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 0; padding: 0; border-bottom: 3px solid #fff; flex-wrap: wrap; }
+.reader-header-left { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 12px 16px; }
 .reader-title-box { display: flex; flex-direction: column; }
-.reader-manga-title { font-size: 1.4rem; font-weight: 700; color: #fff; margin: 0; }
-.reader-ch-subtitle { font-size: 0.88rem; color: #94a3b8; margin: 2px 0 0; }
-.reader-header-right { display: flex; align-items: center; gap: 10px; }
+.reader-manga-title { font-family: var(--display); font-weight: 800; text-transform: uppercase; font-size: 1.3rem; color: #fff; margin: 0; letter-spacing: -0.01em; }
+.reader-ch-subtitle { font-size: 0.85rem; color: #b3aea0; margin: 3px 0 0; }
+.reader-header-right { display: flex; align-items: center; gap: 0; border-left: 3px solid #fff; }
 
-.resume-alert { display: flex; align-items: center; gap: 12px; background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.3); border-radius: 10px; padding: 12px 18px; margin-bottom: 24px; color: #c7d2fe; flex-wrap: wrap; }
-.resume-alert .btn-close { margin-left: auto; background: none; border: none; color: #c7d2fe; font-size: 1.4rem; cursor: pointer; }
+.resume-alert { display: flex; align-items: center; gap: 12px; background: var(--accent); color: #0E0E0C; border: 3px solid #fff; padding: 12px 18px; margin: 14px 16px 0; flex-wrap: wrap; }
+.resume-alert .btn-close { margin-left: auto; background: none; border: none; color: #0E0E0C; font-size: 1.6rem; cursor: pointer; line-height: 1; }
 
-.reader-grid { display: grid; grid-template-columns: 320px 1fr; gap: 32px; align-items: start; }
+.reader-grid { display: grid; grid-template-columns: 320px 1fr; gap: 0; align-items: start; }
 @media (max-width: 900px) { .reader-grid { grid-template-columns: 1fr; } }
 
-.reader-sidebar { background: #111318; border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px; max-height: 85vh; display: flex; flex-direction: column; }
-.reader-sidebar-title { font-size: 1rem; font-weight: 600; color: #f8fafc; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-.reader-provider-tag { font-size: 0.8rem; color: #64748b; margin-bottom: 14px; }
-.reader-chapter-list { overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
-.reader-chapter-item { display: flex; flex-direction: column; gap: 4px; padding: 10px 12px; border-radius: 8px; text-decoration: none; color: #cbd5e1; background: rgba(255,255,255,0.02); transition: background 0.2s; }
-.reader-chapter-item:hover { background: rgba(255,255,255,0.06); color: #fff; }
-.reader-chapter-item.is-active { background: rgba(99,102,241,0.2); color: #818cf8; border-left: 3px solid #6366f1; font-weight: 600; }
-.reader-chapter-item .ch-name { font-size: 0.88rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.reader-chapter-item .ch-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #64748b; }
-.chip-lang { background: rgba(255,255,255,0.1); padding: 1px 6px; border-radius: 4px; font-weight: 600; color: #cbd5e1; }
+.reader-sidebar { border-right: 3px solid #fff; padding: 18px; max-height: 85vh; display: flex; flex-direction: column; background: #0E0E0C; }
+.reader-sidebar-title { font-family: var(--mono); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.85rem; color: #fff; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.reader-provider-tag { font-size: 0.78rem; color: #837e73; margin-bottom: 14px; }
+.reader-chapter-list { overflow-y: auto; display: flex; flex-direction: column; gap: 0; padding-right: 0; }
+.reader-chapter-item { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border: 2px solid #fff; border-bottom: none; text-decoration: none; color: #cbd5e1; background: #000; }
+.reader-chapter-list .reader-chapter-item:last-child { border-bottom: 2px solid #fff; }
+.reader-chapter-item:hover { background: var(--accent); color: #0E0E0C; }
+.reader-chapter-item.is-active { background: var(--accent); color: #0E0E0C; font-weight: 700; }
+.reader-chapter-item .ch-name { font-size: 0.86rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reader-chapter-item .ch-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem; opacity: .8; }
+.chip-lang { border: 2px solid currentColor; padding: 1px 6px; font-weight: 700; }
 
 .reader-main { display: flex; flex-direction: column; align-items: center; width: 100%; }
-.reading-progress-bar-wrap { position: sticky; top: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.05); z-index: 50; }
-.reading-progress-bar { height: 100%; background: #6366f1; transition: width 0.1s linear; }
+.reading-progress-bar-wrap { position: sticky; top: 0; width: 100%; height: 6px; background: #222; z-index: 50; }
+.reading-progress-bar { height: 100%; background: var(--accent); transition: width 0.1s linear; }
 
-.reader-pages-list { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 14px; }
-.page-wrapper { width: 100%; min-height: 200px; position: relative; display: flex; justify-content: center; align-items: center; background: #0b0c10; border-radius: 12px; overflow: hidden; }
-.page-wrapper.skeleton-load { background: linear-gradient(90deg, #111318 25%, #1a1d24 50%, #111318 75%); background-size: 200% 100%; animation: skeleton-wave 1.5s infinite; }
+.reader-pages-list { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 0; }
+.page-wrapper { width: 100%; min-height: 200px; position: relative; display: flex; justify-content: center; align-items: center; background: #111; border-bottom: 3px solid #fff; }
+.page-wrapper.skeleton-load { background: linear-gradient(90deg, #111 25%, #1a1d24 50%, #111 75%); background-size: 200% 100%; animation: skeleton-wave 1.5s infinite; }
 @keyframes skeleton-wave { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 .manga-page-img { width: 100%; max-width: 100%; height: auto; object-fit: contain; display: block; }
-.page-number-indicator { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.7); color: #94a3b8; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; pointer-events: none; }
+.page-number-indicator { position: absolute; bottom: 8px; right: 12px; background: #000; color: #fff; font-family: var(--mono); font-size: 0.72rem; padding: 3px 9px; border: 2px solid #fff; pointer-events: none; }
 
-.chapter-nav-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; width: 100%; max-width: 900px; margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); }
+.chapter-nav-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; width: 100%; max-width: 900px; margin-top: 0; padding: 0; border-top: 3px solid #fff; }
+.chapter-nav-bottom .btn { border-radius: 0; flex: 1; justify-content: center; border-left: none; border-right: none; }
 
-/* buttons on the dark reader — always legible regardless of site theme */
-.reader-view-container .btn { border-radius: 12px; }
-.reader-view-container .btn-ghost { border-color: rgba(255,255,255,0.18); color: #e2e8f0; }
-.reader-view-container .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.08); color: #fff; }
-.reader-view-container .btn-solid { background: #6366f1; color: #fff; box-shadow: 0 8px 22px -10px #6366f1; }
-.reader-view-container .btn-solid:hover { background: #7c83f6; }
-.reader-view-container .btn:focus-visible { outline: 2.5px solid #818cf8; outline-offset: 2px; }
-.reader-view-container .icon-btn { border-color: rgba(255,255,255,0.15); color: #cbd5e1; }
-.reader-view-container .icon-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.32); }
-.reader-view-container .icon-btn:focus-visible { outline: 2.5px solid #818cf8; outline-offset: 2px; }
-.reader-view-container .resume-alert .btn-close:focus-visible { outline: 2.5px solid #818cf8; outline-offset: 2px; }
+/* reader buttons — hard edges, high contrast on black */
+.reader-view-container .btn { border-radius: 0; }
+.reader-view-container .btn-ghost { border-color: #fff; color: #fff; background: #000; }
+.reader-view-container .btn-ghost:hover { border-color: var(--accent); background: var(--accent); color: #0E0E0C; }
+.reader-view-container .btn-solid { background: var(--accent); color: #0E0E0C; border-color: #fff; }
+.reader-view-container .btn-solid:hover { background: #fff; color: #0E0E0C; }
+.reader-view-container .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.reader-view-container .icon-btn { border-color: #fff; color: #fff; border-radius: 0; }
+.reader-view-container .icon-btn:hover { background: var(--accent); color: #0E0E0C; border-color: #fff; }
+.reader-view-container .icon-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-.reader-empty-state { text-align: center; padding: 80px 20px; color: #94a3b8; }
-.reader-empty-state h2 { font-size: 1.4rem; color: #f8fafc; margin: 16px 0 8px; }
+.reader-empty-state { text-align: center; padding: 80px 20px; color: #b3aea0; }
+.reader-empty-state h2 { font-family: var(--display); text-transform: uppercase; font-size: 1.4rem; color: #fff; margin: 16px 0 8px; }
 .reader-empty-state p { margin-bottom: 24px; }
 </style>
 

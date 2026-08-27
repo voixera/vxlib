@@ -77,13 +77,13 @@ $firstChapter = $chapters[0] ?? null;
 <style>
 .manga-detail-layout { display:grid; grid-template-columns:220px 1fr; gap:28px; align-items:start; }
 @media (max-width:760px){ .manga-detail-layout{ grid-template-columns:1fr; } }
-.manga-detail-cover { border-radius:14px; overflow:hidden; background:#0b0c10; aspect-ratio:2/3; box-shadow:0 8px 30px rgba(0,0,0,.4); }
+.manga-detail-cover { border:var(--bd-strong); overflow:hidden; background:var(--paper-2); aspect-ratio:2/3; box-shadow:var(--sh); }
 .manga-detail-cover img { width:100%; height:100%; object-fit:cover; }
-.manga-meta-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
-.manga-detail-desc { color:var(--ink-1,#cbd5e1); line-height:1.6; margin:0 0 18px; max-width:70ch; }
-.manga-chapter-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:10px; max-height:520px; overflow-y:auto; padding-right:6px; }
-.chapter-card { display:flex; flex-direction:column; gap:4px; padding:11px 14px; background:var(--surface-2, rgba(255,255,255,.03)); border:1px solid var(--line, rgba(255,255,255,.08)); border-radius:8px; text-decoration:none; color:var(--ink-1,#e2e8f0); transition:background .15s, border-color .15s; }
-.chapter-card:hover { background:rgba(99,102,241,.12); border-color:var(--accent,#6366f1); }
-.chapter-card .ch-name { font-size:.88rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.chapter-card .ch-date { font-size:.74rem; color:var(--ink-2); }
+.manga-meta-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+.manga-detail-desc { color:var(--ink-2); line-height:1.65; margin:0 0 18px; max-width:70ch; }
+.manga-chapter-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:0; max-height:520px; overflow-y:auto; border:var(--bd); box-shadow:var(--sh-sm); }
+.chapter-card { display:flex; flex-direction:column; gap:4px; padding:12px 14px; background:var(--surface); border-bottom:var(--bd); text-decoration:none; color:var(--ink); }
+.chapter-card:hover { background:var(--accent-wash); }
+.chapter-card .ch-name { font-family:var(--display); font-weight:800; text-transform:uppercase; font-size:.84rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.chapter-card .ch-date { font-family:var(--mono); font-size:.74rem; color:var(--ink-2); }
 </style>

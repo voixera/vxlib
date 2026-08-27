@@ -3,17 +3,18 @@
   <div class="shell footer-grid">
     <div class="footer-brand">
       <p class="footer-wordmark">Voi<b>X</b>Lib</p>
-      <p class="footer-tag">Perpustakaanmu, melampaui rak.</p>
+      <p class="footer-tag">Arsip &amp; pembaca manga + manhwa. Baca melampaui rak.</p>
     </div>
     <nav class="footer-col" aria-label="Katalog">
       <h3>Katalog</h3>
       <a href="/manga">Manga</a>
       <a href="/manhwa">Manhwa</a>
       <a href="/explore.php">Jelajahi</a>
+      <a href="/search.php">Cari</a>
     </nav>
     <nav class="footer-col" aria-label="Akun">
       <h3>Akun</h3>
-      <a href="/library.php">Perpustakaan Saya</a>
+      <a href="/library.php">Perpustakaan</a>
       <a href="/bookmarks.php">Bookmark</a>
       <a href="/history.php">Riwayat</a>
       <a href="/settings.php">Pengaturan</a>
@@ -26,22 +27,23 @@
   </div>
   <div class="shell footer-base">
     <span>© <?= date('Y') ?> VoiXLib</span>
-    <span class="footer-mark-line">Diset dalam serif editorial · dibangun dengan PHP &amp; SVG</span>
+    <span>MANGA + MANHWA · Dibangun dengan PHP &amp; SVG</span>
   </div>
 </footer>
 
 <nav class="mobile-nav" aria-label="Navigasi seluler">
   <?php
   $mnav = [
-      ['/', 'Beranda', 'home'],
-      ['/explore.php', 'Jelajahi', 'compass'],
-      ['/bookmarks.php', 'Bookmark', 'bookmark'],
-      ['/history.php', 'Riwayat', 'clock'],
-      ['/profile.php', 'Profil', 'user'],
+      ['/', 'Beranda', 'home', 'home'],
+      ['/manga', 'Manga', 'manga', 'manga'],
+      ['/manhwa', 'Manhwa', 'manhwa', 'manhwa'],
+      ['/explore.php', 'Jelajah', 'compass', 'explore'],
+      ['/bookmarks.php', 'Mark', 'bookmark', 'bookmarks'],
   ];
-  foreach ($mnav as [$href, $label, $icn]):
-      $active = ($activeNav ?? '') !== '' && str_contains($href, ($activeNav === 'home' ? '/' : $activeNav)); ?>
-    <a href="<?= e($href) ?>" class="<?= $active ? 'is-active' : '' ?>">
+  $active = $activeNav ?? '';
+  foreach ($mnav as [$href, $label, $icn, $key]):
+      $isActive = $active === $key; ?>
+    <a href="<?= e($href) ?>" class="<?= $isActive ? 'is-active' : '' ?>">
       <?= icon($icn, 21) ?><span><?= e($label) ?></span>
     </a>
   <?php endforeach; ?>

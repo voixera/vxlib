@@ -6,12 +6,12 @@ $prefs = Prefs::current(Auth::user());
 $csrfToken = Security::csrfToken();
 ?>
 <!DOCTYPE html>
-<html lang="en" data-theme="auto">
+<html lang="id" data-theme="auto">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($page['title'] ?? 'VoiXLib') ?></title>
-<meta name="description" content="<?= e($page['description'] ?? 'Your library, beyond the shelf.') ?>">
+<meta name="description" content="<?= e($page['description'] ?? 'Perpustakaan manga & manhwa. Baca melampaui rak.') ?>">
 <meta name="theme-color" content="#F4F1EA" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="<?= e(url($_SERVER['REQUEST_URI'] ?? '/')) ?>">
@@ -29,14 +29,15 @@ $csrfToken = Security::csrfToken();
 <?php else: ?>
 <meta name="twitter:card" content="summary">
 <?php endif; ?>
-<link rel="icon" href="<?= asset('Icon.jpeg') ?>" type="image/jpeg">
-<link rel="apple-touch-icon" href="<?= asset('Icon.jpeg') ?>">
+<link rel="icon" href="<?= asset('favicon.svg') ?>" type="image/svg+xml">
+<link rel="apple-touch-icon" href="<?= asset('favicon.svg') ?>">
 <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
 <?php foreach ((array)($page['styles'] ?? []) as $css): ?>
 <link rel="stylesheet" href="<?= asset('css/' . $css) ?>">
 <?php endforeach; ?>
 <script>
 /* Theme boot — inline to avoid a flash of the wrong theme. */
+document.documentElement.classList.add('js');
 (function () {
   try {
     var stored = localStorage.getItem('voixlib:prefs');
@@ -54,7 +55,17 @@ $csrfToken = Security::csrfToken();
 <body class="<?= e($page['bodyClass'] ?? '') ?>" data-page="<?= e($template) ?>"
       data-prefs='<?= e(Prefs::clientBootstrap($prefs)) ?>'
       data-authed="<?= Auth::check() ? '1' : '0' ?>">
-<a class="skip-link" href="#main">Skip to content</a>
+<div class="boot" id="boot" aria-hidden="true">
+  <div style="text-align:center">
+    <svg class="boot-mark" width="120" height="120" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <rect x="2" y="2" width="28" height="28" stroke="currentColor" stroke-width="3"/>
+      <path d="M9 9 L23 23" stroke="currentColor" stroke-width="4.5" stroke-linecap="square"/>
+      <path d="M23 9 L9 23" style="stroke:var(--accent)" stroke-width="4.5" stroke-linecap="square"/>
+    </svg>
+    <div class="boot-bar"><i></i></div>
+  </div>
+</div>
+<a class="skip-link" href="#main">Lewati ke konten</a>
 
 <?php if (empty($page['chromeless'])): ?>
   <?php view('layout/header', ['activeNav' => $page['activeNav'] ?? '', 'user' => Auth::user()]); ?>

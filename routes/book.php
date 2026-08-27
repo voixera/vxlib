@@ -17,7 +17,8 @@ if (preg_match('/^anilist:(\d+)$/', $id, $m)) {
     $row = SupabaseClient::configured()
         ? (new SupabaseClient())->selectOne('books', ['select' => 'media_type', 'external_id' => 'eq.' . $id], privileged: true)
         : null;
-    $type = in_array($row['media_type'] ?? '', ['anime', 'manhwa'], true) ? $row['media_type'] : 'manga';
+    $type = $row['media_type'] ?? 'manga';
+    $type = in_array($type, ['manga', 'manhwa'], true) ? $type : 'manga';
     redirect('/detail/' . $type . '/' . $m[1]);
 }
 

@@ -18,9 +18,8 @@ final class MediaNormalizer
     ];
 
     private const FORMAT_ID = [
-        'TV' => 'Serial TV', 'TV_SHORT' => 'Serial Pendek', 'MOVIE' => 'Film', 'SPECIAL' => 'Spesial',
-        'OVA' => 'OVA', 'ONA' => 'ONA', 'MUSIC' => 'Video Musik',
-        'MANGA' => 'Manga', 'LIGHT_NOVEL' => 'Light Novel', 'ONE_SHOT' => 'One-shot',
+        'MANGA' => 'Manga', 'ONE_SHOT' => 'One-shot', 'LIGHT_NOVEL' => 'Light Novel',
+        'NOVEL' => 'Novel', 'DOUJINSHI' => 'Doujinshi',
     ];
 
     public static function item(array $m, bool $full = false): array
@@ -54,7 +53,6 @@ final class MediaNormalizer
             'year'          => $m['seasonYear'] ?? ($m['startDate']['year'] ?? null),
             'chapters'      => $m['chapters'] ?? null,
             'volumes'       => $m['volumes'] ?? null,
-            'episodes'      => $m['episodes'] ?? null,
             'score'         => $m['averageScore'] ?? null,       // 0..100
             'popularity'    => $m['popularity'] ?? null,
             'favourites'    => $m['favourites'] ?? null,
@@ -70,15 +68,14 @@ final class MediaNormalizer
         return $item;
     }
 
-    /** Genre gabungan untuk filter jelajah (statis sesuai spesifikasi + milik provider). */
+    /** Genre dasar untuk filter jelajah; digabung dinamis dengan genre dari API di controller. */
     public static function genres(): array
     {
-        return ['Action','Adventure','Comedy','Drama','Ecchi','Fantasy','Horror','Mahou Shoujo','Mecha','Music','Mystery','Psychological','Romance','Sci-Fi','Slice of Life','Sports','Supernatural','Thriller'];
+        return ['Action','Adventure','Comedy','Drama','Fantasy','Horror','Mystery','Romance','Sci-Fi','Slice of Life','Sports','Thriller'];
     }
 
     private static function mediaType(array $m): string
     {
-        if (($m['type'] ?? '') === 'ANIME') return 'anime';
         return strtoupper((string)($m['countryOfOrigin'] ?? '')) === 'KR' ? 'manhwa' : 'manga';
     }
 

@@ -25,7 +25,6 @@ final class BookRepository
         ['name' => 'Manga', 'slug' => 'manga'],
         ['name' => 'Manhwa', 'slug' => 'manhwa'],
         ['name' => 'Manhua', 'slug' => 'manhua'],
-        ['name' => 'Anime', 'slug' => 'anime'],
         ['name' => 'Light Novel', 'slug' => 'light-novel'],
         ['name' => 'Webtoon', 'slug' => 'webtoon'],
         ['name' => 'Doujinshi', 'slug' => 'doujinshi'],

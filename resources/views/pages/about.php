@@ -13,7 +13,7 @@
     <p>VoiXLib adalah platform discovery: kami memetakan katalog, membantumu memilih, dan mengarahkanmu
       ke platform pembaca resmi yang berlisensi. Masuk dengan Discord untuk menyimpan rak pribadi,
       bookmark, dan riwayat yang tersinkron di semua perangkat.</p>
-    <p style="color:var(--ink-2)">VoiXLib bukan afiliasi AniList maupun MyAnimeList, dan berterima kasih
+    <p style="color:var(--ink-2)">VoiXLib bukan afiliasi AniList, dan berterima kasih
       kepada komunitas yang menjaga datanya tetap terbuka.</p>
   </div>
 </div>

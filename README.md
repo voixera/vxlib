@@ -2,7 +2,7 @@
 
 **Perpustakaanmu, melampaui rak.**
 
-Platform discovery + perpustakaan pribadi untuk **Anime, Manga, Manhwa** — metadata nyata dari
+Platform discovery + perpustakaan pribadi untuk **Manga & Manhwa** — metadata nyata dari
 [AniList](https://anilist.co), UI Bahasa Indonesia, akun Discord, data pengguna di Supabase.
 Backend PHP 8.2 murni (tanpa Composer), frontend vanilla JS/SVG. Tanpa framework.
 
@@ -12,12 +12,12 @@ Backend PHP 8.2 murni (tanpa Composer), frontend vanilla JS/SVG. Tanpa framework
 
 - **No-dummy:** setiap judul/sinopsis/skor berasal dari AniList. Jika provider tidak menyediakan
   sebuah field, VoiXLib menampilkan "Tidak tersedia" — tidak pernah mengarangnya.
-- **Konten berlisensi:** AniList hanya menyediakan metadata. Ruang baca/tonton internal siap dipasang
+- **Konten berlisensi:** AniList hanya menyediakan metadata. Ruang baca internal siap dipasang
   saat VoiXLib memiliki sumber berlisensi atau file distribusi sendiri.
-- **Service layer per provider:** `AnimeService` / `MangaService` / `ManhwaService` men-facade
+- **Service layer per provider:** `MangaService` / `ManhwaService` men-facade
   `AniListService` — ganti provider dengan menyentuh satu class saja.
 - **AniPub metadata opsional:** `AniPubService::info($id)` memakai ID katalog AniPub sendiri; ID ini
-  tidak sama dengan AniList atau MAL. Endpoint video AniPub tidak digunakan.
+  tidak sama dengan AniList. Endpoint baca AniPub tidak digunakan.
 
 ## Setup
 
@@ -38,7 +38,7 @@ Jalankan di SQL editor Supabase:
 
 1. `supabase/schema.sql` (sekali, untuk deployment baru)
 2. `supabase/migration-002-media.sql` (kolom katalog media: media_type, alt_title,
-   banner_url, artist, chapters, volumes, episodes, avg_score, status_label)
+   banner_url, artist, chapters, volumes, avg_score, status_label)
 
 RLS aktif; tabel milik pengguna tanpa policy publik — akses hanya lewat service-role di backend.
 
@@ -56,11 +56,11 @@ pertama kali dibuka/disimpan, supaya perpustakaan & bookmark punya foreign key v
 ```
 /api             front controller serverless (api/index.php)
 /routes          entry point halaman (browse, detail, auth/, api/)
-/anime /manga /manhwa        rak tipe (rewrite → routes/browse.php)
+/manga /manhwa               rak tipe (rewrite → routes/browse.php)
 /detail/{t}/{id}             halaman detail media
-/read/{t}/{id}               ruang baca/tonton internal media
-/app/Services     AniListService (GraphQL+cache), Anime/Manga/ManhwaService,
-                  MediaNormalizer, Auth, Prefs, Http, RateLimiter…
+/read/{t}/{id}               ruang baca internal media
+/app/Services     AniListService (GraphQL+cache), Manga/ManhwaService,
+                   MediaNormalizer, Auth, Prefs, Http, RateLimiter…
 /app/Repositories CatalogRepository (mirror lokal), Library/UserRepository
 /resources/views  layout, halaman, komponen (kartu, shelf, state, ikon SVG)
 /public/assets    css/js statis
