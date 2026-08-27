@@ -32,6 +32,8 @@ final class Config
             'MANGA_READER_API_URL' => 'http://komikato.bugs.today',
             'MANGADEX_API_URL'   => 'https://api.mangadex.org',
             'FEBRY_MANGA_API_URL' => 'https://mangamint.kaedenoki.net/api',
+            'MANGA_PROVIDER'     => 'weebcentral',
+            'WEEBCENTRAL_API_URL' => 'https://weebcentral.com',
             'SESSION_NAME'     => 'voixlib_session',
         ];
 

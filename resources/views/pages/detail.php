@@ -58,11 +58,11 @@ $u = Auth::user();
 
       <div class="detail-actions">
         <?php if (!empty($chapters)): ?>
-          <a class="btn btn-accent" href="/read/<?= e($m['media_type']) ?>/<?= (int)preg_replace('/^anilist:/', '', (string)$m['external_id']) ?>?ch=<?= e(urlencode($chapters[0]['id'])) ?>">
+          <a class="btn btn-accent" href="/manga/search?q=<?= e(urlencode($m['title'])) ?>">
             <?= icon('book-open', 18) ?> Baca di VoiXLib
           </a>
         <?php else: ?>
-          <a class="btn btn-accent" href="/read/<?= e($m['media_type']) ?>/<?= (int)preg_replace('/^anilist:/', '', (string)$m['external_id']) ?>">
+          <a class="btn btn-accent" href="/manga/search?q=<?= e(urlencode($m['title'])) ?>">
             <?= icon('book-open', 18) ?> Baca di VoiXLib
           </a>
         <?php endif; ?>

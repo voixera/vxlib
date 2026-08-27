@@ -6,6 +6,7 @@ $nav = [
     'home'    => ['/', 'Beranda', 'home'],
     'manga'   => ['/manga', 'Manga', null],
     'manhwa'  => ['/manhwa', 'Manhwa', null],
+    'baca'    => ['/manga/search', 'Baca', null],
     'explore' => ['/explore.php', 'Jelajahi', 'compass'],
 ];
 ?>

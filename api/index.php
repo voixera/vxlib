@@ -67,6 +67,15 @@ if ($path === '/' || $path === '/index.php') {
 } elseif (preg_match('#^/baca/gutenberg:(\d{1,5})$#i', $path, $m)) {
     $_GET['id'] = $m[1];
     $target = 'routes/reader.php';
+} elseif (preg_match('#^/manga/search#i', $path)) {
+    $target = 'routes/manga.php';
+} elseif (preg_match('#^/manga/detail/([^/]+)/?$#i', $path, $m)) {
+    $_GET['series'] = urldecode($m[1]);
+    $target = 'routes/manga.php';
+} elseif (preg_match('#^/manga/read/([^/]+)/([^/]+)$#i', $path, $m)) {
+    $_GET['series'] = urldecode($m[1]);
+    $_GET['chapter'] = urldecode($m[2]);
+    $target = 'routes/manga.php';
 } elseif (preg_match('#^/klasik/?$#i', $path)) {
     $target = 'routes/klasik.php';
 } else {
