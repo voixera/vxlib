@@ -13,7 +13,7 @@ final class HomeController
         $shelves = AniListService::shelves();
         $recent  = AniListService::browse(['sort' => 'newest', 'per_page' => 12, 'page' => 1]);
 
-        $heroCovers = array_slice($shelves['trending']['items'] ?? [], 0, 6);
+        $heroCovers = array_slice($shelves['trending']['items'] ?? [], 0, 14);
 
         $continueReading = Auth::check() ? $library->recentProgress(Auth::id(), 8) : [];
 

@@ -17,14 +17,6 @@ $nav = [
       <span class="brand-text">Voi<b>X</b>Lib</span>
     </a>
 
-    <form class="header-search" action="/search.php" method="get" role="search">
-      <label class="visually-hidden" for="header-q">Cari judul</label>
-      <?= icon('search', 18) ?>
-      <input id="header-q" type="search" name="q" placeholder="Cari manga, manhwa…"
-             value="<?= e($_GET['q'] ?? '') ?>" autocomplete="off" maxlength="100">
-      <kbd aria-hidden="true">/</kbd>
-    </form>
-
     <nav class="main-nav" aria-label="Utama">
       <?php foreach ($nav as $key => [$href, $label, $icn]): ?>
         <a class="nav-link<?= ($activeNav ?? '') === $key ? ' is-active' : '' ?>" href="<?= e($href) ?>">

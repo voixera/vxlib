@@ -24,13 +24,6 @@ if (!empty($continueReading)) {
           dunia nyata — lengkap dengan genre, status, dan skor dari penyedia data. Simpan ke perpustakaan,
           tandai favoritmu, lanjutkan kapan pun.</p>
 
-        <form class="hero-search" action="/search.php" method="get" role="search">
-          <?= icon('search', 19) ?>
-          <label class="visually-hidden" for="hero-q">Cari judul</label>
-          <input id="hero-q" type="search" name="q" placeholder='Coba “One Piece”, “Solo Leveling”…' maxlength="100">
-          <button class="btn btn-accent" type="submit">Cari</button>
-        </form>
-
         <?php if (!empty($stats)): ?>
           <div class="hero-stats" aria-label="Statistik">
             <?php foreach ($stats as $stat): ?>
@@ -41,7 +34,6 @@ if (!empty($continueReading)) {
       </div>
 
       <div class="hero-stage">
-        <?php view('components/hero-scene'); ?>
         <div class="hero-covers" data-parallax-covers>
           <?php foreach ($heroCovers as $i => $hb): ?>
             <a class="hero-cover" href="<?= e($hb['url_detail']) ?>" style="animation-delay:-<?= $i * 2 ?>s" tabindex="-1" aria-hidden="true">

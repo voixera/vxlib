@@ -29,7 +29,8 @@ $csrfToken = Security::csrfToken();
 <?php else: ?>
 <meta name="twitter:card" content="summary">
 <?php endif; ?>
-<link rel="icon" href="<?= asset('favicon.svg') ?>" type="image/svg+xml">
+<link rel="icon" href="<?= asset('Icon.jpeg') ?>" type="image/jpeg">
+<link rel="apple-touch-icon" href="<?= asset('Icon.jpeg') ?>">
 <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
 <?php foreach ((array)($page['styles'] ?? []) as $css): ?>
 <link rel="stylesheet" href="<?= asset('css/' . $css) ?>">
