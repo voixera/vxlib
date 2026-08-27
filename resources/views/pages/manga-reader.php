@@ -98,7 +98,8 @@ $seriesId = $series['id'] ?? '';
 .mreader-page.skeleton-load { background:linear-gradient(90deg,#111318 25%,#1a1d24 50%,#111318 75%); background-size:200% 100%; animation:skeleton-wave 1.5s infinite; }
 .mreader-page.page-error { background:#15171c; }
 .mreader-page.page-error::after { content:'Gambar gagal dimuat'; color:#94a3b8; font-size:.85rem; }
-.mreader-img { width:100%; height:auto; display:block; }
+.mreader-img { width:100%; height:auto; display:block; opacity:0; transform:translateY(8px); transition:opacity .45s ease, transform .45s ease; }
+.mreader-img.is-loaded { opacity:1; transform:none; }
 .mreader-pageno { position:absolute; bottom:8px; right:12px; background:rgba(0,0,0,.65); color:#94a3b8; font-size:.72rem; padding:2px 8px; border-radius:12px; }
 .mreader-nav { display:flex; align-items:center; justify-content:space-between; gap:10px; max-width:900px; margin:0 auto; padding:18px 10px 50px; }
 .reader-empty-state { text-align:center; color:#94a3b8; }

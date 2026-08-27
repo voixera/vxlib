@@ -153,11 +153,11 @@ final class AniListService
     public static function shelves(): array
     {
         return [
-            'trending' => self::browse(['sort' => 'trending', 'per_page' => 12, 'page' => 1]),
+            'trending' => self::browse(['sort' => 'trending', 'type' => 'manga', 'per_page' => 12, 'page' => 1]),
             'manga'    => self::browse(['sort' => 'popular', 'type' => 'manga', 'per_page' => 12, 'page' => 1]),
             'manhwa'   => self::browse(['sort' => 'popular', 'type' => 'manhwa', 'per_page' => 12, 'page' => 1]),
             'latest'   => ['items' => MangaReaderApiService::getLatestReleases(1)],
-            'picks'    => self::browse(['sort' => 'score', 'per_page' => 10, 'page' => 1]),
+            'picks'    => self::browse(['sort' => 'score', 'type' => 'manga', 'per_page' => 10, 'page' => 1]),
         ];
     }
 

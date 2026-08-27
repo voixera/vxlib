@@ -29,6 +29,7 @@
             load(img);
             img.addEventListener('load', function () {
               img.parentElement.classList.remove('skeleton-load');
+              img.classList.add('is-loaded');
             });
             img.addEventListener('error', function () {
               img.parentElement.classList.remove('skeleton-load');
@@ -43,7 +44,7 @@
   } else {
     imgs.forEach(function (img) {
       load(img);
-      img.addEventListener('load', function () { img.parentElement.classList.remove('skeleton-load'); });
+      img.addEventListener('load', function () { img.parentElement.classList.remove('skeleton-load'); img.classList.add('is-loaded'); });
       img.addEventListener('error', function () { img.parentElement.classList.remove('skeleton-load'); img.parentElement.classList.add('page-error'); });
     });
   }

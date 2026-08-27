@@ -62,7 +62,7 @@ final class ExploreController
         $params = self::paramsFromRequest();
         page('pages/explore', [
             'title'       => 'Jelajahi Katalog — VoiXLib',
-            'description' => 'Temukan anime, manga, dan manhwa dari katalog nyata. Cari berdasarkan genre, status, tahun, dan popularitas.',
+            'description' => 'Temukan manga dan manhwa dari katalog nyata. Cari berdasarkan genre, status, tahun, dan popularitas.',
             'activeNav'   => $params['type'] !== '' ? $params['type'] : 'explore',
             'scripts'     => ['catalog.js'],
         ], [
@@ -79,7 +79,7 @@ final class ExploreController
         if (empty($params['q'])) $params['sort'] = 'trending';
         page('pages/explore', [
             'title'       => ($params['q'] !== '' ? '“' . $params['q'] . '” — Pencarian' : 'Pencarian') . ' — VoiXLib',
-            'description' => 'Cari anime, manga, dan manhwa di seluruh katalog VoiXLib.',
+            'description' => 'Cari manga dan manhwa di seluruh katalog VoiXLib.',
             'activeNav'   => 'explore',
             'scripts'     => ['catalog.js'],
         ], [

@@ -34,7 +34,7 @@ final class HomeController
 
         page('pages/home', [
             'title'       => 'VoiXLib — Temukan cerita yang ingin kamu baca',
-            'description' => 'Platform discovery anime, manga, dan manhwa dengan metadata nyata dari AniList. Simpan ke perpustakaan, bookmark, dan lanjutkan kapan pun.',
+            'description' => 'Platform discovery manga dan manhwa dengan metadata nyata dari AniList. Baca langsung di VoiXLib, simpan ke perpustakaan, bookmark, dan lanjutkan kapan pun.',
             'activeNav'   => 'home',
         ], [
             'shelves'         => array_filter($shelves),

@@ -53,14 +53,14 @@ $target = null;
 
 if ($path === '/' || $path === '/index.php') {
     $target = 'routes/index.php';
-} elseif (preg_match('#^/(anime|manga|manhwa)/?$#i', $path, $m)) {
+} elseif (preg_match('#^/(manga|manhwa)/?$#i', $path, $m)) {
     $_GET['type'] = strtolower($m[1]);
     $target = 'routes/browse.php';
-} elseif (preg_match('#^/detail/(anime|manga|manhwa)/(\d{1,8})$#i', $path, $m)) {
+} elseif (preg_match('#^/detail/(manga|manhwa)/(\d{1,8})$#i', $path, $m)) {
     $_GET['type'] = strtolower($m[1]);
     $_GET['id'] = $m[2];
     $target = 'routes/detail.php';
-} elseif (preg_match('#^/read/(anime|manga|manhwa)/(\d{1,8})$#i', $path, $m)) {
+} elseif (preg_match('#^/read/(manga|manhwa)/(\d{1,8})$#i', $path, $m)) {
     $_GET['type'] = strtolower($m[1]);
     $_GET['id'] = $m[2];
     $target = 'routes/media-reader.php';

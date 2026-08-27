@@ -9,7 +9,7 @@ $firstChapter = $chapters[0] ?? null;
   <nav style="margin-bottom:18px"><a class="link link-info link-hover" href="/manga/search">&larr; Kembali ke pencarian</a></nav>
 
   <div class="manga-detail-layout">
-    <aside class="manga-detail-cover">
+    <aside class="manga-detail-cover cover-frame">
       <?php if (!empty($series['cover'])): ?>
         <img src="<?= e($series['cover']) ?>" alt="Sampul <?= e($series['title']) ?>" referrerpolicy="no-referrer">
       <?php else: ?>
@@ -63,8 +63,8 @@ $firstChapter = $chapters[0] ?? null;
       </div>
     <?php else: ?>
       <div class="manga-chapter-grid">
-        <?php foreach ($chapters as $ch): ?>
-          <a class="chapter-card" href="/manga/read/<?= e($series['id']) ?>/<?= e($ch['id']) ?>">
+        <?php foreach ($chapters as $i => $ch): ?>
+          <a class="chapter-card vk-fade" style="animation-delay:<?= ($i % 30) * 18 ?>ms" href="/manga/read/<?= e($series['id']) ?>/<?= e($ch['id']) ?>">
             <span class="ch-name"><?= e($ch['title']) ?></span>
             <?php if (!empty($ch['date'])): ?><span class="ch-date"><?= e(substr($ch['date'], 0, 10)) ?></span><?php endif; ?>
           </a>

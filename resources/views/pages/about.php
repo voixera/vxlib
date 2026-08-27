@@ -4,7 +4,7 @@
     <h1>Tentang VoiXLib</h1>
   </div>
   <div class="reader-content" style="max-width:640px;padding-bottom:80px;font-size:17px;line-height:1.8">
-    <p>VoiXLib adalah platform discovery dan perpustakaan pribadi untuk anime, manga, dan manhwa.
+    <p>VoiXLib adalah platform discovery dan perpustakaan pribadi untuk manga dan manhwa.
       Ia lahir dari satu pertanyaan: <em>seperti apa tempat yang tenang untuk menemukan dan menikmati cerita?</em></p>
     <p>Seluruh data katalog — judul, sampul, sinopsis, genre, status, skor, dan popularitas — diambil
       langsung dari <strong>AniList</strong>, database terbuka yang dikelola komunitas. VoiXLib tidak
