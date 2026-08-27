@@ -153,15 +153,28 @@ $activeCh = $chapters[$activeChIndex] ?? null;
 .reading-progress-bar-wrap { position: sticky; top: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.05); z-index: 50; }
 .reading-progress-bar { height: 100%; background: #6366f1; transition: width 0.1s linear; }
 
-.reader-pages-list { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 10px; }
-.page-wrapper { width: 100%; min-height: 400px; position: relative; display: flex; justify-content: center; align-items: center; background: #0b0c10; }
+.reader-pages-list { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 14px; }
+.page-wrapper { width: 100%; min-height: 200px; position: relative; display: flex; justify-content: center; align-items: center; background: #0b0c10; border-radius: 8px; overflow: hidden; }
 .page-wrapper.skeleton-load { background: linear-gradient(90deg, #111318 25%, #1a1d24 50%, #111318 75%); background-size: 200% 100%; animation: skeleton-wave 1.5s infinite; }
 @keyframes skeleton-wave { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 .manga-page-img { width: 100%; max-width: 100%; height: auto; object-fit: contain; display: block; }
 .page-number-indicator { position: absolute; bottom: 8px; right: 12px; background: rgba(0,0,0,0.7); color: #94a3b8; font-size: 0.75rem; padding: 2px 8px; border-radius: 12px; pointer-events: none; }
 
-.chapter-nav-bottom { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 900px; margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+.chapter-nav-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; width: 100%; max-width: 900px; margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* buttons on the dark reader — always legible regardless of site theme */
+.reader-view-container .btn { border-radius: 10px; }
+.reader-view-container .btn-ghost { border-color: rgba(255,255,255,0.18); color: #e2e8f0; }
+.reader-view-container .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.08); color: #fff; }
+.reader-view-container .btn-solid { background: #6366f1; color: #fff; box-shadow: 0 8px 22px -10px #6366f1; }
+.reader-view-container .btn-solid:hover { background: #7c83f6; }
+.reader-view-container .btn:focus-visible { outline: 2.5px solid #818cf8; outline-offset: 2px; }
+.reader-view-container .icon-btn { border-color: rgba(255,255,255,0.15); color: #cbd5e1; }
+.reader-view-container .icon-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.32); }
+.reader-view-container .icon-btn:focus-visible { outline: 2.5px solid #818cf8; outline-offset: 2px; }
+.reader-view-container .resume-alert .btn-close:focus-visible { outline: 2.5px solid #818cf8; outline-offset: 2px; }
+
 .reader-empty-state { text-align: center; padding: 80px 20px; color: #94a3b8; }
 .reader-empty-state h2 { font-size: 1.4rem; color: #f8fafc; margin: 16px 0 8px; }
 .reader-empty-state p { margin-bottom: 24px; }

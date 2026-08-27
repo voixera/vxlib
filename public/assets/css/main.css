@@ -110,30 +110,45 @@ input, select { font: inherit; color: inherit; }
 
 /* ── Buttons ────────────────────────────────────────────────── */
 .btn {
-  display: inline-flex; align-items: center; gap: 9px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   padding: 11px 22px; border-radius: var(--radius);
   font-weight: 600; font-size: 15px; line-height: 1;
-  border: 1.5px solid transparent;
+  border: 1.5px solid transparent; cursor: pointer;
   transition: transform .16s ease, box-shadow .16s ease, background .16s ease, color .16s ease, border-color .16s ease;
-  text-decoration: none;
+  text-decoration: none; white-space: nowrap;
 }
 .btn:active { transform: translateY(1px) scale(.99); }
-.btn:disabled, .btn.is-loading { opacity: .6; pointer-events: none; }
-.btn-solid { background: var(--ink-strong); color: var(--paper); }
-.btn-solid:hover { transform: translateY(-1.5px); box-shadow: var(--shadow-md); }
-.btn-accent { background: var(--accent); color: #FFF7EF; }
+.btn:disabled, .btn.is-loading, .btn.disabled { opacity: .55; pointer-events: none; }
+.btn:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.btn-solid { background: var(--ink-strong); color: var(--paper); box-shadow: var(--shadow-sm); }
+.btn-solid:hover { background: var(--ink); transform: translateY(-1.5px); box-shadow: var(--shadow-md); }
+.btn-accent { background: var(--accent); color: #FFF7EF; box-shadow: 0 6px 18px -8px var(--accent); }
 .btn-accent:hover { background: var(--accent-deep); transform: translateY(-1.5px); box-shadow: var(--shadow-md); }
 [data-theme="dark"] .btn-accent { color: #1A130E; }
 .btn-ghost { border-color: var(--line-strong); color: var(--ink); background: transparent; }
-.btn-ghost:hover { border-color: var(--ink); transform: translateY(-1.5px); box-shadow: var(--shadow-sm); }
-.btn-discord { background: #5865F2; color: #fff; }
+.btn-ghost:hover { border-color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); transform: translateY(-1.5px); box-shadow: var(--shadow-sm); }
+.btn-discord { background: #5865F2; color: #fff; box-shadow: 0 6px 18px -8px #5865F2; }
 .btn-discord:hover { background: #4752c4; transform: translateY(-1.5px); box-shadow: var(--shadow-md); }
+.btn-sm { padding: 8px 14px; font-size: 13.5px; border-radius: calc(var(--radius) - 3px); }
+
 .icon-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--line);
-  color: var(--ink-2); transition: all .16s ease;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-width: 38px; height: 38px; padding: 0 6px; border-radius: 50%;
+  border: 1.5px solid var(--line); background: transparent;
+  color: var(--ink-2); cursor: pointer;
+  transition: color .16s ease, border-color .16s ease, background .16s ease, transform .16s ease, box-shadow .16s ease;
 }
-.icon-btn:hover { color: var(--ink); border-color: var(--line-strong); transform: translateY(-1px); }
+.icon-btn:hover { color: var(--ink); border-color: var(--line-strong); background: color-mix(in srgb, var(--ink) 5%, transparent); transform: translateY(-1px); }
+.icon-btn:active { transform: scale(.94); }
+.icon-btn:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+
+/* theme toggle — clear day/night pill */
+.theme-toggle { border-radius: 999px; }
+.theme-toggle .icon-moon, .theme-toggle .icon-sun { display: none; }
+[data-theme="light"] .theme-toggle .icon-moon { display: block; }
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle { color: #ffd479; border-color: color-mix(in srgb, #ffd479 35%, var(--line)); }
+[data-theme="dark"] .theme-toggle:hover { color: #ffe6a8; border-color: #ffd479; background: color-mix(in srgb, #ffd479 12%, transparent); }
 
 /* ── Header ─────────────────────────────────────────────────── */
 .site-header {
@@ -181,9 +196,6 @@ input, select { font: inherit; color: inherit; }
   border: 1.5px solid var(--line-strong);
 }
 .avatar-fallback { display: grid; place-items: center; background: var(--accent-wash); color: var(--accent-deep); font-weight: 700; font-size: 15px; }
-.theme-toggle .icon-moon, .theme-toggle .icon-sun { display: none; }
-[data-theme="light"] .theme-toggle .icon-moon { display: block; }
-[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
 
 /* ── Hero ───────────────────────────────────────────────────── */
 .hero {
