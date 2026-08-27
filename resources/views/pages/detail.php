@@ -109,35 +109,31 @@ $u = Auth::user();
       <?php endif; ?>
 
       <!-- Daftar Chapter MangaDex -->
-      <section class="detail-chapters" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line, rgba(255,255,255,0.1));">
-        <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-          <span><?= icon('list', 20) ?> Daftar Chapter</span>
+      <section class="detail-chapters">
+        <div class="detail-chapters-head">
+          <h2><?= icon('list', 20) ?> Daftar Chapter</h2>
           <?php if (!empty($chapters)): ?>
-            <span style="font-size: 0.85rem; font-weight: 400; color: var(--ink-2);"><?= count($chapters) ?> Chapter tersedia (WeebCentral)</span>
+            <span class="count"><?= count($chapters) ?> Chapter tersedia (WeebCentral)</span>
           <?php endif; ?>
-        </h2>
+        </div>
 
         <?php if (!empty($chapters)): ?>
-          <div class="chapter-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px;">
+          <div class="chapter-grid">
             <?php foreach ($chapters as $ch): ?>
-              <a href="<?= e($ch['url'] ?? '#') ?>"
-                 class="chapter-card"
-                 style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; background: var(--surface-2, rgba(255,255,255,0.03)); border: 1px solid var(--line, rgba(255,255,255,0.08)); border-radius: 8px; text-decoration: none; color: var(--ink-1, #e2e8f0); transition: background 0.2s, border-color 0.2s;">
-                <div style="font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                  <?= e($ch['title']) ?>
-                </div>
-                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.78rem; color: var(--ink-2, #94a3b8);">
-                  <span><strong style="background: rgba(255,255,255,0.1); padding: 1px 5px; border-radius: 3px; font-weight: 600; font-size: 0.7rem; color: #fff;"><?= e($ch['language']) ?></strong></span>
+              <a href="<?= e($ch['url'] ?? '#') ?>" class="chapter-card">
+                <span class="chapter-card-title"><?= e($ch['title']) ?></span>
+                <span class="chapter-card-meta">
+                  <span class="chapter-lang"><?= e($ch['language']) ?></span>
                   <?php if (!empty($ch['publish_date'])): ?>
                     <span><?= e($ch['publish_date']) ?></span>
                   <?php endif; ?>
-                </div>
+                </span>
               </a>
             <?php endforeach; ?>
           </div>
         <?php else: ?>
-          <div style="padding: 24px; text-align: center; background: rgba(255,255,255,0.02); border-radius: 8px; color: var(--ink-2);">
-            <p style="margin-bottom: 8px;">Chapter belum tersedia di penyedia baca saat ini.</p>
+          <div class="chapter-empty">
+            <p>Chapter belum tersedia di penyedia baca saat ini.</p>
             <a class="btn btn-ghost btn-sm" href="/manga/search?q=<?= e(urlencode($m['title'])) ?>">
               <?= icon('search', 14) ?> Cari di VoiXLib
             </a>

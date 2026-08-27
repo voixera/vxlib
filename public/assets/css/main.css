@@ -6,62 +6,65 @@
 
 /* ── Tokens ─────────────────────────────────────────────────── */
 :root {
-  --paper: #F4F1EA;
-  --paper-2: #EDE9DF;
+  --paper: #F7F4EC;
+  --paper-2: #EFEAE0;
   --surface: #FFFFFF;
-  --ink: #171717;
-  --ink-strong: #171717;
-  --ink-2: #706D66;
-  --line: #D9D5CC;
-  --line-strong: #BDB8AC;
-  --accent: #B4531F;
-  --accent-deep: #93431A;
-  --accent-wash: #F3E2D6;
+  --ink: #1B1A17;
+  --ink-strong: #15140F;
+  --ink-2: #6B665C;
+  --line: #E4DFD4;
+  --line-strong: #CDC6B8;
+  --accent: #C2561F;
+  --accent-deep: #9E431A;
+  --accent-wash: #F6E7DB;
   --ok: #3E6B4F;
-  --danger: #A33A2E;
+  --danger: #B23A2C;
 
-  /* scene */
+  /* scene (kept for any remaining scenery) */
   --scene-sky-1: var(--paper);
-  --scene-sky-2: #EFE8D9;
-  --scene-sun-halo: #F7EBD4;
+  --scene-sky-2: #F1EADA;
+  --scene-sun-halo: #FAEFD9;
   --scene-moon: #FBF4E2;
   --scene-moon-shade: #E4DAC2;
   --scene-line: #8F887A;
   --scene-cloud: #FFFFFF;
-  --scene-far: #E4DECF;
-  --scene-mid: #DCD4C0;
-  --scene-fg-1: #CFC5AB;
-  --scene-fg-2: #C2B79B;
+  --scene-far: #E8E2D3;
+  --scene-mid: #E0D8C6;
+  --scene-fg-1: #D4CAB0;
+  --scene-fg-2: #C7BCA0;
 
-  --shadow-sm: 0 1px 3px rgba(23,23,20,.05);
-  --shadow-md: 0 4px 12px rgba(23,23,20,.06);
-  --shadow-lift: 0 12px 28px rgba(23,23,20,.08);
+  --shadow-sm: 0 1px 2px rgba(27,26,23,.04), 0 2px 6px rgba(27,26,23,.05);
+  --shadow-md: 0 4px 10px rgba(27,26,23,.06), 0 8px 22px rgba(27,26,23,.05);
+  --shadow-lift: 0 12px 26px rgba(27,26,23,.08), 0 22px 50px rgba(27,26,23,.07);
 
   --serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, 'Times New Roman', serif;
   --sans: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
 
   --shell-max: 1240px;
-  --radius: 4px;
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
 }
 
 [data-theme="dark"] {
-  --paper: #161513;
-  --paper-2: #1C1A17;
-  --surface: #201E1A;
-  --ink: #ECE7DC;
-  --ink-strong: #F5F1E7;
-  --ink-2: #A39C8E;
-  --line: #33302A;
-  --line-strong: #47433A;
-  --accent: #D97B45;
-  --accent-deep: #C4683A;
-  --accent-wash: #33241B;
-  --ok: #7FA98C;
-  --danger: #D07B6E;
+  --paper: #16140F;
+  --paper-2: #1D1A15;
+  --surface: #211E18;
+  --ink: #ECE6DA;
+  --ink-strong: #F6F1E5;
+  --ink-2: #A39B8B;
+  --line: #322E27;
+  --line-strong: #473F34;
+  --accent: #E0824A;
+  --accent-deep: #C56A38;
+  --accent-wash: #2E2017;
+  --ok: #84AD91;
+  --danger: #D77E70;
 
-  --scene-sky-1: #161513;
-  --scene-sky-2: #1D1A15;
-  --scene-sun-halo: #26211777;
+  --scene-sky-1: #16140F;
+  --scene-sky-2: #1E1A14;
+  --scene-sun-halo: #2A201777;
   --scene-moon: #EFE7D2;
   --scene-moon-shade: #CDC3AA;
   --scene-line: #6E685C;
@@ -71,9 +74,9 @@
   --scene-fg-1: #35302a;
   --scene-fg-2: #3E382F;
 
-  --shadow-sm: 0 1px 3px rgba(0,0,0,.3);
-  --shadow-md: 0 4px 12px rgba(0,0,0,.35);
-  --shadow-lift: 0 12px 28px rgba(0,0,0,.45);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.35), 0 2px 6px rgba(0,0,0,.28);
+  --shadow-md: 0 4px 10px rgba(0,0,0,.4), 0 10px 26px rgba(0,0,0,.32);
+  --shadow-lift: 0 12px 26px rgba(0,0,0,.5), 0 22px 50px rgba(0,0,0,.42);
 }
 
 /* ── Reset-lite ─────────────────────────────────────────────── */
@@ -253,7 +256,7 @@ input, select { font: inherit; color: inherit; }
   transition: transform .35s cubic-bezier(.2,.7,.3,1), z-index 0s;
   animation: coverFloat 7s ease-in-out infinite;
 }
-.hero-cover img { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+.hero-cover img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
 .hero-cover:hover { transform: translateY(-6px) scale(1.05); z-index: 5; }
 @keyframes coverFloat { 50% { translate: 0 -7px; } }
 
@@ -316,7 +319,7 @@ input, select { font: inherit; color: inherit; }
 /* Book card */
 .book-card-link { text-decoration: none; display: block; }
 .cover {
-  position: relative; aspect-ratio: 2/3; border-radius: 2.5px; overflow: hidden;
+  position: relative; aspect-ratio: 2/3; border-radius: var(--radius-sm); overflow: hidden;
   background: var(--paper-2); border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
   transform-style: preserve-3d;
@@ -342,7 +345,7 @@ input, select { font: inherit; color: inherit; }
   background: color-mix(in srgb, var(--paper) 92%, transparent);
   border: 1px solid var(--line-strong); color: var(--ink-2);
   font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; font-weight: 650;
-  padding: 3px 7px; border-radius: 2px;
+  padding: 3px 7px; border-radius: 6px;
 }
 .book-meta { margin-top: 12px; }
 .book-title {
@@ -381,7 +384,7 @@ input, select { font: inherit; color: inherit; }
   position: relative;
   aspect-ratio: 2/3;
   width: 100%;
-  border-radius: 2px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: var(--shadow-md);
 }
@@ -464,7 +467,7 @@ input, select { font: inherit; color: inherit; }
   width: 54px;
   height: 80px;
   object-fit: cover;
-  border-radius: 2px;
+  border-radius: 6px;
   box-shadow: var(--shadow-sm);
   flex-shrink: 0;
 }
@@ -590,7 +593,7 @@ input, select { font: inherit; color: inherit; }
 }
 .detail-cover-wrap { position: sticky; top: 96px; align-self: start; }
 .detail-cover {
-  border-radius: 3px; overflow: hidden; border: 1px solid var(--line);
+  border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--line);
   box-shadow: -18px 22px 44px rgba(23,23,20,.18), var(--shadow-md);
   transform: rotate(-1deg);
 }
@@ -610,6 +613,25 @@ input, select { font: inherit; color: inherit; }
 .action-bookmark.bm-pop { animation: bmPop .45s cubic-bezier(.3,1.6,.5,1); }
 @keyframes bmPop { 40% { transform: scale(1.18) rotate(-4deg); } }
 .subject-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+
+/* chapter list on detail page */
+.detail-chapters { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); }
+.detail-chapters-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+.detail-chapters-head h2 { font-size: 20px; display: inline-flex; align-items: center; gap: 10px; }
+.detail-chapters-head .count { font-size: 13px; font-weight: 400; color: var(--ink-2); }
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+.chapter-card {
+  display: flex; flex-direction: column; gap: 4px; padding: 13px 15px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--radius-sm); text-decoration: none; color: var(--ink);
+  transition: background .2s ease, border-color .2s ease, transform .15s ease;
+}
+.chapter-card:hover { background: var(--paper-2); border-color: var(--line-strong); transform: translateY(-2px); }
+.chapter-card-title { font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chapter-card-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12.5px; color: var(--ink-2); }
+.chapter-lang { background: var(--accent-wash); color: var(--accent-deep); padding: 1px 6px; border-radius: 5px; font-weight: 650; font-size: 11px; }
+.chapter-empty { padding: 26px; text-align: center; background: var(--paper-2); border-radius: var(--radius-sm); color: var(--ink-2); }
+.chapter-empty .btn { margin-top: 14px; }
 
 /* progress banner on book page */
 .resume-banner {
@@ -1075,17 +1097,13 @@ html[data-motion="reduced"] .reveal { opacity: 1; transform: none; }
 }
 .btn:hover { transform: translateY(-1px); }
 .btn:active { transform: translateY(0) scale(.98); }
-.btn:focus-visible { outline: 2px solid var(--accent, #6366f1); outline-offset: 2px; }
-.btn-accent {
-  background: linear-gradient(135deg, var(--accent, #6366f1), #8b5cf6);
-  box-shadow: 0 6px 18px -8px var(--accent, #6366f1);
-}
-.btn-accent:hover { box-shadow: 0 10px 26px -10px var(--accent, #6366f1); }
+.btn:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; }
+.btn-accent:hover { box-shadow: 0 12px 26px -10px var(--accent); }
 
 .icon-btn {
   transition: transform .15s ease, background-color .15s ease, color .15s ease;
 }
-.icon-btn:hover { transform: translateY(-1px); color: var(--accent, #6366f1); }
+.icon-btn:hover { transform: translateY(-1px); color: var(--accent); }
 .icon-btn:active { transform: scale(.94); }
 
 .icon { transition: transform .18s ease, color .18s ease; }

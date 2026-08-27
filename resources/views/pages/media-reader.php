@@ -154,7 +154,7 @@ $activeCh = $chapters[$activeChIndex] ?? null;
 .reading-progress-bar { height: 100%; background: #6366f1; transition: width 0.1s linear; }
 
 .reader-pages-list { width: 100%; max-width: 900px; display: flex; flex-direction: column; align-items: center; gap: 14px; margin-top: 14px; }
-.page-wrapper { width: 100%; min-height: 200px; position: relative; display: flex; justify-content: center; align-items: center; background: #0b0c10; border-radius: 8px; overflow: hidden; }
+.page-wrapper { width: 100%; min-height: 200px; position: relative; display: flex; justify-content: center; align-items: center; background: #0b0c10; border-radius: 12px; overflow: hidden; }
 .page-wrapper.skeleton-load { background: linear-gradient(90deg, #111318 25%, #1a1d24 50%, #111318 75%); background-size: 200% 100%; animation: skeleton-wave 1.5s infinite; }
 @keyframes skeleton-wave { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
@@ -164,7 +164,7 @@ $activeCh = $chapters[$activeChIndex] ?? null;
 .chapter-nav-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; width: 100%; max-width: 900px; margin-top: 40px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.08); }
 
 /* buttons on the dark reader — always legible regardless of site theme */
-.reader-view-container .btn { border-radius: 10px; }
+.reader-view-container .btn { border-radius: 12px; }
 .reader-view-container .btn-ghost { border-color: rgba(255,255,255,0.18); color: #e2e8f0; }
 .reader-view-container .btn-ghost:hover { border-color: #fff; background: rgba(255,255,255,0.08); color: #fff; }
 .reader-view-container .btn-solid { background: #6366f1; color: #fff; box-shadow: 0 8px 22px -10px #6366f1; }

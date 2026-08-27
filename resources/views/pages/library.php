@@ -91,8 +91,8 @@ $statusLabels = ['reading' => 'Sedang Dibaca', 'want_to_read' => 'Ingin Dibaca',
                 · <?= e(date('j M Y', strtotime((string)$bm['created_at']))) ?></p>
             </div>
             <div style="display:flex;gap:8px;align-items:center">
-              <a class="btn btn-ghost" style="padding:8px 14px;font-size:13px"
-                 href="/detail/<?= e($bk['media_type'] ?? 'manga') ?>/<?= e(preg_replace('/^anilist:/', '', (string)$bk['external_id'])) ?>">Buka</a>
+              <a class="btn btn-ghost btn-sm"
+                  href="/detail/<?= e($bk['media_type'] ?? 'manga') ?>/<?= e(preg_replace('/^anilist:/', '', (string)$bk['external_id'])) ?>">Buka</a>
               <button type="button" class="remove-btn" data-remove-bookmark="<?= $bm['id'] ?>" aria-label="Hapus bookmark">
                 <?= icon('trash', 17) ?>
               </button>
