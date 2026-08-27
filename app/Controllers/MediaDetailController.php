@@ -42,21 +42,9 @@ final class MediaDetailController
             if (Auth::check()) $library->touchHistory((int)$user['id'], $bookId);
         }
 
-        // Search Query Candidates
-        $queries = array_filter(array_unique([
-            $media['title'] ?? '',
-            $media['title_romaji'] ?? '',
-            $media['alt_title'] ?? '',
-        ]));
-
-        $chapters = [];
-        try {
-            $year = isset($media['year']) ? (int)$media['year'] : null;
-            $author = $media['author'] ?? null;
-            $chapters = MangaDexService::findChapters($queries, $year, $author);
-        } catch (Throwable $e) {
-            $chapters = [];
-        }
+        // Coba resolusi seri di provider pembaca (WeebCentral) agar judul
+        // yang tampil di VoiXLib benar-benar bisa dibaca langsung di situs.
+        $wb = self::resolveReader($media);
 
         page('pages/detail', [
             'title'       => $media['title'] . ' — VoiXLib',
@@ -72,8 +60,97 @@ final class MediaDetailController
             'hasBookmark' => $bookmarked,
             'progress'    => $progress,
             'migrationOk' => $bookId !== null,
-            'chapters'    => $chapters,
+            'chapters'    => $wb['chapters'],
+            'wb'          => $wb,
         ]);
+    }
+
+    /**
+     * Cari seri di provider pembaca lewat pencocokan judul, lalu kembalikan
+     * daftar chapter nyata (dengan URL reader VoiXLib).
+     * @return array{ok:bool, seriesId:?string, chapters:array, first:?string, count:int}
+     */
+    private static function resolveReader(array $media): array
+    {
+        $empty = ['ok' => false, 'seriesId' => null, 'chapters' => [], 'first' => null, 'count' => 0];
+
+        $candidates = array_values(array_filter(array_unique(array_merge(
+            [(string)($media['title'] ?? ''), (string)($media['title_romaji'] ?? ''), (string)($media['alt_title'] ?? '')],
+            is_array($media['synonyms'] ?? null) ? $media['synonyms'] : []
+        ))));
+
+        $best = null;
+        $bestScore = 0;
+        $bestQuery = '';
+        foreach ($candidates as $q) {
+            if ($q === '') continue;
+            try {
+                $res = WeebCentralProvider::search($q);
+            } catch (Throwable $e) {
+                continue;
+            }
+            if (empty($res['items'])) continue;
+
+            $qn = self::norm($q);
+            foreach ($res['items'] as $it) {
+                $tn = self::norm($it['title'] ?? '');
+                if ($tn === '') continue;
+                if ($tn === $qn) {
+                    $score = 1.0;
+                } elseif (str_contains($tn, $qn) || str_contains($qn, $tn)) {
+                    $score = 0.85;
+                } else {
+                    similar_text($tn, $qn, $pct);
+                    $score = $pct / 100;
+                }
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $best = $it;
+                    $bestQuery = $q;
+                }
+            }
+            // Kalau sudah cocok kuat, stop lebih awal
+            if ($bestScore >= 0.85) break;
+        }
+
+        if (!$best || $bestScore < 0.6) {
+            return $empty;
+        }
+
+        try {
+            $seriesId = $best['id'];
+            $raw = WeebCentralProvider::chapters($seriesId);
+        } catch (Throwable $e) {
+            return $empty;
+        }
+
+        if (empty($raw)) {
+            return $empty;
+        }
+
+        $chapters = array_map(fn($c) => [
+            'id'           => $c['id'],
+            'title'        => $c['title'],
+            'language'     => null,
+            'publish_date' => $c['date'] ? substr((string)$c['date'], 0, 10) : null,
+            'group'        => 'WeebCentral',
+            'source'       => 'weebcentral',
+            'url'          => '/manga/read/' . $seriesId . '/' . $c['id'],
+        ], $raw);
+
+        return [
+            'ok'       => true,
+            'seriesId' => $seriesId,
+            'chapters' => $chapters,
+            'first'    => $raw[0]['id'],
+            'count'    => count($raw),
+            'query'    => $bestQuery,
+        ];
+    }
+
+    private static function norm(string $t): string
+    {
+        return (string)preg_replace('/[^a-z0-9]/', '', mb_strtolower(trim($t)));
     }
 
     private static function notFound(string $message): never

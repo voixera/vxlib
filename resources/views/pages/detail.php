@@ -57,8 +57,8 @@ $u = Auth::user();
       </dl>
 
       <div class="detail-actions">
-        <?php if (!empty($chapters)): ?>
-          <a class="btn btn-accent" href="/manga/search?q=<?= e(urlencode($m['title'])) ?>">
+        <?php if (!empty($wb['ok']) && !empty($wb['first'])): ?>
+          <a class="btn btn-accent" href="/manga/read/<?= e($wb['seriesId']) ?>/<?= e($wb['first']) ?>">
             <?= icon('book-open', 18) ?> Baca di VoiXLib
           </a>
         <?php else: ?>
@@ -113,14 +113,14 @@ $u = Auth::user();
         <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
           <span><?= icon('list', 20) ?> Daftar Chapter</span>
           <?php if (!empty($chapters)): ?>
-            <span style="font-size: 0.85rem; font-weight: 400; color: var(--ink-2);"><?= count($chapters) ?> Chapter tersedia (MangaDex)</span>
+            <span style="font-size: 0.85rem; font-weight: 400; color: var(--ink-2);"><?= count($chapters) ?> Chapter tersedia (WeebCentral)</span>
           <?php endif; ?>
         </h2>
 
         <?php if (!empty($chapters)): ?>
           <div class="chapter-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; max-height: 400px; overflow-y: auto; padding-right: 4px;">
             <?php foreach ($chapters as $ch): ?>
-              <a href="/read/<?= e($m['media_type']) ?>/<?= (int)$m['id'] ?>?ch=<?= e(urlencode($ch['id'])) ?>"
+              <a href="<?= e($ch['url'] ?? '#') ?>"
                  class="chapter-card"
                  style="display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; background: var(--surface-2, rgba(255,255,255,0.03)); border: 1px solid var(--line, rgba(255,255,255,0.08)); border-radius: 8px; text-decoration: none; color: var(--ink-1, #e2e8f0); transition: background 0.2s, border-color 0.2s;">
                 <div style="font-weight: 600; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
@@ -137,9 +137,9 @@ $u = Auth::user();
           </div>
         <?php else: ?>
           <div style="padding: 24px; text-align: center; background: rgba(255,255,255,0.02); border-radius: 8px; color: var(--ink-2);">
-            <p style="margin-bottom: 8px;">Chapter belum tersedia di provider VoiXLib saat ini.</p>
-            <a class="btn btn-ghost btn-sm" href="<?= e($m['source_url'] ?? ('https://anilist.co/manga/' . (int)$m['id'])) ?>" target="_blank" rel="noopener">
-              <?= icon('share', 14) ?> Lihat sumber di AniList
+            <p style="margin-bottom: 8px;">Chapter belum tersedia di penyedia baca saat ini.</p>
+            <a class="btn btn-ghost btn-sm" href="/manga/search?q=<?= e(urlencode($m['title'])) ?>">
+              <?= icon('search', 14) ?> Cari di VoiXLib
             </a>
           </div>
         <?php endif; ?>
