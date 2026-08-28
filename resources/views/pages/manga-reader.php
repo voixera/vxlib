@@ -1,120 +1,146 @@
 <?php
-/** Reader vertikal: halaman asli, lazy load, skeleton, error, fullscreen, navigasi. */
+/** Pembaca WeebCentral — chromeless, editorial (shared .reader scope). */
 component('icons');
 $data = $data;
 $series = $data['series'] ?? null;
 $current = $data['current'] ?? null;
 $chapters = $data['chapters'] ?? [];
 $prev = $data['prev'] ?? null;
+$langs = [];
+foreach ($chapters as $c) { if (!empty($c['language'])) $langs[strtolower((string)$c['language'])] = true; }
+$langs = array_keys($langs);
 $next = $data['next'] ?? null;
 $provider = $data['provider'] ?? '';
 $seriesId = $series['id'] ?? '';
 ?>
-<div class="mreader" id="mreader" data-series="<?= e($seriesId) ?>">
-  <header class="mreader-top">
-    <a class="icon-btn" href="/manga/detail/<?= e($seriesId) ?>" aria-label="Kembali ke detail"><?= icon('arrow-left', 18) ?></a>
-    <div class="mreader-title">
-      <span class="mrt-name"><?= e($series['title'] ?? 'Manga') ?></span>
-      <?php if ($current): ?><span class="mrt-ch"><?= e($current['title']) ?></span><?php endif; ?>
-    </div>
+<div class="reader" id="reader" data-book-id="">
+  <div class="reader-backdrop" id="reader-backdrop" hidden></div>
 
-    <div class="mreader-tools">
-      <select id="chapter-select" class="mreader-select" aria-label="Pilih chapter">
-        <?php foreach ($chapters as $i => $ch): ?>
-          <option value="/manga/read/<?= e($seriesId) ?>/<?= e($ch['id']) ?>"<?= ($current && $current['id'] === $ch['id']) ? ' selected' : '' ?>>
-            <?= e($ch['title']) ?>
-          </option>
-        <?php endforeach; ?>
-      </select>
-      <button type="button" class="icon-btn" id="mreader-fs" aria-label="Layar penuh"><?= icon('grid', 16) ?> FS</button>
+  <header class="reader-top">
+    <div class="reader-top-left">
+      <a class="icon-btn" href="/manga/detail/<?= e($seriesId) ?>" aria-label="Kembali ke detail"><?= icon('arrow-left', 18) ?></a>
+      <div class="reader-title-box">
+        <span class="reader-manga-title"><?= e($series['title'] ?? 'Manga') ?></span>
+        <?php if ($current): ?><span class="reader-ch-subtitle"><?= e($current['title']) ?></span><?php endif; ?>
+      </div>
+    </div>
+    <div class="reader-top-right">
+      <button type="button" class="icon-btn reader-chapters-toggle" id="rd-toc-btn" aria-label="Daftar chapter" aria-expanded="false"><?= icon('toc', 19) ?></button>
+      <button type="button" class="icon-btn" id="btn-fullscreen" aria-label="Layar penuh"><?= icon('grid', 16) ?></button>
     </div>
   </header>
 
-  <div class="mreader-progress"><i id="mreader-bar"></i></div>
-
-  <main class="mreader-pages" id="mreader-pages">
-    <?php if (!$current): ?>
-      <div class="reader-empty-state" style="padding:80px 20px">
-        <?= icon('book-open', 56) ?>
-        <h2>Chapter tidak tersedia</h2>
-        <p>Seri ini belum memiliki chapter di penyedia baca.</p>
-        <a class="btn btn-ghost" href="/manga/detail/<?= e($seriesId) ?>">Kembali ke detail</a>
+  <div class="reader-controls">
+    <div class="rc-group">
+      <span class="rc-label">Mode</span>
+      <div class="reader-seg" role="group" aria-label="Mode baca">
+        <button type="button" data-mode="scroll" aria-pressed="true"><?= icon('list', 15) ?> Gulir</button>
+        <button type="button" data-mode="comic" aria-pressed="false"><?= icon('book-open', 15) ?> Halaman</button>
       </div>
-    <?php elseif (empty($current['pages'])): ?>
-      <div class="reader-empty-state" style="padding:80px 20px">
-        <?= icon('book-open', 56) ?>
-        <h2>Halaman tidak dapat dimuat</h2>
-        <p>Penyedia tidak mengembalikan halaman untuk chapter ini.</p>
-        <a class="btn btn-ghost" href="<?= e($series['source_url'] ?? '/manga/detail/' . $seriesId) ?>" target="_blank" rel="noopener">Lihat di sumber</a>
+    </div>
+    <div class="rc-group" id="autoscroll-group">
+      <span class="rc-label">Auto-scroll</span>
+      <div class="reader-seg" role="group" aria-label="Kecepatan auto-scroll">
+        <button type="button" data-speed="off" aria-pressed="true">Mati</button>
+        <button type="button" data-speed="slow" aria-pressed="false">Lambat</button>
+        <button type="button" data-speed="normal" aria-pressed="false">Normal</button>
+        <button type="button" data-speed="fast" aria-pressed="false">Cepat</button>
       </div>
-    <?php else: ?>
-      <?php foreach ($current['pages'] as $idx => $url): ?>
-        <figure class="mreader-page skeleton-load" data-index="<?= $idx + 1 ?>">
-          <img class="mreader-img" data-src="<?= e($url) ?>" alt="Halaman <?= $idx + 1 ?>"
-               referrerpolicy="no-referrer" decoding="async">
-          <figcaption class="mreader-pageno"><?= $idx + 1 ?> / <?= count($current['pages']) ?></figcaption>
-        </figure>
-      <?php endforeach; ?>
-    <?php endif; ?>
-  </main>
+    </div>
+  </div>
 
-  <?php if ($current): ?>
-  <nav class="mreader-nav">
-    <?php if ($prev): ?>
-      <a class="btn btn-ghost" href="/manga/read/<?= e($seriesId) ?>/<?= e($prev) ?>"><?= icon('arrow-left', 16) ?> Sebelumnya</a>
-    <?php else: ?>
-      <span class="btn btn-ghost disabled">Chapter pertama</span>
-    <?php endif; ?>
-    <a class="btn btn-ghost" href="/manga/detail/<?= e($seriesId) ?>">Daftar chapter</a>
-    <?php if ($next): ?>
-      <a class="btn btn-solid" href="/manga/read/<?= e($seriesId) ?>/<?= e($next) ?>">Berikutnya <?= icon('arrow-right', 16) ?></a>
-    <?php else: ?>
-      <span class="btn btn-ghost disabled">Chapter terakhir</span>
-    <?php endif; ?>
-  </nav>
-  <?php endif; ?>
+  <div class="reader-progress-wrap" aria-hidden="true"><i id="read-progress"></i></div>
+
+  <div class="reader-grid">
+    <aside class="reader-sidebar" id="reader-sidebar" aria-label="Daftar chapter">
+      <h3 class="reader-sidebar-title"><?= icon('list', 18) ?> Chapter (<?= count($chapters) ?>)</h3>
+      <p class="reader-provider-tag">Sumber: <strong><?= e($provider ?: 'WeebCentral') ?></strong></p>
+      <div class="reader-chapter-list">
+        <?php foreach ($chapters as $ch): ?>
+          <a href="/manga/read/<?= e($seriesId) ?>/<?= e($ch['id']) ?>"
+             class="reader-chapter-item<?= $current && ($ch['id'] ?? null) === ($current['id'] ?? null) ? ' is-active' : '' ?>">
+            <span class="ch-name"><?= e($ch['title']) ?></span>
+            <span class="ch-meta">
+              <?php if (!empty($ch['language'])): ?><span class="chip-lang"><?= e(strtoupper($ch['language'])) ?></span><?php endif; ?>
+            </span>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    </aside>
+
+    <main class="reader-main">
+      <?php if (!$current): ?>
+        <div class="reader-empty-state">
+          <?= icon('book-open', 56) ?>
+          <h2>Chapter tidak tersedia</h2>
+          <p>Seri ini belum memiliki chapter di penyedia baca.</p>
+          <a class="btn btn-ghost" href="/manga/detail/<?= e($seriesId) ?>">Kembali ke detail</a>
+        </div>
+      <?php elseif (empty($current['pages'])): ?>
+        <div class="reader-empty-state">
+          <?= icon('book-open', 56) ?>
+          <h2>Halaman tidak dapat dimuat</h2>
+          <p>Penyedia tidak mengembalikan halaman untuk chapter ini.</p>
+          <a class="btn btn-ghost" href="/manga/detail/<?= e($seriesId) ?>" target="_blank" rel="noopener">Lihat di sumber</a>
+        </div>
+      <?php else: ?>
+        <div class="reader-chapter-indicator"><span>Chapter</span></div>
+        <div class="reader-pages" id="pages-container">
+          <?php foreach ($current['pages'] as $idx => $url): ?>
+            <figure class="reader-page skeleton-load" data-page-index="<?= $idx + 1 ?>">
+              <img data-src="<?= e($url) ?>" alt="Halaman <?= $idx + 1 ?>" class="manga-page-img lazy-page"
+                   referrerpolicy="no-referrer" decoding="async" loading="lazy"
+                   onload="this.parentElement.classList.remove('skeleton-load'); this.classList.add('is-loaded')"
+                   onerror="this.parentElement.classList.remove('skeleton-load'); this.parentElement.classList.add('page-error')">
+              <figcaption class="reader-pageno"><?= $idx + 1 ?> / <?= count($current['pages']) ?></figcaption>
+            </figure>
+          <?php endforeach; ?>
+        </div>
+
+        <nav class="reader-nav">
+          <?php if ($prev): ?>
+            <a class="btn btn-ghost" id="ch-prev" href="/manga/read/<?= e($seriesId) ?>/<?= e($prev) ?>"><?= icon('arrow-left', 16) ?> Sebelumnya</a>
+          <?php else: ?>
+            <span class="btn btn-ghost" aria-disabled="true"><?= icon('arrow-left', 16) ?> Chapter Pertama</span>
+          <?php endif; ?>
+          <a class="btn btn-ghost" href="/manga/detail/<?= e($seriesId) ?>">Daftar chapter</a>
+          <?php if ($next): ?>
+            <a class="btn btn-solid" id="ch-next" href="/manga/read/<?= e($seriesId) ?>/<?= e($next) ?>">Berikutnya <?= icon('arrow-right', 16) ?></a>
+          <?php else: ?>
+            <span class="btn btn-ghost" aria-disabled="true">Chapter Terakhir</span>
+          <?php endif; ?>
+        </nav>
+      <?php endif; ?>
+    </main>
+  </div>
 </div>
 
-<script id="manga-reader-data" type="application/json"><?= json_encode([
-    'seriesId' => $seriesId,
-    'current'  => $current,
-    'prev'     => $prev,
-    'next'     => $next,
-    'provider' => $provider,
-], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var imgs = document.querySelectorAll('.lazy-page');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.src = e.target.dataset.src; obs.unobserve(e.target); } });
+    }, { rootMargin: '400px 0px' });
+    imgs.forEach(function (im) { io.observe(im); });
+  } else { imgs.forEach(function (im) { im.src = im.dataset.src; }); }
 
-<style>
-.mreader { background:#000; color:#fff; min-height:100vh; }
-.mreader-top { position:sticky; top:0; z-index:50; display:flex; align-items:center; gap:12px; padding:0; background:#0E0E0C; border-bottom:3px solid #fff; }
-.mreader-title { flex:1; min-width:0; display:flex; flex-direction:column; line-height:1.2; padding:10px 4px; }
-.mrt-name { font-family:var(--display); font-weight:800; text-transform:uppercase; font-size:.92rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.mrt-ch { font-size:.76rem; color:#b3aea0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.mreader-tools { display:flex; align-items:center; gap:0; border-left:3px solid #fff; }
-.mreader-select { background:#000; color:#fff; border:none; border-right:3px solid #fff; padding:10px 12px; max-width:42vw; font-size:.82rem; font-family:var(--mono); text-transform:uppercase; }
-.mreader-progress { height:6px; background:#222; }
-.mreader-progress i { display:block; height:100%; width:0; background:var(--accent); transition:width .1s linear; }
-.mreader-pages { max-width:900px; margin:0 auto; padding:0 0 40px; display:flex; flex-direction:column; gap:0; }
-.mreader-page { margin:0; position:relative; background:#111; min-height:200px; border-bottom:3px solid #fff; overflow:hidden; display:flex; align-items:center; justify-content:center; }
-.mreader-img { width:100%; height:auto; display:block; opacity:0; transform:translateY(8px); transition:opacity .4s ease, transform .4s ease; }
-.mreader-page.page-error .mreader-img { display:none; }
-.mreader-page.skeleton-load { background:linear-gradient(90deg,#111 25%,#1a1d24 50%,#111 75%); background-size:200% 100%; animation:skeleton-wave 1.5s infinite; }
-.mreader-page.page-error { background:#15171c; }
-.mreader-page.page-error::after { content:'Gambar gagal dimuat'; color:#b3aea0; font-size:.85rem; }
-.mreader-img.is-loaded { opacity:1; transform:none; }
-.mreader-pageno { position:absolute; bottom:8px; right:12px; background:#000; color:#fff; font-family:var(--mono); font-size:.72rem; padding:3px 9px; border:2px solid #fff; }
-.mreader-nav { display:flex; align-items:center; justify-content:space-between; gap:0; max-width:900px; margin:0 auto; padding:0; flex-wrap:wrap; border-top:3px solid #fff; }
-.mreader-nav .btn { border-radius:0; flex:1; justify-content:center; border-left:none; border-right:none; }
-.mreader .btn { border-radius:0; }
-.mreader .btn-ghost { border-color:#fff; color:#fff; background:#000; }
-.mreader .btn-ghost:hover { border-color:var(--accent); background:var(--accent); color:#0E0E0C; }
-.mreader .btn-solid { background:var(--accent); color:#0E0E0C; border-color:#fff; }
-.mreader .btn-solid:hover { background:#fff; color:#0E0E0C; }
-.mreader .icon-btn { border-color:#fff; color:#fff; border-radius:0; }
-.mreader .icon-btn:hover { background:var(--accent); color:#0E0E0C; border-color:#fff; }
-.mreader-select:focus-visible, .mreader .icon-btn:focus-visible { outline:3px solid var(--accent); outline-offset:2px; }
-.reader-empty-state { text-align:center; color:#b3aea0; }
-.reader-empty-state h2 { font-family:var(--display); text-transform:uppercase; color:#fff; font-size:1.3rem; margin:14px 0 8px; }
-.reader-empty-state p { margin-bottom:20px; }
-@keyframes skeleton-wave { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-@media (max-width:600px){ .mreader-select{ max-width:36vw; } .mrt-name{ font-size:.85rem; } }
-</style>
+  var fs = document.getElementById('btn-fullscreen');
+  if (fs) fs.addEventListener('click', function () {
+    if (!document.fullscreenElement) (document.documentElement.requestFullscreen || function(){}).call(document.documentElement).catch(function(){});
+    else (document.exitFullscreen || function(){}).call(document).catch(function(){});
+  });
+
+  var rd = document.getElementById('reader');
+  var tog = document.getElementById('rd-toc-btn');
+  var bd = document.getElementById('reader-backdrop');
+  if (tog) tog.addEventListener('click', function () {
+    var open = rd.classList.toggle('show-sidebar');
+    tog.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (bd) bd.hidden = !open;
+  });
+  if (bd) bd.addEventListener('click', function () { rd.classList.remove('show-sidebar'); tog.setAttribute('aria-expanded','false'); bd.hidden = true; });
+
+  if (window.VXReader) VXReader.init({});
+});
+</script>

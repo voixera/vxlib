@@ -18,15 +18,15 @@ if (!empty($continueReading)) {
 <section class="hero">
   <div class="shell hero-grid">
     <div class="hero-copy">
-      <p class="kicker">Perpustakaan manga &amp; manhwa</p>
-      <h1 class="hero-title">Baca<br>Melampaui<br><em>Rak.</em></h1>
+      <p class="eyebrow">Manga &amp; Manhwa Archive</p>
+      <h1 class="hero-title">Temukan cerita<br>berikutnya<em>.</em></h1>
       <p class="hero-lede">VoiXLib adalah arsip dan pembaca manga + manhwa. Jelajahi katalog dunia nyata,
         simpan ke rak, tandai favoritmu, dan lanjutkan membaca kapan pun.</p>
 
       <div class="hero-actions">
         <form class="hero-search" action="/search.php" method="get" role="search">
           <span class="hs-ic" aria-hidden="true"><?= icon('search', 18) ?></span>
-          <input type="search" name="q" placeholder="CARI MANGA / MANHWA" aria-label="Cari" autocomplete="off">
+          <input type="search" name="q" placeholder="Cari manga atau manhwa" aria-label="Cari" autocomplete="off">
           <button class="btn btn-accent" type="submit">Cari</button>
         </form>
         <a class="btn btn-ghost" href="/explore.php">Jelajahi katalog</a>
@@ -41,9 +41,9 @@ if (!empty($continueReading)) {
       <?php endif; ?>
     </div>
 
-    <div class="hero-stage" data-parallax-covers>
-      <?php foreach ($heroCovers as $i => $hb): ?>
-        <a class="hero-cover" href="<?= e($hb['url_detail']) ?>" tabindex="-1" aria-hidden="true">
+    <div class="hero-stage">
+      <?php foreach (array_slice($heroCovers, 0, 3) as $i => $hb): ?>
+        <a class="hero-cover <?= $i === 0 ? 'hero-feature' : ($i === 1 ? 'hero-sub' : 'hero-sub2') ?>" href="<?= e($hb['url_detail']) ?>" tabindex="-1" aria-hidden="true">
           <img src="<?= e($hb['cover_url']) ?>" alt="" loading="<?= $i ? 'lazy' : 'eager' ?>" decoding="async">
         </a>
       <?php endforeach; ?>

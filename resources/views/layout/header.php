@@ -26,15 +26,15 @@ $active = $activeNav ?? '';
       <kbd aria-hidden="true">/</kbd>
     </form>
 
-    <nav class="main-nav" aria-label="Utama">
+     <nav class="main-nav" aria-label="Utama">
       <?php foreach ($nav as $key => [$href, $label, $icn]): ?>
         <a class="nav-link<?= $active === $key ? ' is-active' : '' ?>" href="<?= e($href) ?>">
-          <?= $icn !== null ? icon($icn, 16) . ' ' : '' ?><span><?= e($label) ?></span>
+          <span><?= e($label) ?></span>
         </a>
       <?php endforeach; ?>
 
-      <button class="icon-btn theme-toggle" type="button" data-theme-toggle
-              aria-label="Ganti tema warna" style="border:none;border-left:var(--bd);border-right:var(--bd);width:56px"><?= icon('moon', 18) ?></button>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle
+               aria-label="Ganti tema warna"><?= icon('moon', 18) ?></button>
 
       <?php $u = Auth::user(); ?>
       <?php if ($u): ?>

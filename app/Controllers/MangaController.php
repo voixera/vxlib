@@ -80,7 +80,7 @@ final class MangaController
             'title'     => 'Membaca ' . ($data['series']['title'] ?? '') . ' — VoiXLib',
             'activeNav' => 'baca',
             'chromeless' => true,
-            'scripts'   => ['manga-reader.js'],
+            'scripts'   => ['reader-ui.js'],
         ], [
             'data' => $data,
         ]);

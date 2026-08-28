@@ -31,6 +31,9 @@ $csrfToken = Security::csrfToken();
 <?php endif; ?>
 <link rel="icon" href="<?= asset('favicon.svg') ?>" type="image/svg+xml">
 <link rel="apple-touch-icon" href="<?= asset('favicon.svg') ?>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="<?= asset('css/main.css') ?>">
 <?php foreach ((array)($page['styles'] ?? []) as $css): ?>
 <link rel="stylesheet" href="<?= asset('css/' . $css) ?>">

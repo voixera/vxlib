@@ -115,28 +115,7 @@
     document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
   }
 
-  // ── Hero parallax (pointer, desktop, motion allowed only) ────
-  var scene = document.querySelector('[data-parallax-scene]');
-  if (scene && matchMedia('(pointer:fine)').matches && !reduced) {
-    var layers = scene.querySelectorAll('.layer');
-    var covers = document.querySelector('[data-parallax-covers]');
-    var raf = null;
-    window.addEventListener('mousemove', function (ev) {
-      if (raf) return;
-      raf = requestAnimationFrame(function () {
-        var nx = ev.clientX / window.innerWidth - 0.5;
-        var ny = ev.clientY / window.innerHeight - 0.5;
-        layers.forEach(function (layer) {
-          var depth = parseFloat(layer.dataset.depth || '1');
-          layer.style.transform = 'translate(' + (-nx * depth * 7) + 'px,' + (-ny * depth * 4) + 'px)';
-        });
-        if (covers) covers.style.transform = 'translate(' + (nx * -10) + 'px,' + (ny * -6) + 'px)';
-        raf = null;
-      });
-    }, { passive: true });
-  }
-
-  // ── Anonymous→account one-time sync after login ──────────────
+   // ── Anonymous→account one-time sync after login ──────────────
   function maybeSync() {
     if (!VX.authed) return;
     var flag = sessionStorage.getItem('voixlib:synced');

@@ -58,6 +58,38 @@ final class MediaReaderController
         $selectedChapterPages = [];
         $activeChIndex = -1;
 
+        // ── Language selection (real, no fake translations) ──
+        // Default to Bahasa Indonesia; fall back to English if no ID chapter exists.
+        $reqLang = strtolower((string)($_GET['lang'] ?? 'id'));
+        if ($reqLang !== 'id' && $reqLang !== 'en') {
+            $reqLang = 'id';
+        }
+        $availableLangs = [];
+        foreach ($chapters as $c) {
+            if (!empty($c['language'])) {
+                $availableLangs[strtolower((string)$c['language'])] = true;
+            }
+        }
+        $availableLangs = array_keys($availableLangs);
+        $activeLang = $reqLang;
+        $indoUnavailable = false;
+        if (!empty($chapters)) {
+            $filtered = array_values(array_filter($chapters, function ($c) use ($activeLang) {
+                return strtolower((string)($c['language'] ?? '')) === $activeLang;
+            }));
+            if ($filtered === [] && $activeLang === 'id' && in_array('en', $availableLangs, true)) {
+                // No Indonesian chapter: fall back to English, surface a notice.
+                $activeLang = 'en';
+                $indoUnavailable = true;
+                $filtered = array_values(array_filter($chapters, function ($c) {
+                    return strtolower((string)($c['language'] ?? '')) === 'en';
+                }));
+            }
+            if ($filtered !== []) {
+                $chapters = $filtered;
+            }
+        }
+
         if (!empty($chapters)) {
             // Find or default to first chapter
             $activeChIndex = 0;
@@ -90,14 +122,15 @@ final class MediaReaderController
         // 3. Get User Reading Progress if logged in
         $user = Auth::user();
         $savedProgress = null;
+        $localBookId = null;
         if ($user && SupabaseClient::configured()) {
             $catalogRepo = new CatalogRepository();
-            $bookId = $catalogRepo->ensureLocal($media);
-            if ($bookId !== null) {
+            $localBookId = $catalogRepo->ensureLocal($media);
+            if ($localBookId !== null) {
                 $libraryRepo = new LibraryRepository();
-                $savedProgress = $libraryRepo->progress((int)$user['id'], $bookId);
+                $savedProgress = $libraryRepo->progress((int)$user['id'], $localBookId);
                 // Touch reading history
-                $libraryRepo->touchHistory((int)$user['id'], $bookId);
+                $libraryRepo->touchHistory((int)$user['id'], $localBookId);
             }
         }
 
@@ -108,9 +141,10 @@ final class MediaReaderController
             'title' => 'Membaca ' . $media['title'] . ' — VoiXLib',
             'activeNav' => $type,
             'ogImage' => $media['cover_url'],
+            'chromeless' => true,
         ], [
             'm' => $media,
-            'bookId' => $media['external_id'],
+            'bookId' => $localBookId,
             'chapters' => $chapters,
             'selectedChapterId' => $selectedChapterId,
             'selectedChapterPages' => $selectedChapterPages,
@@ -119,6 +153,9 @@ final class MediaReaderController
             'nextChapter' => $nextChapter,
             'savedProgress' => $savedProgress,
             'providerName' => $activeProvider ? $activeProvider::getProviderName() : null,
+            'activeLang' => $activeLang ?? 'id',
+            'availableLangs' => $availableLangs ?? [],
+            'indoUnavailable' => $indoUnavailable ?? false,
         ]);
     }
 

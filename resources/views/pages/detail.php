@@ -55,21 +55,21 @@ $u = Auth::user();
         <div class="fact"><dt>Tahun</dt><dd><?= $m['year'] ? (int)$m['year'] : 'Tidak tersedia' ?></dd></div>
       </dl>
 
-      <div class="detail-actions">
+       <div class="detail-actions">
         <?php if (!empty($wb['ok']) && !empty($wb['first'])): ?>
           <a class="btn btn-accent" href="/manga/read/<?= e($wb['seriesId']) ?>/<?= e($wb['first']) ?>">
-            <?= icon('book-open', 18) ?> Baca di VoiXLib
+            <?= icon('book-open', 18) ?> Baca Sekarang
           </a>
         <?php else: ?>
           <a class="btn btn-accent" href="/manga/search?q=<?= e(urlencode($m['title'])) ?>">
-            <?= icon('book-open', 18) ?> Baca di VoiXLib
+            <?= icon('book-open', 18) ?> Baca Sekarang
           </a>
         <?php endif; ?>
 
         <button type="button" class="btn btn-ghost action-library" data-book-id="<?= $bookId ?? '' ?>"
                 data-status="<?= e($shelfStatus ?? '') ?>" <?= ($u && $bookId) ? '' : 'data-needs-auth="1"' ?>>
           <?= icon('library', 17) ?>
-          <span class="al-label"><?= !empty($shelfStatus) ? 'Di rak kamu' : 'Tambahkan ke Perpustakaan' ?></span>
+          <span class="al-label"><?= !empty($shelfStatus) ? 'Di rak kamu' : '+ Perpustakaan' ?></span>
         </button>
 
         <button type="button" class="icon-btn action-bookmark<?= !empty($hasBookmark) ? ' is-saved' : '' ?>"
