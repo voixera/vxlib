@@ -281,15 +281,32 @@ input, select, textarea { font: inherit; color: inherit; }
 .shelf-title { font-size: clamp(20px, 2.8vw, 30px); font-weight: 600; }
 .shelf-more { font-family: var(--font-body); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-2); display: inline-flex; align-items: center; gap: 5px; }
 .shelf-more:hover { color: var(--accent); text-decoration: none; }
-.shelf { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(155px, 1fr); gap: 20px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 14px; }
+.shelf {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(155px, 1fr); gap: 20px;
+  overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 14px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.shelf::-webkit-scrollbar { display: none; /* Chrome, Safari, Opera */ }
 .shelf-item { scroll-snap-align: start; }
 
-/* ── Genre Tiles ──────────────────────────────────── */
-.genre-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1px; background: var(--hair); border: 1px solid var(--hair); }
-.cat-tile { display: flex; align-items: center; justify-content: space-between; padding: 18px 16px; background: var(--paper); font-family: var(--font-display); font-weight: 600; font-size: 15px; transition: background .16s var(--ease), color .16s var(--ease); }
-.cat-tile::after { content: "→"; color: var(--ink-3); font-family: var(--font-body); transition: transform .18s var(--ease); }
-.cat-tile:hover { background: var(--accent); color: #fff; text-decoration: none; }
-.cat-tile:hover::after { color: #fff; transform: translateX(3px); }
+/* ── Genre Tiles (Editorial Grid) ─────────────────── */
+.genre-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+.cat-tile {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 18px; background: var(--paper-2);
+  border: 1px solid var(--hair-strong); border-radius: var(--radius-lg);
+  font-family: var(--font-display); font-weight: 600; font-size: 15px;
+  color: var(--ink);
+  transition: background .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease), transform .18s var(--ease);
+}
+.cat-tile::after { content: "→"; color: var(--ink-3); font-family: var(--font-body); transition: transform .18s var(--ease), color .18s var(--ease); }
+.cat-tile:hover { background: var(--accent); color: #fff; border-color: var(--accent); text-decoration: none; transform: translateY(-2px); }
+.cat-tile:hover::after { color: #fff; transform: translateX(4px); }
 [data-theme="dark"] .cat-tile:hover { color: #16140F; }
 
 /* ── CTA Band ─────────────────────────────────────── */

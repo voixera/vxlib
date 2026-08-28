@@ -24,12 +24,9 @@ if (!empty($continueReading)) {
         simpan ke perpustakaan pribadi, dan nikmati pengalaman membaca yang nyaman.</p>
 
       <div class="hero-actions">
-        <form class="hero-search" action="/search.php" method="get" role="search">
-          <span class="hs-ic" aria-hidden="true"><?= icon('search', 18) ?></span>
-          <input type="search" name="q" placeholder="Cari manga atau manhwa…" aria-label="Cari" autocomplete="off">
-          <button class="btn btn-accent" type="submit">Cari</button>
-        </form>
-        <a class="btn btn-ghost" href="/explore.php">Jelajahi katalog</a>
+        <a class="btn btn-solid" href="/explore.php">Jelajahi Katalog</a>
+        <a class="btn btn-ghost" href="/manga">Manga</a>
+        <a class="btn btn-ghost" href="/manhwa">Manhwa</a>
       </div>
 
       <?php if (!empty($stats)): ?>
@@ -41,15 +38,59 @@ if (!empty($continueReading)) {
       <?php endif; ?>
     </div>
 
-    <div class="hero-stage">
+    <div class="hero-stage" id="hero-stage" data-covers='<?= e(json_encode(array_values(array_map(fn($b) => [
+        'url' => $b['url_detail'],
+        'cover' => $b['cover_url'],
+        'title' => $b['title']
+    ], $heroCovers)))) ?>'>
       <?php foreach (array_slice($heroCovers, 0, 3) as $i => $hb): ?>
-        <a class="hero-cover <?= $i === 0 ? 'hero-feature' : ($i === 1 ? 'hero-sub' : 'hero-sub2') ?>" href="<?= e($hb['url_detail']) ?>" tabindex="-1" aria-hidden="true">
-          <img src="<?= e($hb['cover_url']) ?>" alt="" loading="<?= $i ? 'lazy' : 'eager' ?>" decoding="async">
+        <a class="hero-cover <?= $i === 0 ? 'hero-feature' : ($i === 1 ? 'hero-sub' : 'hero-sub2') ?>" href="<?= e($hb['url_detail']) ?>" aria-label="<?= e($hb['title']) ?>">
+          <img src="<?= e($hb['cover_url']) ?>" alt="<?= e($hb['title']) ?>" loading="<?= $i ? 'lazy' : 'eager' ?>" decoding="async">
         </a>
       <?php endforeach; ?>
     </div>
   </div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var stage = document.getElementById('hero-stage');
+  if (!stage) return;
+  try {
+    var covers = JSON.parse(stage.dataset.covers || '[]');
+    if (covers.length <= 3) return;
+    var slots = [
+      stage.querySelector('.hero-feature'),
+      stage.querySelector('.hero-sub'),
+      stage.querySelector('.hero-sub2')
+    ];
+    var currentIndices = [0, 1, 2];
+    var poolIndex = 3;
+
+    setInterval(function () {
+      var slotIdx = Math.floor(Math.random() * 3);
+      var targetSlot = slots[slotIdx];
+      if (!targetSlot) return;
+
+      var nextData = covers[poolIndex];
+      poolIndex = (poolIndex + 1) % covers.length;
+
+      var img = targetSlot.querySelector('img');
+      if (img) {
+        targetSlot.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        targetSlot.style.opacity = '0';
+        setTimeout(function () {
+          targetSlot.href = nextData.url;
+          targetSlot.setAttribute('aria-label', nextData.title);
+          img.src = nextData.cover;
+          img.alt = nextData.title;
+          targetSlot.style.opacity = '1';
+        }, 500);
+      }
+    }, 3500);
+  } catch (e) {}
+});
+</script>
 
 <!-- ── Genre ─────────────────────────────────────────────── -->
 <section class="section">
