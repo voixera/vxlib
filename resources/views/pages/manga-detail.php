@@ -51,13 +51,13 @@ $firstChapter = $chapters[0] ?? null;
 
   <section class="manga-chapter-section">
     <div class="detail-chapters-head">
-      <h2><?= icon('list', 20) ?> Daftar Chapter</h2>
+      <h2><?= icon('list', 18) ?> Daftar Chapter</h2>
       <?php if (!empty($chapters)): ?><span class="count"><?= count($chapters) ?> chapter</span><?php endif; ?>
     </div>
 
     <?php if (empty($chapters)): ?>
       <div class="reader-empty-state" style="padding:40px 20px">
-        <?= icon('book-open', 48) ?>
+        <?= icon('book-open', 44) ?>
         <h2>Chapter tidak tersedia</h2>
         <p>Seri ini belum punya chapter di penyedia baca saat ini.</p>
       </div>

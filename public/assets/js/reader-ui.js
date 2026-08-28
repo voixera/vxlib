@@ -47,8 +47,9 @@
           self.api('/api/bookmark.php', { action: 'add', book_id: id, location: 'reader' })
             .then(function () {
               btn.setAttribute('aria-pressed', 'true');
+              btn.classList.add('is-saved');
               btn.innerHTML = '<svg class="icon icon-bookmark-filled" width="18" height="18" viewBox="0 0 24 24"><path d="M7 4.5h10a.8.8 0 0 1 .8.8v14.2L12 15.6 6.2 19.5V5.3a.8.8 0 0 1 .8-.8z" fill="currentColor" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
-              if (window.VX) VX.toast('Dibookmark.');
+              if (window.VX) VX.toast('Disimpan ke bookmark.');
             })
             .catch(function () { if (window.VX) VX.toast('Bookmark gagal.', 'error'); });
         } else {
@@ -61,6 +62,7 @@
             })
             .then(function () {
               btn.setAttribute('aria-pressed', 'false');
+              btn.classList.remove('is-saved');
               btn.innerHTML = '<svg class="icon icon-bookmark" width="18" height="18" viewBox="0 0 24 24"><path d="M7 4.5h10a.8.8 0 0 1 .8.8v14.2L12 15.6 6.2 19.5V5.3a.8.8 0 0 1 .8-.8z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
               if (window.VX) VX.toast('Bookmark dihapus.');
             })

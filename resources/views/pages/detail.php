@@ -110,7 +110,7 @@ $u = Auth::user();
        <!-- Daftar Chapter -->
        <section class="detail-chapters">
          <div class="detail-chapters-head">
-           <h2><?= icon('list', 20) ?> Daftar Chapter</h2>
+           <h2><?= icon('list', 18) ?> Daftar Chapter</h2>
            <?php if (!empty($chapters)): ?>
              <span class="count"><span id="chapter-count"><?= count($chapters) ?></span> chapter</span>
            <?php endif; ?>
@@ -122,7 +122,7 @@ $u = Auth::user();
            $langs = array_keys($langs);
          ?>
            <div class="chapter-tools">
-             <input type="search" class="ct-search" id="chapter-search" placeholder="CARI CHAPTER" aria-label="Cari chapter" autocomplete="off">
+             <input type="search" class="ct-search" id="chapter-search" placeholder="Cari chapter…" aria-label="Cari chapter" autocomplete="off">
              <select class="ct-sort" id="chapter-sort" aria-label="Urutkan chapter">
                <option value="desc">Terbaru dulu</option>
                <option value="asc">Terlama dulu</option>
@@ -147,7 +147,7 @@ $u = Auth::user();
                  <span class="chapter-card-body">
                    <span class="chapter-card-title"><?= e($ch['title']) ?></span>
                    <span class="chapter-card-meta">
-                     <span class="chapter-lang"><?= e($ch['language']) ?></span>
+                     <span class="chapter-lang"><?= e(strtoupper($ch['language'] ?? 'ID')) ?></span>
                      <?php if (!empty($ch['publish_date'])): ?>
                        <span><?= e($ch['publish_date']) ?></span>
                      <?php endif; ?>

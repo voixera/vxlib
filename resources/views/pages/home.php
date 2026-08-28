@@ -20,13 +20,13 @@ if (!empty($continueReading)) {
     <div class="hero-copy">
       <p class="eyebrow">Manga &amp; Manhwa Archive</p>
       <h1 class="hero-title">Temukan cerita<br>berikutnya<em>.</em></h1>
-      <p class="hero-lede">VoiXLib adalah arsip dan pembaca manga + manhwa. Jelajahi katalog dunia nyata,
-        simpan ke rak, tandai favoritmu, dan lanjutkan membaca kapan pun.</p>
+      <p class="hero-lede">VoiXLib adalah platform dan arsip manga &amp; manhwa digital. Jelajahi karya curated,
+        simpan ke perpustakaan pribadi, dan nikmati pengalaman membaca yang nyaman.</p>
 
       <div class="hero-actions">
         <form class="hero-search" action="/search.php" method="get" role="search">
           <span class="hs-ic" aria-hidden="true"><?= icon('search', 18) ?></span>
-          <input type="search" name="q" placeholder="Cari manga atau manhwa" aria-label="Cari" autocomplete="off">
+          <input type="search" name="q" placeholder="Cari manga atau manhwa…" aria-label="Cari" autocomplete="off">
           <button class="btn btn-accent" type="submit">Cari</button>
         </form>
         <a class="btn btn-ghost" href="/explore.php">Jelajahi katalog</a>
@@ -101,11 +101,9 @@ foreach ($sections as $key => [$heading, $href]):
 <section class="cta-band">
   <div class="shell cta-inner">
     <div>
-      <span class="section-num">Mulai</span>
-      <?= motif_speedlines(160, 28) ?>
-      <h2>Bangun rak kamu</h2>
-      <p>Masuk dengan Discord untuk menyimpan judul ke Perpustakaan — Ingin Dibaca, Sedang Dibaca,
-        Selesai — dan datanya tersinkron di semua perangkat.</p>
+      <span class="section-num">Perpustakaan</span>
+      <h2>Simpan &amp; kelola koleksi</h2>
+      <p>Masuk dengan Discord untuk menyinkronkan status bacaan — Ingin Dibaca, Sedang Dibaca, Selesai — di seluruh perangkatmu.</p>
     </div>
     <div class="cta-actions">
       <?php if (Auth::check()): ?>

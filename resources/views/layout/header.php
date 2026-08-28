@@ -21,8 +21,8 @@ $active = $activeNav ?? '';
     </a>
 
     <form class="header-search" action="/search.php" method="get" role="search">
-      <span class="hs-ic" aria-hidden="true"><?= icon('search', 16) ?></span>
-      <input type="search" id="header-q" name="q" placeholder="CARI MANGA / MANHWA" aria-label="Cari manga atau manhwa" autocomplete="off">
+      <span class="hs-ic" aria-hidden="true"><?= icon('search', 15) ?></span>
+      <input type="search" id="header-q" name="q" placeholder="Cari manga / manhwa…" aria-label="Cari manga atau manhwa" autocomplete="off">
       <kbd aria-hidden="true">/</kbd>
     </form>
 
